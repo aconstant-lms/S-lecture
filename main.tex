@@ -1,0 +1,37 @@
+%======================================================================
+%  Stability in Mechanics -- Lecture notes  (working title)
+%  A. Constantinescu, LMS, CNRS & Ecole Polytechnique
+%
+%  Same LaTeX model as "Nonlinear Problems in Mechanics" (npm-lecture).
+%  Build:  pdflatex main (three passes; no BibTeX needed -- each
+%          chapter carries its own bibliography). The index is built by
+%          makeindex, called automatically by imakeidx (or use latexmk).
+%  Work on one chapter: uncomment the \includeonly line.
+%======================================================================
+\documentclass[11pt,a4paper,twoside,openright]{book}
+
+\input{preamble/style}
+\input{preamble/notation}
+
+\drafttrue        % \draftfalse hides the red [notes to the author]
+
+%\includeonly{chapters/ch1_stability}
+
+\begin{document}
+
+\frontmatter
+\input{front/titlepage}
+\input{front/overview}
+{\hypersetup{linkcolor=black}\tableofcontents}
+\input{front/notation_list}
+
+\mainmatter
+\include{chapters/ch1_stability}
+
+\appendix
+\include{appendices/appA_template}
+
+\backmatter
+\printindex
+
+\end{document}
