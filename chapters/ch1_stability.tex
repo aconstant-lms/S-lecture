@@ -1,37 +1,582 @@
 %======================================================================
-\chapter{Stability: first notions}\label{ch:st}
+\chapter{Differential equations and bifurcation}\label{ch:st}
 %======================================================================
-% Template chapter: the frame of every chapter of the book
-% (Outline, numbered sections, Summary, Exercises, References).
 
 \framepart{Outline}
-\draftnote{One paragraph: what the chapter does and why.}
+A system is described by a differential equation $\dot y = f(y,r)$ with a
+control parameter $r$ that we turn by hand: a load, a catch rate, an
+imperfection. For most values of $r$ the system has a single steady state,
+and it behaves calmly. At special values of $r$ the number of steady states
+changes. These are the bifurcation points. The chapter finds them and explains
+why they occur exactly there: the slope $f_y = \partial f/\partial y$ at a steady
+state decides both its stability and its uniqueness, and a bifurcation is the
+moment the control parameter pushes this slope through zero. We start from the
+linear equation $\dot y = ay$, which we solve completely, and we reach the
+buckling of a rigid bar on a spring, the first mechanical example of the book.
 
 \paragraph{By the end of this chapter you should be able to:}
 \begin{itemize}
-  \item \draftnote{objective 1;}
-  \item \draftnote{objective 2.}
+  \item find the steady states of $\dot y = f(y,r)$ and decide their stability
+        from the sign of $f_y$;
+  \item locate the bifurcation points with the two conditions $f = 0$ and $f_y = 0$;
+  \item recognise the saddle-node, transcritical and pitchfork bifurcations
+        and draw their bifurcation diagrams;
+  \item explain critical slowing down, imperfection sensitivity and hysteresis;
+  \item compute the post-buckling path of a rigid bar from its potential energy.
 \end{itemize}
 
-\paragraph{Plan of the chapter.} Section~\ref{sec:st-intro} \draftnote{plan}.
-A summary, exercises with solutions (page~\pageref{sec:st-exo}) and the
-references close the chapter.
+\paragraph{Plan of the chapter.}
+Section~\ref{sec:st-linear} solves the linear equation and shows what it cannot
+do. Section~\ref{sec:st-slope} gives the one stability test we need.
+Section~\ref{sec:st-pitchfork} follows the simplest nonlinear equation in which
+one solution becomes three. Section~\ref{sec:st-why} explains why this happens,
+and where. Section~\ref{sec:st-normal} presents the three basic bifurcations,
+and Section~\ref{sec:st-energy} returns to mechanics: potential energy, the
+buckling bar, imperfections and hysteresis. A summary, exercises with solutions
+(page~\pageref{sec:st-exo}) and the references close the chapter. The presentation follows the spirit
+of~\cite{st-strang2014}: small examples solved by hand before general statements.
+Many more examples are in~\cite{st-strogatz2015}.
 
-\section{Introduction}\label{sec:st-intro}
+%======================================================================
+\section{Growth and decay: \texorpdfstring{$\dot y = ay$}{y' = ay}}\label{sec:st-linear}
+\index{differential equation!linear}%
+
+Start with numbers. Take $\dot y = -2y$ with $y(0) = 3$, where the dot is the
+time derivative $\dot y = dy/dt$. The function $y(t) = 3e^{-2t}$ works: its
+derivative is $-6e^{-2t} = -2y$, and $y(0) = 3$. After a time $t = \tfrac12$ the
+value has dropped to $3/e \approx 1.10$. After $t = 2$ it is $0.055$.
+
+The general equation and its solution are
+\begin{equation}\label{eq:st-linear}
+  \dot y = a\,y, \quad y(0) = y_0
+  \qquad\Longrightarrow\qquad
+  y(t) = y_0\,e^{at}.
+\end{equation}
+The number $a$ is our first control parameter, and it decides everything
+(Figure~\ref{fig:st-exponentials}). If $a < 0$ the solution decays to zero,
+whatever $y_0$. If $a > 0$ even a tiny $y_0$ grows without limit. If $a = 0$
+nothing moves.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{figures/ch1/st_exponentials.pdf}
+  \caption{Solutions $y = e^{at}$ of $\dot y = ay$ from $y_0 = 1$. The sign of $a$
+    decides between decay and growth.}
+  \label{fig:st-exponentials}
+\end{figure}
+
+\paragraph{Steady states.}
+\index{steady state}%
+A \emph{steady state} (or equilibrium) of $\dot y = f(y)$ is a value $y^*$ with
+$f(y^*) = 0$: if we start there, we stay there. It is \emph{stable} if every
+solution that starts close to $y^*$ returns to $y^*$, and \emph{unstable} if
+some solutions starting arbitrarily close move away. For $\dot y = ay$ the only
+steady state is $y^* = 0$. It is stable for $a < 0$ and unstable for $a > 0$.
+The crossing $a = 0$ is where the behaviour changes.
+
+\paragraph{A time scale.}
+\index{relaxation time}%
+For $a < 0$ the solution drops by the factor $e$ in the time
+$\tau = 1/\abs{a}$. When $a$ is close to zero, $\tau$ is large: the system
+still returns to $y = 0$, but slowly. This returns in
+Section~\ref{sec:st-pitchfork} as critical slowing down.
+
+\paragraph{What the linear equation cannot do.}
+For every $a \neq 0$ the equation $ay = 0$ has one solution, $y^* = 0$. The
+graph of $f(y) = ay$ is a straight line through the origin, and a straight line
+crosses the axis once. However we turn the knob $a$, we never obtain two steady
+states. To have several, the graph of $f$ must bend. Bifurcations need a
+nonlinear $f$.
+
+%======================================================================
+\section{Steady states and the slope test}\label{sec:st-slope}
 \index{stability}%
-\draftnote{Start with a small example with numbers before any general statement.}
 
-\begin{gbox}{A key statement, written as a claim in words}\label{sec:st-key}
-\draftnote{Key result in a gray box; cite with Section~\ref{sec:st-key} or \nameref{sec:st-key}.}
+From now on $f(y)$ is any smooth function. We usually cannot solve
+$\dot y = f(y)$ by a formula, and we do not need to. A picture and one
+derivative tell us almost everything.
+
+\paragraph{The phase line.}
+\index{phase line}%
+Draw the graph of $f(y)$ against $y$. Where $f > 0$, $\dot y > 0$ and $y$
+increases: put an arrow to the right on the $y$-axis. Where $f < 0$, $y$
+decreases: put an arrow to the left. The steady states are the points where
+the graph crosses the axis.
+
+\begin{example}[The logistic equation]\label{ex:st-logistic}
+The equation $\dot y = y(1-y)$ models a population with limited food. Its steady
+states are $y^* = 0$ and $y^* = 1$. Between them $f > 0$ and the arrows point
+toward $1$. Beyond $1$, $f < 0$ and the arrows point back toward $1$. Below $0$,
+$f < 0$ again and the arrows point away from $0$.
+Figure~\ref{fig:st-phaseline} shows that $y^* = 1$ attracts and $y^* = 0$ repels.
+We read stability without solving anything.
+\end{example}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{figures/ch1/st_phaseline.pdf}
+  \caption{Phase line of $\dot y = y(1-y)$. Arrows give the direction of motion.
+    The filled dot is stable, the open dot unstable.}
+  \label{fig:st-phaseline}
+\end{figure}
+
+At the stable state the graph of $f$ crosses the axis going down; at the
+unstable one it crosses going up. ``Going down'' means $f'(y^*) < 0$.
+
+\begin{gbox}{The slope $f'(y^*)$ is the growth rate of small disturbances}\label{sec:st-slopetest}
+\index{linearization}%
+Near a steady state $y^*$ of $\dot y = f(y)$, a small disturbance $\varepsilon$
+obeys $\dot\varepsilon \approx \lambda\,\varepsilon$ with $\lambda = f'(y^*)$.
+\begin{itemize}
+  \item $\lambda < 0$: $y^*$ is stable, and disturbances decay in a time of about
+        $1/\abs{\lambda}$.
+  \item $\lambda > 0$: $y^*$ is unstable.
+  \item $\lambda = 0$: the test is silent. The nonlinear terms decide.
+\end{itemize}
 \end{gbox}
+
 \paragraph{Why it works.}
-\draftnote{The picture first, then the short chain of formulas.}
+Zoom in on the crossing in Figure~\ref{fig:st-phaseline}: close enough, the
+graph of $f$ is a straight line of slope $f'(y^*)$, and we are back to
+Section~\ref{sec:st-linear}. In formulas, write $y = y^* + \varepsilon$. Since
+$y^*$ is constant, $\dot y = \dot\varepsilon$. Taylor's formula and $f(y^*) = 0$ give
+\begin{equation}\label{eq:st-linearization}
+  \dot\varepsilon = f(y^* + \varepsilon)
+  = f'(y^*)\,\varepsilon + O(\varepsilon^2)
+  \qquad\Longrightarrow\qquad
+  \varepsilon(t) \approx \varepsilon_0\,e^{\lambda t}, \quad \lambda = f'(y^*).
+\end{equation}
+Near every steady state, a nonlinear equation behaves like $\dot y = ay$ with
+$a = f'(y^*)$.
+
+For the logistic equation $f'(y) = 1 - 2y$, so $\lambda = 1$ at $y^* = 0$
+(unstable) and $\lambda = -1$ at $y^* = 1$ (stable), as the phase line showed.
+
+\paragraph{When the test is silent.}
+The three equations $\dot y = -y^3$, $\dot y = y^3$ and $\dot y = y^2$ all have
+$y^* = 0$ with $\lambda = 0$. The first is stable, the second unstable, and the
+third attracts from the left and repels to the right. When $\lambda = 0$ the
+linear approximation has thrown away exactly the information we need. This is
+not an accident: $\lambda = 0$ is where bifurcations happen.
+
+%======================================================================
+\section{The pitchfork: one solution becomes three}\label{sec:st-pitchfork}
+\index{bifurcation!pitchfork}%
+
+Here is the simplest equation in which the number of steady states changes as
+we turn a parameter:
+\begin{equation}\label{eq:st-pitchfork}
+  \dot y = f(y,r) = r\,y - y^3 .
+\end{equation}
+The right side has two competing terms. The linear term $ry$ is the equation of
+Section~\ref{sec:st-linear}: it pulls $y$ back toward zero when $r < 0$ and pushes
+it away when $r > 0$. The cubic term $-y^3$ always pulls back, and for large
+$\abs{y}$ it wins. It keeps the solutions from running off to infinity.
+
+\paragraph{Steady states.}
+Set $f = 0$ and factor: $ry - y^3 = y\,(r - y^2) = 0$. Either $y = 0$, or
+$y^2 = r$, which has the two real roots $y = \pm\sqrt r$ only when $r > 0$.
+There is one steady state for $r \le 0$ and three for $r > 0$.
+
+\paragraph{Stability.}
+The slope is $f_y = r - 3y^2$. On each branch:
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+  \toprule
+  steady state & exists for & $\lambda = f_y(y^*,r)$ & stability \\
+  \midrule
+  $y^* = 0$         & all $r$ & $r$           & stable if $r < 0$, unstable if $r > 0$ \\
+  $y^* = \pm\sqrt r$ & $r > 0$ & $r - 3r = -2r$ & stable \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{The story as $r$ increases.}
+For $r < 0$ there is one steady state, $y = 0$, and it attracts everything.
+As $r$ rises to $0$, the growth rate $\lambda = r$ at the origin rises to zero.
+For $r > 0$ the origin is still a steady state, but an unstable one, and two new
+stable states $\pm\sqrt r$ have appeared on either side.
+Figure~\ref{fig:st-pitchfork} draws the steady states against the control
+parameter. This picture is the \emph{bifurcation diagram}, and its shape gives
+the bifurcation its name.
+\index{bifurcation!diagram}%
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{figures/ch1/st_pitchfork.pdf}
+  \caption{Bifurcation diagram of $\dot y = ry - y^3$. Solid: stable steady
+    states. Dashed: unstable. At $r = 0$ one branch splits into three.}
+  \label{fig:st-pitchfork}
+\end{figure}
+
+\paragraph{Symmetry breaking.}
+\index{symmetry breaking}%
+Equation~\eqref{eq:st-pitchfork} is unchanged when $y$ is replaced by $-y$. It
+has no preference for left or right. Yet for $r > 0$ the system must settle at
+$+\sqrt r$ or at $-\sqrt r$, and each of these does prefer a side. The choice is
+made by the small disturbance that first pushed $y$ away from zero. The law is
+symmetric; the outcome is not.
+
+\begin{gbox}{Near a bifurcation, the system recovers more and more slowly}\label{sec:st-slowing}
+\index{critical slowing down}%
+For $r < 0$ disturbances of $y^* = 0$ decay in the time $\tau = 1/\abs{r}$, which
+grows without limit as $r \to 0$. At $r = 0$ the decay is no longer exponential:
+\begin{equation}\label{eq:st-slowdecay}
+  \dot y = -y^3, \quad y(0) = y_0
+  \qquad\Longrightarrow\qquad
+  y(t) = \frac{y_0}{\sqrt{1 + 2y_0^2\,t}} \sim \frac{1}{\sqrt{2t}} .
+\end{equation}
+\end{gbox}
+
+\paragraph{Why it works.}
+The first statement is the slope test of Section~\ref{sec:st-slopetest} with
+$\lambda = r$. At $r = 0$ the valley around $y = 0$ becomes flat, and a flat
+valley drains slowly. Separate the variables in $\dot y = -y^3$:
+\[
+  \frac{dy}{y^3} = -\,dt
+  \quad\Longrightarrow\quad
+  \frac{1}{2y^2} = t + \frac{1}{2y_0^2}
+  \quad\Longrightarrow\quad
+  \frac{1}{y^2} = \frac{1}{y_0^2} + 2t ,
+\]
+which is~\eqref{eq:st-slowdecay}. The decay like $1/\sqrt t$ is far slower than
+any exponential. In experiments, and in the records of ecosystems and the
+climate~\cite{st-scheffer2009}, this slowing down is often the first visible
+warning that a bifurcation is near. Exercise~\ref{exo:st-computer-pitchfork}
+measures it numerically.
+
+%======================================================================
+\section{Why bifurcations happen}\label{sec:st-why}
+\index{bifurcation!point}%
+
+We have watched one solution become three. Now we explain it. Suppose $y^*$ is a
+steady state at the parameter value $r$, so $f(y^*,r) = 0$. Change $r$ by a small
+amount $\Delta r$. The steady state moves to $y^* + \Delta y$, and it must still
+satisfy $f = 0$. To first order,
+\begin{equation}\label{eq:st-ift}
+  f_y\,\Delta y + f_r\,\Delta r = 0
+  \qquad\Longrightarrow\qquad
+  \Delta y = -\frac{f_r}{f_y}\,\Delta r .
+\end{equation}
+If $f_y \neq 0$, this has exactly one answer $\Delta y$: the steady state follows
+the parameter along a single smooth curve, like a bead on a wire, and no new
+branch can leave it. If $f_y = 0$, we divide by zero. The first-order equation no
+longer fixes $\Delta y$, and the higher-order terms decide how many solutions
+there are.
+
+\begin{gbox}{New steady states can appear only where $f = 0$ and $f_y = 0$}\label{sec:st-ift}
+\index{implicit function theorem}%
+If $f(y_0,r_0) = 0$ and $f_y(y_0,r_0) \neq 0$, then for $r$ close to $r_0$ there
+is exactly one steady state $y^*(r)$ close to $y_0$. It depends smoothly on $r$,
+and $\displaystyle\frac{dy^*}{dr} = -\frac{f_r}{f_y}$. The number of steady states
+can therefore change only at a point where
+\begin{equation}\label{eq:st-bifcondition}
+  f(y_0,r_0) = 0 \qquad\text{and}\qquad f_y(y_0,r_0) = 0 .
+\end{equation}
+\end{gbox}
+
+\paragraph{Why it works.}
+Picture the curve $f(y,r) = 0$ in the $(r,y)$ plane: it is the bifurcation
+diagram. Where $f_y \neq 0$ the curve is the graph of a function $y^*(r)$, with
+the slope~\eqref{eq:st-ift}, and a vertical line $r = \text{const}$ meets it once
+nearby. Branches can meet, split or turn back only where this slope is
+infinite or undefined, that is where $f_y = 0$. This is the implicit function
+theorem in one variable. The careful proof, with the remainder of the Taylor
+expansion controlled, is in~\cite{st-guckenheimer1983}.
+
+\paragraph{One number, two jobs.}
+The number $f_y(y^*,r)$ was the growth rate $\lambda$ in
+Section~\ref{sec:st-slopetest}: it decides \emph{stability}. Here it is the
+denominator: it decides \emph{uniqueness}. So a steady state can lose its
+uniqueness only at the moment it loses (or gains) stability. As the control
+parameter pushes $\lambda$ from negative to positive, it must pass through
+$\lambda = 0$, and at that instant new steady states are free to appear. This is
+the answer to the question of the chapter.
+
+\paragraph{Check on the pitchfork.}
+With $f = ry - y^3$ we have $f_y = r - 3y^2$ and $f_r = y$. The two conditions
+$f = 0$ and $f_y = 0$ hold together only at $(y,r) = (0,0)$, the single
+bifurcation point of Figure~\ref{fig:st-pitchfork}. On the upper branch
+$y^* = \sqrt r$ the slope formula gives
+$\displaystyle\frac{dy^*}{dr} = -\frac{\sqrt r}{-2r} = \frac{1}{2\sqrt r}$, the
+derivative of $\sqrt r$, as it should. It blows up as $r \to 0$: the branch leaves
+the bifurcation point vertically, because $f_y \to 0$ there.
+
+\begin{gbox}{Box 1.1\quad Finding the bifurcation points of $\dot y = f(y,r)$}\label{sec:st-box-bif}
+\index{bifurcation!point}%
+\begin{enumerate}[label=\arabic*.]
+  \item Solve $f(y,r) = 0$ for the branches of steady states $y^*(r)$.
+  \item On each branch compute $\lambda = f_y(y^*,r)$. Its sign gives stability.
+  \item Find where $\lambda = 0$. These points are the only candidates.
+  \item At each candidate, look at $f_r$ and at the next derivatives of $f$ to
+        decide the type of bifurcation (Section~\ref{sec:st-normal}).
+\end{enumerate}
+\end{gbox}
+
+%======================================================================
+\section{Three basic bifurcations}\label{sec:st-normal}
+\index{bifurcation!normal form}%
+
+The two conditions $f = f_y = 0$ can be met in different ways. Each way has a
+simplest representative, its \emph{normal form}. Near a bifurcation point, a
+more complicated $f$ usually behaves like one of these three.
+
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+  \toprule
+  type & normal form & steady states & at $r = 0$ \\
+  \midrule
+  saddle-node   & $\dot y = r + y^2$  & $\pm\sqrt{-r}$ for $r < 0$, none for $r > 0$ & two collide and vanish \\
+  transcritical & $\dot y = ry - y^2$ & $0$ and $r$, for all $r$                    & two cross, swap stability \\
+  pitchfork     & $\dot y = ry - y^3$ & $0$; and $\pm\sqrt r$ for $r > 0$           & one splits into three \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Saddle-node.}
+\index{bifurcation!saddle-node}%
+For $\dot y = r + y^2$ the steady states solve $y^2 = -r$. When $r < 0$ there are
+two, $y^* = \pm\sqrt{-r}$. The slope is $f_y = 2y$, so the lower one is stable
+and the upper one is unstable. As $r$ increases to $0$ they meet at $y = 0$ and
+disappear. For $r > 0$, $f > 0$ everywhere: there is no steady state, and $y$
+runs away. The count goes $2 \to 1 \to 0$. This is the most common way a real
+system fails suddenly.
+
+\paragraph{Transcritical.}
+\index{bifurcation!transcritical}%
+For $\dot y = ry - y^2 = y(r - y)$ the steady states are $y^* = 0$ and $y^* = r$
+for every $r$. The slope is $f_y = r - 2y$: it equals $r$ at $y^* = 0$ and $-r$
+at $y^* = r$. The two branches cross at $r = 0$ and exchange stability
+(Figure~\ref{fig:st-normalforms}).
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{figures/ch1/st_normalforms.pdf}
+  \caption{Bifurcation diagrams of the saddle-node and transcritical normal forms.
+    Solid: stable. Dashed: unstable.}
+  \label{fig:st-normalforms}
+\end{figure}
+
+\paragraph{Telling them apart.}
+All three have $f = f_y = 0$ at the origin. Look at $f_r$. In the saddle-node,
+$f_r = 1 \neq 0$: changing $r$ moves the graph of $f$ up or down and pushes two
+roots together. In the transcritical and pitchfork cases, $f_r = y = 0$ at the
+point, because $y = 0$ is a steady state for every $r$. Such a persistent state
+is usually forced by the physics (no fish, a straight column) or by a symmetry.
+The pitchfork needs, in addition, the symmetry $y \to -y$ that kills the $y^2$ term.
+
+\begin{example}[A fishery with a constant catch]\label{ex:st-fishery}
+\index{harvesting model}%
+Let $N(t)$ be the fish population of a lake, scaled so that the lake supports at
+most $N = 1$. The fish reproduce logistically and are caught at the constant
+rate $h$:
+\begin{equation}\label{eq:st-fishery}
+  \dot N = N(1 - N) - h .
+\end{equation}
+The steady states solve $N^2 - N + h = 0$, so
+$N_\pm = \tfrac12\bigl(1 \pm \sqrt{1 - 4h}\bigr)$. The slope $f_N = 1 - 2N$ equals
+$-\sqrt{1-4h}$ on $N_+$, the healthy stable stock, and $+\sqrt{1-4h}$ on $N_-$, an
+unstable threshold: a stock pushed below $N_-$ collapses. Raising $h$ lowers the
+parabola (Figure~\ref{fig:st-fishery}). At $h = \tfrac14$ the two roots meet at
+$N = \tfrac12$, where $f_N = 0$, and for $h > \tfrac14$ no steady state is left.
+This is a saddle-node.
+\end{example}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{figures/ch1/st_fishery.pdf}
+  \caption{The fishery $\dot N = N(1-N) - h$. Increasing the catch $h$ lowers the
+    parabola. The stable root $N_+$ and the unstable root $N_-$ merge at
+    $h = \tfrac14$ and disappear.}
+  \label{fig:st-fishery}
+\end{figure}
+
+The largest sustainable catch, $h = \tfrac14$, is also the edge of a cliff, and
+the stock level gives little warning: at $h = 0.24$ the stock is still
+$N_+ = 0.6$. The warning is in the recovery time
+$\tau = 1/\sqrt{1 - 4h}$, which is $5$ time units at $h = 0.24$ and grows without
+limit as $h \to \tfrac14$.
+\draftnote{Keep the fishery in a mechanics book, or replace it by a snap-through
+example (shallow arch) once Chapter 2 is written?}
+
+%======================================================================
+\section{Potential energy, buckling and imperfections}\label{sec:st-energy}
+\index{potential energy}%
+
+\paragraph{A ball in a valley.}
+Every equation $\dot y = f(y)$ in one dimension can be written
+\begin{equation}\label{eq:st-gradient}
+  \dot y = -\frac{dV}{dy},
+\end{equation}
+where the potential $V$ is an antiderivative of $-f$. Picture a ball rolling in
+thick honey on the graph of $V$: it always moves downhill and never overshoots.
+Steady states are the flat points of $V$. Valleys are stable, hilltops unstable,
+and the slope test $f_y < 0$ is the condition $V'' > 0$. For the pitchfork,
+\begin{equation}\label{eq:st-potential}
+  V(y) = -\frac{r}{2}\,y^2 + \frac14\,y^4 .
+\end{equation}
+For $r < 0$ there is one valley. At $r = 0$ its bottom is flat to second order:
+critical slowing down, seen geometrically. For $r > 0$ the bottom bulges into a
+hill between two new valleys at $\pm\sqrt r$ (Figure~\ref{fig:st-potential}).
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{figures/ch1/st_potential.pdf}
+  \caption{The potential $V(y) = -\tfrac r2 y^2 + \tfrac14 y^4$. As $r$ passes
+    through zero, one valley becomes a hill between two valleys.}
+  \label{fig:st-potential}
+\end{figure}
+
+\begin{example}[The rigid bar on a torsional spring]\label{ex:st-bar}
+\index{buckling!rigid bar model}%
+A rigid bar of length $L$ stands on a pin. A torsional spring of stiffness $k$
+holds it vertical, and a vertical dead load $P$ presses on its top
+(Figure~\ref{fig:st-bar}). The rotation from the vertical is $\theta$. The spring
+stores $\tfrac12 k\theta^2$, and the load descends by $L(1 - \cos\theta)$, so the
+potential energy is
+\begin{equation}\label{eq:st-bar-energy}
+  V(\theta) = \frac12\,k\,\theta^2 - P L\,(1 - \cos\theta) .
+\end{equation}
+Add a rotational damper of coefficient $c$ and neglect inertia. The motion is
+$c\,\dot\theta = -V'(\theta) = -k\theta + PL\sin\theta$, the gradient
+form~\eqref{eq:st-gradient}. Expand $\sin\theta = \theta - \theta^3/6 + \dots$:
+\begin{equation}\label{eq:st-bar-pitchfork}
+  c\,\dot\theta = (PL - k)\,\theta - \frac{PL}{6}\,\theta^3 + O(\theta^5).
+\end{equation}
+This is the pitchfork~\eqref{eq:st-pitchfork}, with the control parameter
+$r = (PL - k)/c$. The straight bar loses stability at the \emph{critical load}
+$P_c = k/L$, where $f_\theta = (PL - k)/c$ passes through zero.
+\index{critical load}%
+
+Beyond $P_c$ the equilibria are exact: $k\theta = PL\sin\theta$ gives the
+post-buckling path
+\begin{equation}\label{eq:st-bar-path}
+  \frac{P}{P_c} = \frac{\theta}{\sin\theta} \approx 1 + \frac{\theta^2}{6},
+  \qquad\text{so}\qquad
+  \theta \approx \pm\sqrt{6\,\frac{P - P_c}{P_c}} .
+\end{equation}
+The rotation grows like the square root of the excess load. On this path
+$V'' = k - PL\cos\theta = k\,(1 - \theta/\tan\theta) > 0$ for
+$0 < \abs\theta < \pi$: the buckled bar is stable and needs a growing load to
+deflect further.
+\end{example}
+
+\begin{figure}[ht]
+  \centering
+  \begin{minipage}[b]{0.30\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.95,>=Stealth]
+      \fill[pattern=north east lines] (-0.9,-0.22) rectangle (0.9,0);
+      \draw[thick] (-0.9,0) -- (0.9,0);
+      \draw[gray!60,dashed] (0,0) -- (0,3.3);
+      \draw[thick,domain=0:700,samples=90,smooth,variable=\t]
+        plot ({(0.07+0.00028*\t)*cos(\t)},{0.25+(0.07+0.00028*\t)*sin(\t)});
+      \draw[line width=2.2pt,cu] (0,0.25) -- ({3*sin(20)},{0.25+3*cos(20)});
+      \fill (0,0.25) circle (1.6pt);
+      \draw[->,line width=1.1pt,cphi] ({3*sin(20)},{1.35+3*cos(20)}) -- ({3*sin(20)},{0.35+3*cos(20)});
+      \node[cphi,right] at ({3*sin(20)+0.05},{1.05+3*cos(20)}) {$P$};
+      \draw[->] (0,1.5) arc (90:70:1.25);
+      \node at (0.24,1.75) {$\theta$};
+      \node[right] at (0.62,1.25) {$L$};
+      \node[left] at (-0.35,0.3) {$k$};
+    \end{tikzpicture}
+  \end{minipage}\hfill
+  \begin{minipage}[b]{0.68\textwidth}
+    \centering
+    \includegraphics{figures/ch1/st_bar_paths.pdf}
+  \end{minipage}
+  \caption{Left: rigid bar on a torsional spring under a dead load. Right:
+    equilibrium paths. The perfect bar ($\theta_0 = 0$) follows the pitchfork; an
+    initial tilt $\theta_0$ turns it into one smooth path and a separate branch
+    with a fold. Solid: stable. Dashed: unstable.}
+  \label{fig:st-bar}
+\end{figure}
+
+\paragraph{Real structures are never perfect.}
+\index{imperfection}%
+No bar is perfectly vertical and no load perfectly centred. Give the bar an
+initial tilt $\theta_0$: the spring is unloaded at $\theta = \theta_0$, the energy
+becomes $\tfrac12 k(\theta - \theta_0)^2 - PL(1 - \cos\theta)$, and the equilibria
+are $P/P_c = (\theta - \theta_0)/\sin\theta$. Figure~\ref{fig:st-bar} shows what
+happens. The straight state is gone. The bar starts to rotate as soon as it is
+loaded, smoothly and toward the side of the tilt. The pitchfork has broken into one
+smooth path and a separate pair of branches that meet at a fold.
+
+The same unfolding is seen on the normal form. Add a small constant $h$
+to~\eqref{eq:st-pitchfork}:
+\begin{equation}\label{eq:st-imperfect}
+  \dot y = h + r\,y - y^3 .
+\end{equation}
+Box~\ref{sec:st-box-bif} gives the folds: $f = 0$ and $f_y = r - 3y^2 = 0$. Then
+$y^2 = r/3$, and substituting in $f = 0$ gives $h = y^3 - ry = -2y^3$, so
+\begin{equation}\label{eq:st-cusp}
+  \abs{h} = h_c(r) = \frac{2}{3\sqrt3}\;r^{3/2}.
+\end{equation}
+There are three steady states for $\abs h < h_c(r)$ and one for $\abs h > h_c(r)$.
+In the $(r,h)$ plane the boundary has a sharp point at the origin, a \emph{cusp}.
+\index{cusp}%
+
+\paragraph{Hysteresis.}
+\index{hysteresis}%
+Fix $r = 1$ and use $h$ as the control. The steady states lie on the S-shaped
+curve $h = y^3 - y$ (Figure~\ref{fig:st-hysteresis}). Its folds are at
+$y = \pm 1/\sqrt3$, where $h = \mp h_c$ with $h_c = 2/(3\sqrt3) \approx 0.385$.
+The outer parts of the S are stable, the middle part is unstable. Sweep $h$ up
+slowly from $-1$: the system follows the lower branch until it folds away at
+$h = h_c$, and then jumps to the upper branch. Sweep back down: the system stays
+on the upper branch until $h = -h_c$, far below the point where it jumped up, and
+only then jumps down. The way up and the way down differ, and the system
+remembers where it came from.
+Exercise~\ref{exo:st-computer-hysteresis} reproduces the loop numerically.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{figures/ch1/st_hysteresis.pdf}
+  \caption{Steady states of $\dot y = h + y - y^3$ ($r = 1$) as the imperfection $h$
+    varies. Sweeping $h$ up and down traces a hysteresis loop with jumps at the
+    folds $h = \pm h_c$.}
+  \label{fig:st-hysteresis}
+\end{figure}
+
+\begin{gbox}{A pitchfork needs a symmetry; without it, the saddle-node takes over}\label{sec:st-imperfection}
+\index{imperfection}%
+A small imperfection splits the pitchfork into one smooth branch and a pair of
+saddle-nodes. The perfect system is the exception; jumps at folds and hysteresis
+are what is observed.
+\end{gbox}
+
+\paragraph{Why it works.}
+At a pitchfork, $f$, $f_y$, $f_r$ and $f_{yy}$ all vanish together. That is four
+conditions on two unknowns $(y,r)$, possible only because the symmetry $y \to -y$
+makes $f$ odd in $y$. A small $h$ destroys the symmetry. Only the two conditions
+$f = f_y = 0$ of Section~\ref{sec:st-ift} remain, and their generic solutions are
+folds: the two points~\eqref{eq:st-cusp}. The bar of Figure~\ref{fig:st-bar}
+shows the mechanical consequence, studied in depth for elastic structures
+in~\cite{st-thompson1973}.
+\draftnote{Chapter 2 (two degrees of freedom, inertia): the eigenvalues of the
+Jacobian replace $f_y$, and the Hopf bifurcation appears.}
 
 %======================================================================
 \framepart{Summary}
 \begin{gbox*}
 \begin{itemize}
-  \item \textbf{First point.} \draftnote{take-home message.}
+  \item \textbf{Steady states and stability.} A steady state solves $f(y^*,r) = 0$.
+        It is stable when $\lambda = f_y(y^*,r) < 0$, and disturbances then die out
+        in a time of about $1/\abs\lambda$.
+  \item \textbf{Linear is not enough.} $\dot y = ay$ has a single steady state.
+        Several steady states need a nonlinear $f$ whose graph bends.
+  \item \textbf{Where bifurcations happen.} While $f_y \neq 0$ the steady state is
+        unique and moves smoothly with $r$. New states can appear only where
+        $f = 0$ and $f_y = 0$ together.
+  \item \textbf{One number, two jobs.} $f_y$ controls stability and uniqueness.
+        When the control parameter drives $\lambda$ through zero, stability is lost
+        and new solutions can appear.
+  \item \textbf{Three normal forms.} Saddle-node $r + y^2$, transcritical $ry - y^2$,
+        pitchfork $ry - y^3$.
+  \item \textbf{Buckling.} The rigid bar on a spring buckles at $P_c = k/L$ through
+        a pitchfork, with $\theta \approx \pm\sqrt{6(P - P_c)/P_c}$.
+  \item \textbf{Warning signs.} Slow recovery from disturbances (critical slowing
+        down), and with imperfections, jumps at folds and hysteresis.
 \end{itemize}
 \end{gbox*}
 
@@ -40,15 +585,158 @@ references close the chapter.
 
 \framesub{Short questions}
 
-\exercise{A first question}\label{exo:st-first}
-\draftnote{Statement.}
+\exercise{Three steady states}\label{exo:st-three}
+\index{stability}%
+Find the steady states of $\dot y = y(1-y)(y-2)$ and their stability, first from
+the phase line, then from $f'(y^*)$.
 \begin{solution}
-\draftnote{Short solution.}
+The steady states are $0$, $1$, $2$. Expanding, $f = -y^3 + 3y^2 - 2y$ and
+$f' = -3y^2 + 6y - 2$. Then $f'(0) = -2$ (stable), $f'(1) = 1$ (unstable),
+$f'(2) = -2$ (stable). The phase line agrees: $f < 0$ on $(0,1)$ and $f > 0$ on
+$(1,2)$, so the arrows leave $1$ and point to $0$ and $2$.
+\end{solution}
+
+\exercise{Slow decay}\label{exo:st-slow}
+\index{critical slowing down}%
+With $y(0) = 1$, how long does $\dot y = -y^3$ take to reach $y = \tfrac12$?
+Compare with $\dot y = -y$.
+\begin{solution}
+From~\eqref{eq:st-slowdecay}, $1/y^2 = 1 + 2t$, so $4 = 1 + 2t$ and $t = 1.5$. For
+$\dot y = -y$, $e^{-t} = \tfrac12$ gives $t = \ln 2 \approx 0.69$. The cubic is
+already twice slower over the first halving, and the gap widens: reaching
+$y = 0.01$ takes $5000$ time units instead of $4.6$.
+\end{solution}
+
+\exercise{When the slope test is silent}\label{exo:st-silent}
+Draw the phase lines of $\dot y = -y^3$, $\dot y = y^3$ and $\dot y = y^2$ near
+$y = 0$. Which is stable?
+\begin{solution}
+$-y^3$: arrows point toward $0$ from both sides, stable. $y^3$: arrows point away
+on both sides, unstable. $y^2 \ge 0$: arrows point right on both sides, so $0$
+attracts from the left and repels to the right (semi-stable). All three have
+$f'(0) = 0$.
+\end{solution}
+
+\exercise{A saddle-node in disguise}\label{exo:st-disguise}
+\index{bifurcation!saddle-node}%
+Find the bifurcation points of $\dot y = r - y - e^{-y}$ and their type.
+\begin{solution}
+$f_y = -1 + e^{-y} = 0$ gives $y = 0$, and then $f = 0$ gives $r = 1$. The function
+$g(y) = y + e^{-y}$ has its minimum $1$ at $y = 0$, so $f = r - g(y) = 0$ has two
+roots for $r > 1$ and none for $r < 1$: a saddle-node at $(y,r) = (0,1)$, with
+$f_r = 1 \neq 0$. The root with $y > 0$ is stable ($f_y < 0$).
+\end{solution}
+
+\exercise{Which way does it open?}\label{exo:st-open}
+Draw the bifurcation diagram of $\dot y = r - y^2$ and compare with
+Figure~\ref{fig:st-normalforms}.
+\begin{solution}
+Steady states $\pm\sqrt r$ for $r > 0$, none for $r < 0$. With $f_y = -2y$,
+$+\sqrt r$ is stable and $-\sqrt r$ unstable. The parabola opens to the right,
+the mirror image of $r + y^2$.
 \end{solution}
 
 \framesub{Problems}
 
+\exercise{Maximum sustainable yield}\label{exo:st-fishery}
+\index{harvesting model}%
+For the fishery~\eqref{eq:st-fishery}:
+(a)~derive $N_\pm$ and the critical catch $h = \tfrac14$;
+(b)~a manager sets $h = 0.24$: find $N_+$ and $N_-$, and the largest sudden loss
+of fish the stock survives;
+(c)~explain why maximum sustainable yield is a dangerous target.
+\begin{solution}
+(a)~Example~\ref{ex:st-fishery}; $1 - 4h \ge 0$ requires $h \le \tfrac14$.
+(b)~$\sqrt{1 - 0.96} = 0.2$, so $N_+ = 0.6$ and $N_- = 0.4$. A stock knocked below
+$0.4$ collapses: the stock survives the loss of at most $0.2$, a third of it.
+(c)~At $h = \tfrac14$ the two states merge: any disturbance, however small, or any
+slight overestimate of $h_{\max}$, leads to collapse. The recovery time
+$1/\sqrt{1-4h}$ is infinite there.
+\end{solution}
+
+\exercise{The subcritical pitchfork}\label{exo:st-subcritical}
+\index{bifurcation!pitchfork}%
+Study $\dot y = ry + y^3$: steady states, stability, bifurcation diagram. Why is
+it more dangerous than~\eqref{eq:st-pitchfork}?
+\begin{solution}
+$y^* = 0$ for all $r$, and $y^* = \pm\sqrt{-r}$ for $r < 0$. The slope is
+$f_y = r + 3y^2$: it equals $r$ at $0$ and $-2r > 0$ at $\pm\sqrt{-r}$. For $r < 0$
+the stable origin is flanked by two unstable states, which bound its basin of
+attraction and shrink to it as $r \to 0$. For $r > 0$ nothing stable is left near
+$0$ and $y$ escapes to infinity in finite time. There is no gentle post-critical
+state: the loss of stability is a jump. A stabilising term $-y^5$ creates two
+far-away stable branches and a hysteresis loop.
+\end{solution}
+
+\exercise{The cusp}\label{exo:st-cusp}
+\index{cusp}%
+Derive~\eqref{eq:st-cusp}. Sketch the region of the $(r,h)$ plane where
+$\dot y = h + ry - y^3$ has three steady states.
+\begin{solution}
+Section~\ref{sec:st-energy}. The region is
+$\abs h < \tfrac{2}{3\sqrt3}\,r^{3/2}$, $r > 0$: a wedge bounded by two branches
+of a semicubical parabola that meet tangentially at the origin.
+\end{solution}
+
+\exercise{The imperfect bar}\label{exo:st-imperfect-bar}
+\index{buckling!rigid bar model}%
+\index{imperfection}%
+For the bar of Example~\ref{ex:st-bar} with an initial tilt $\theta_0 > 0$:
+(a)~show that the equilibria are $P/P_c = (\theta - \theta_0)/\sin\theta$;
+(b)~show that the natural path ($\theta > \theta_0$) is stable;
+(c)~find the rotation when the load reaches $P_c$ and show that it scales as
+$\theta_0^{1/3}$. Evaluate it for $\theta_0 = 0.01$.
+\begin{solution}
+(a)~$V = \tfrac12 k(\theta - \theta_0)^2 - PL(1 - \cos\theta)$ and $V' = 0$ give
+$k(\theta - \theta_0) = PL\sin\theta$, with $P_c = k/L$.
+(b)~$V'' = k - PL\cos\theta = k\bigl(1 - (\theta - \theta_0)/\tan\theta\bigr)$, and
+$(\theta - \theta_0)/\tan\theta < \theta/\tan\theta < 1$ for $0 < \theta < \pi/2$.
+(c)~$P = P_c$ gives $\theta - \sin\theta = \theta_0$, and
+$\theta - \sin\theta \approx \theta^3/6$, so $\theta \approx (6\theta_0)^{1/3}$. For
+$\theta_0 = 0.01$: $\theta \approx 0.39$ (the exact root is $0.392$). A tilt of
+$0.6^\circ$ gives a rotation of $22^\circ$ at the critical load: the cube root
+amplifies small imperfections.
+\end{solution}
+
+\exercise{Computer: settling and slowing down}\label{exo:st-computer-pitchfork}
+\index{critical slowing down}%
+Integrate~\eqref{eq:st-pitchfork} for $r = -0.5$, $-0.1$, $0.1$, $0.5$, $1$, from
+$y_0 = \pm 0.01$, and report the final state. Then measure the time to fall from
+$y = 1$ to $y = 0.1$ for $r = -1$, $-0.1$, $-0.01$, $0$.
+\begin{solution}
+For $r < 0$ both pushes return to $0$. For $r > 0$ the solution settles at
+$\pm\sqrt r$ ($\pm 0.3162$, $\pm 0.7071$, $\pm 1$), on the side of the initial
+push. The times are $1.96$, $11.51$, $34.16$ and $49.50$: they grow as $r \to 0$.
+At $r = 0$, \eqref{eq:st-slowdecay} gives $100 = 1 + 2t$, so $t = 49.5$, as computed.
+\lstinputlisting[firstline=4]{python/examples/ch1/ex_pitchfork.py}
+\end{solution}
+
+\exercise{Computer: a hysteresis loop}\label{exo:st-computer-hysteresis}
+\index{hysteresis}%
+Integrate $\dot y = h + y - y^3$ while $h$ increases from $-1$ to $1$ in steps of
+$0.005$ and then decreases back, each time starting from the previous final state.
+Locate the jumps and compare with Figure~\ref{fig:st-hysteresis}.
+\begin{solution}
+The system jumps up between $h = 0.385$ and $0.390$, from $y = -0.578$ to
+$+1.156$, and down between $h = -0.385$ and $-0.390$, from $+0.578$ to $-1.156$.
+Theory: folds at $h = \pm h_c = \pm 0.385$ with $y = \mp 1/\sqrt3 = \mp 0.577$, and
+landing points $\pm 2/\sqrt3 = \pm 1.155$, the other roots of
+$y^3 - y \pm h_c = (y \mp 1/\sqrt3)^2(y \pm 2/\sqrt3)$.
+\lstinputlisting[firstline=4]{python/examples/ch1/ex_hysteresis.py}
+\end{solution}
+
 %======================================================================
 \begin{chapterbib}{99}
-\bibitem{st-placeholder} \draftnote{First reference of Chapter 1 (keys unique book-wide).}
+\bibitem{st-strang2014} G.~Strang, \emph{Differential Equations and Linear
+  Algebra}, Wellesley--Cambridge Press, 2014.
+\bibitem{st-strogatz2015} S.~H.~Strogatz, \emph{Nonlinear Dynamics and Chaos},
+  2nd~ed., Westview Press, 2015. Chapters~2 and~3.
+\bibitem{st-guckenheimer1983} J.~Guckenheimer and P.~Holmes, \emph{Nonlinear
+  Oscillations, Dynamical Systems, and Bifurcations of Vector Fields}, Springer,
+  1983. Chapter~3.
+\bibitem{st-thompson1973} J.~M.~T.~Thompson and G.~W.~Hunt, \emph{A General
+  Theory of Elastic Stability}, Wiley, 1973.
+\bibitem{st-scheffer2009} M.~Scheffer, J.~Bascompte, W.~A.~Brock, V.~Brovkin,
+  S.~R.~Carpenter, V.~Dakos, H.~Held, E.~H.~van~Nes, M.~Rietkerk and G.~Sugihara,
+  Early-warning signals for critical transitions, \emph{Nature} 461 (2009) 53--59.
 \end{chapterbib}
