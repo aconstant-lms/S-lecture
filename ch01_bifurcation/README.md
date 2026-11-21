@@ -15,3 +15,7 @@ saddle-node, transcritical and pitchfork; potential energy, buckling of a rigid 
 ## Decisions and open questions
 - Energy, buckling and imperfections of one-degree-of-freedom systems are covered here;
   Chapter 2 starts from several degrees of freedom and Koiter's analysis.
+
+## Sources
+Strang, Strogatz, Guckenheimer & Holmes, Thompson & Hunt.
+Details and page numbers: `SOURCES.md`. Ask the author to upload a file when it is needed.

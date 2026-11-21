@@ -13,3 +13,7 @@ Status: skeleton (planned content only).
 ## Decisions and open questions
 (Kept up to date by the chapter thread; anything that affects other chapters also goes into
 the course plan of `CLAUDE.md`.)
+
+## Sources
+Triantafyllidis L6 (FEM), Riks, Crisfield, Keller; Constantinescu & Korsunsky Ch. 7 (Rayleigh–Ritz).
+Details and page numbers: `SOURCES.md`. Ask the author to upload a file when it is needed.

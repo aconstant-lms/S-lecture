@@ -46,10 +46,23 @@ frame are shared. When a convention changes in one book, check whether it should
   one idea each; the picture and a small example before the general statement; few symbols, each one used.
   Displayed formulas are not crowded: no long chains of `\quad`/`\qquad` or hand-made spacing (`\,`, `\!`,
   `\hspace`) beyond what the notation needs; split a long display into short steps instead.
-- Audoly & Pomeau for the geometric view of rods, plates and shells (scaling laws, inextensibility, boundary layers).
+- Editorial line (author, Nov 2026): **structural engineering first, with some physical examples.** The spine is
+  Thompson & Hunt, Bažant & Cedolin, Brush & Almroth, Koiter, Guckenheimer & Holmes; design practice comes from
+  Bushnell (1981) and NASA SP-8007; Audoly & Pomeau, Reis, Bertoldi, Hutchinson give physical examples and pictures.
+
+## Notation sources (see SOURCES.md for details)
+- Continuum mechanics and elasticity: the author's book, Constantinescu & Korsunsky, *Elasticity with Mathematica*
+  (CUP 2007): σ = C : ε, data with superscript D (u^D, b^D, t^D on ∂Ω^u, ∂Ω^t), admissible sets 𝒦, 𝒮
+  (`\Kad`, `\Sad`), potential energy 𝒰_p(u), residual stress σ_0, temperature θ, operators grad, div, curl.
+- Stability and Koiter/LSK asymptotics: Triantafyllidis's MEC563 notes: energy ℰ(u, λ) with load parameter λ,
+  principal branch ⁰u(λ), critical point (u_c, λ_c), mode ¹u, amplitude ξ, derivatives ℰ,uu, ℰ,uuu.
+- Open questions for the author (\draftnote until decided):
+  (a) the Hooke tensor is bold italic **C** in the book but blackboard ℂ (`\bbC`) in `preamble/notation.tex` (NPM);
+  (b) λ is the load parameter from Chapter 2 on, but the Lamé coefficient in the book and the growth rate
+  f_y in Chapter 1 — Chapter 2 must settle it.
 
 ## Repository structure
-One folder per chapter, the same sub-folders everywhere:
+`SOURCES.md` (sources and what to take from each) sits next to this file. One folder per chapter, the same sub-folders everywhere:
 
     main.tex                     the book (lecture notes); \include{<chNN>/notes/<chNN>}
     exercise_sheets.tex          exercise sessions, questions only (students)
@@ -109,6 +122,12 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
   Christensen & van Hecke (2017); Mullin, Deschanel, Bertoldi & Boyce (2007); Rafsanjani & Bertoldi (2017);
   Gomez, Moulton & Vella (2017); Cerda & Mahadevan (2003); Bergou et al., discrete elastic rods (2008);
   Kebadze, Guest & Pellegrino (2004); Seffen & Pellegrino (1999); Östlund & Muhammad-Klingmann (2005).
+- Design and course material: Bushnell, Buckling of shells — pitfall for designers, *AIAA J.* 19 (1981) 1183–1226
+  (paper + slides); NASA SP-8007 (Weingarten, Seide & Peterson, rev. 1968) and NASA/SP-8007-2020/REV 2
+  (Hilburger, 2020); Triantafyllidis, *Stability of Solids: from Structures to Materials*, MEC563 notes (École
+  polytechnique, 2011) and MEC553 slides and homeworks (2018); Constantinescu & Korsunsky (2007).
+- What to take from each source, with page numbers and a chapter map: `SOURCES.md`. The files are not in the
+  repository (public, copyrighted); ask the author to upload them in the thread that needs them.
 - Before a reference enters a chapterbib, check its details (authors, journal, volume, pages) against the source.
 
 ## Threads: one hub, one thread per chapter
@@ -117,7 +136,7 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
 - Each chapter thread works in its own folder `chNN_<name>/`, and touches other files only for
   cross-references, notation (`preamble/notation.tex` + `ch00_intro/notes/notation_list.tex`),
   `main.tex` and `preamble/manual_chapters.tex`.
-- At the start of a chapter thread: read this file, `chNN_<name>/README.md`, and the chapters before it.
+- At the start of a chapter thread: read this file, `SOURCES.md`, `chNN_<name>/README.md`, and the chapters before it.
 - At the end of each round: update `chNN_<name>/README.md` (status, decisions, open questions). A decision
   that affects other chapters (notation, plan, a result used later) is also written under
   "Cross-chapter decisions" below, in one dated line, so the hub and the other threads see it.
@@ -125,6 +144,8 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
 
 ## Cross-chapter decisions
 - 2026-11-21: one folder per chapter; 9-chapter plan above; Chapter 1 keeps the prefix `st`.
+- 2026-11-21: editorial line structural engineering + physical examples; sources recorded in `SOURCES.md`;
+  elasticity notation from Constantinescu & Korsunsky, LSK notation from Triantafyllidis (open points listed above).
 
 ## Workflow
 - One conversation per chapter; touch other files only when needed (cross-references, notation).

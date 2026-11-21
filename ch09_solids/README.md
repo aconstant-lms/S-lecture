@@ -13,3 +13,7 @@ Status: skeleton (planned content only).
 ## Decisions and open questions
 (Kept up to date by the chapter thread; anything that affects other chapters also goes into
 the course plan of `CLAUDE.md`.)
+
+## Sources
+Constantinescu & Korsunsky Ch. 1–4, Triantafyllidis L6–L7 (composites, Bloch waves), H6, H8.
+Details and page numbers: `SOURCES.md`. Ask the author to upload a file when it is needed.

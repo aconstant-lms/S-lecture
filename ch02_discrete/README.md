@@ -13,3 +13,7 @@ Status: skeleton (planned content only).
 ## Decisions and open questions
 (Kept up to date by the chapter thread; anything that affects other chapters also goes into
 the course plan of `CLAUDE.md`.)
+
+## Sources
+Thompson & Hunt, Koiter, Bažant & Cedolin, Triantafyllidis notes A (T model, square plate, two-bar truss, LSK), H1, H2, sample exam.
+Details and page numbers: `SOURCES.md`. Ask the author to upload a file when it is needed.
