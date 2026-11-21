@@ -54,12 +54,12 @@ frame are shared. When a convention changes in one book, check whether it should
 - Continuum mechanics and elasticity: the author's book, Constantinescu & Korsunsky, *Elasticity with Mathematica*
   (CUP 2007): σ = C : ε, data with superscript D (u^D, b^D, t^D on ∂Ω^u, ∂Ω^t), admissible sets 𝒦, 𝒮
   (`\Kad`, `\Sad`), potential energy 𝒰_p(u), residual stress σ_0, temperature θ, operators grad, div, curl.
-- Stability and Koiter/LSK asymptotics: Triantafyllidis's MEC563 notes: energy ℰ(u, λ) with load parameter λ,
-  principal branch ⁰u(λ), critical point (u_c, λ_c), mode ¹u, amplitude ξ, derivatives ℰ,uu, ℰ,uuu.
-- Open questions for the author (\draftnote until decided):
-  (a) the Hooke tensor is bold italic **C** in the book but blackboard ℂ (`\bbC`) in `preamble/notation.tex` (NPM);
-  (b) λ is the load parameter from Chapter 2 on, but the Lamé coefficient in the book and the growth rate
-  f_y in Chapter 1 — Chapter 2 must settle it.
+- Stability and Koiter/LSK asymptotics: Triantafyllidis's MEC563 notes, with **η** in place of his λ:
+  energy ℰ(u, η) with load parameter η, principal branch ⁰u(η), critical point (u_c, η_c), mode ¹u,
+  amplitude ξ, derivatives ℰ,uu, ℰ,uuu.
+- Decided (author, 21 Nov 2026): the Hooke tensor is blackboard ℂ (`\bbC`), as in the NPM notes, not the bold
+  C of the book; the load parameter is **η** (`\eta`) from Chapter 2 on. λ stays for growth rates (Chapter 1),
+  Lagrange multipliers and the Lamé constant. Chapter 1 keeps its control parameter r and load P.
 
 ## Repository structure
 `SOURCES.md` (sources and what to take from each) sits next to this file. One folder per chapter, the same sub-folders everywhere:
@@ -145,7 +145,8 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
 ## Cross-chapter decisions
 - 2026-11-21: one folder per chapter; 9-chapter plan above; Chapter 1 keeps the prefix `st`.
 - 2026-11-21: editorial line structural engineering + physical examples; sources recorded in `SOURCES.md`;
-  elasticity notation from Constantinescu & Korsunsky, LSK notation from Triantafyllidis (open points listed above).
+  elasticity notation from Constantinescu & Korsunsky, LSK notation from Triantafyllidis.
+- 2026-11-21: Hooke tensor ℂ (blackboard, `\bbC`); load parameter η from Chapter 2 on (notation list updated).
 
 ## Workflow
 - One conversation per chapter; touch other files only when needed (cross-references, notation).

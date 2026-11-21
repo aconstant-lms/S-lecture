@@ -18,7 +18,8 @@ supply physical examples and illustrations.
   Ch. 5 Airy functions; Ch. 6 displacement potentials; Ch. 7 energy principles, extremum theorems,
   **Rayleigh–Ritz method (§7.4, p. 209 [197])** and **extremal properties of free vibrations (§7.5, [204])**;
   App. 1 differential operators in curvilinear coordinates; App. 2 the Mathematica package.
-- Notation seen in the book: σ = C : ε (§3.1, p. 69 [57]), C the fourth-order Hooke tensor in **bold italic**,
+- Notation seen in the book: σ = C : ε (§3.1, p. 69 [57]), C the fourth-order Hooke tensor in bold italic
+  (**this book writes ℂ, blackboard**),
   S the compliance; data with superscript D: u^D, b^D (body force), t^D (traction) on ∂Ω^u, ∂Ω^t;
   admissible sets 𝒦(u^D, ∂Ω^u), 𝒮(b^D, t^D, ∂Ω^t); potential energy 𝒰_p(u), complementary energy 𝒰*_p(s)
   (§7.1, p. 203 [191]); initial (residual) stress σ_0, temperature change θ, thermal tensor A;
@@ -35,7 +36,7 @@ supply physical examples and illustrations.
   **Lyapunov–Schmidt–Koiter (LSK) asymptotics** for elastic continua: functionals and derivatives,
   limit vs bifurcation points, simple mode perfect/imperfect, simultaneous multiple modes (46–82).
   B — applications: **elastica (85–89)**, **rectangular plate (91–103)**. References (104–105).
-- Notation of the notes (LSK): energy ℰ(u, λ), λ load parameter, principal branch ⁰u(λ), critical point
+- Notation of the notes (LSK): energy ℰ(u, λ), λ load parameter (**this book writes η**), principal branch ⁰u(λ), critical point
   (u_c, λ_c), buckling mode ¹u, amplitude ξ, derivatives ℰ,uu (stability operator), ℰ,uuu, ...,
   post-bifurcation coefficients λ₁, λ₂.
 - Slides (2018): L1 why stability (failures, applications); L2 bifurcation with finite dof; L3–L4 LSK

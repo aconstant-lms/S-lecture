@@ -11,6 +11,7 @@ Status: skeleton (planned content only).
 - Exercises: symbolic post-buckling in Mathematica, imperfection-sensitivity curves in Python.
 
 ## Decisions and open questions
+- Notation (hub, 21 Nov 2026): load parameter η, energy ℰ(u, η), critical load η_c; λ is not used for the load.
 (Kept up to date by the chapter thread; anything that affects other chapters also goes into
 the course plan of `CLAUDE.md`.)
 
