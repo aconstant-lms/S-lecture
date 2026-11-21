@@ -1,0 +1,59 @@
+* truss.dgibi -- Chapter 3: the two-bar truss of Chapter 2 in Cast3M (EA = L = 1).
+* Printed in the book from line 4 on. Run: castem25 truss.dgibi
+* Linear buckling (ksigma 'FLAM' through flambage), then the path by pasapas, apex deflection imposed.
+opti dime 2 elem seg2 echo 0;
+phi = 30.;
+s = sin phi;  c = cos phi;
+pa = (-1. * c) 0.;  pb = c 0.;  pc = 0. s;
+tr = (droi 1 pa pc) et (droi 1 pb pc);
+*
+* --- model: two bars, EA = 1 -------------------------------------------
+mod = mode tr mecanique elastique barr;
+mat = mate mod 'YOUN' 1. 'NU' 0.3;
+car = cara mod 'SECT' 1.;
+bl  = (bloq 'DEPL' pa) et (bloq 'DEPL' pb);
+*
+* --- 1. linear buckling: reference load eta = 1, downwards at the apex --
+opti epsi lineaire;
+fref = forc 'FY' -1. pc;
+kt   = (rigi mod (mat et car)) et bl;
+u0   = reso kt fref;
+sig0 = sigm 'LINE' mod (mat et car) u0;
+etab = table;
+etab . 'OBJM' = mod;   etab . 'CLIM' = bl;
+etab . 'MATE' = mat;   etab . 'CARA' = car;
+etab . 'SIG1' = sig0;
+etab . 'LAM1' = 0.001; etab . 'LAM2' = 10.;  etab . 'NMOD' = 2;
+stab = flambage etab;
+repeter bm 2;
+  mess 'linear buckling, mode ' &bm ' : eta = ' (stab . &bm . 'LAMB');
+fin bm;
+*
+* --- 2. the nonlinear path: impose the deflection v of the apex --------
+*     (displacement control goes through the limit point: no snap-back in v)
+blv = bloq 'UY' pc;
+dv  = depi blv -1.;
+ev  = evol manu 't' (prog 0. 1.) 'v' (prog 0. (1.2 * s));
+tab = table;
+tab . 'MODELE' = mod;
+tab . 'CARACTERISTIQUES' = mat et car;
+tab . 'BLOCAGES_MECANIQUES' = bl et blv;
+tab . 'CHARGEMENT' = char 'DIMP' dv ev;
+tab . 'GRANDS_DEPLACEMENTS' = vrai;
+tab . 'CONVERGENCE_FORCEE' = faux;
+tab . 'TEMPS_CALCULES' = prog 0. pas 0.02 1.;
+pasapas tab;
+*
+* --- eta = minus the vertical reaction at the apex; compare with v (v - s) (v - 2 s)
+n = (dime tab . 'TEMPS') - 1;
+lv = prog; le = prog;
+repeter bt n;
+  i  = &bt;
+  v  = -1. * (extr (tab . 'DEPLACEMENTS' . i) 'UY' pc);
+  et = -1. * (extr (tab . 'REACTIONS' . i) 'FY' pc);
+  lv = lv et (prog v);  le = le et (prog et);
+fin bt;
+lx = lv * (lv - s) * (lv - (2. * s));
+mess 'largest load on the path: ' (maxi le) '   closed form: ' (maxi lx);
+dess ((evol manu 'v' lv 'eta' le) et (evol manu 'v' lv 'exact' lx));
+fin;

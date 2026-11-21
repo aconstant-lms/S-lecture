@@ -1,0 +1,164 @@
+%======================================================================
+%  Exercise session, Chapter 3 (2 h). Printed by exercise_sheets.tex
+%  (questions only) and instructor_manual.tex (answers, instructor notes).
+%  No \label here. Codes in ../code/{python,fenics,cast3m}.
+%======================================================================
+\clearpage
+\renewcommand{\sessionchapter}{Chapter 3 -- From continuum to discrete: numerical methods}
+\setcounter{spart}{0}
+\setcounter{algorithm}{0}\renewcommand{\thealgorithm}{3.\arabic{algorithm}}
+\ifanswers
+\sessiontitle{Chapter 3 -- The truss in two finite element codes: session sheet with answers}
+  {Notes: Chapter~\ref{B-ch:nc}. Codes: FEniCSx (dolfinx, SLEPc), Cast3M; Python for checks.}
+\else
+\sessiontitle{Chapter 3 -- The truss in two finite element codes: session sheet}
+  {Notes: Chapter~\ref{B-ch:nc}. Codes: FEniCSx (dolfinx, SLEPc), Cast3M; Python for checks.}
+\fi
+
+\noindent
+One structure, three tools, known answers. The two-bar truss of the Chapter~2 session
+($EA = L = 1$, half-angle $\varphi$ at the supports) is made of two bar elements with Green
+strain. In part~a you assemble its matrices by hand and compute its linear buckling loads.
+In part~b you take your first steps in FEniCS: the energy in UFL, linear buckling with SLEPc,
+and the nonlinear path with an arc-length step. In part~c you do the same in Cast3M. At the
+end of each part, compare with the table below; a code is trusted when it reproduces it.
+Bring the notes: Sections~\ref{B-sec:nc-fe}, \ref{B-sec:nc-lba}, \ref{B-sec:nc-riks}
+and~\ref{B-sec:nc-detect}.
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+  \toprule
+  & $\varphi = 30^\circ$ & $\varphi = 65^\circ$ \\
+  \midrule
+  first critical point (Chapter~2) & limit point $0.0481$ & bifurcation $0.2434$ \\
+  linear buckling (Green strain)   & $0.250$, $0.750$     & $0.324$, $1.489$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{instructor}
+Timing: part~a 30~min, part~b 45~min, part~c 45~min. Install the two codes on the room
+machines beforehand (FEniCSx with \texttt{slepc4py}, e.g.\ from conda-forge; Cast3M 2025). Students
+who cannot run FEniCS use \texttt{code/python/truss\_fe.py}, which has the same structure.
+\untested{The FEniCSx script \texttt{truss\_fenicsx.py} and the Cast3M input \texttt{truss.dgibi}
+have not been run (no installation in the build environment): run both once before the
+session. The Python codes were run and give the numbers quoted here.}
+\end{instructor}
+
+%======================================================================
+\spart{The truss as two bar elements, by hand}
+
+\q Write the Green strain $\varepsilon$ and the energy of a bar between nodes $i$ and $j$.
+Derive the force on node $j$ and the $2\times2$ block $\mat{k}$ of the element tangent.
+\begin{answer}
+$\varepsilon = (\vx\cdot\vx - L^2)/(2L^2)$, $\mathcal{E}_e = \tfrac12 EAL\varepsilon^2$, force $N\vx/L$ with
+$N = EA\varepsilon$, and $\mat{k} = (EA/L^3)\vx\vx\T + (N/L)\mat{I}$; the element tangent is
+$\bigl[\begin{smallmatrix}\mat{k} & -\mat{k}\\ -\mat{k} & \mat{k}\end{smallmatrix}\bigr]$
+(Section~\ref{B-sec:nc-fe}).
+\end{answer}
+
+\q Assemble $\mat{K}_0$ for the apex. For a unit load, find the linear normal forces and
+$\mat{K}_\sigma$. Compute the linear buckling loads and modes at $30^\circ$ and $65^\circ$, and
+compare with the first row of the table.
+\begin{answer}
+$\mat{K}_0 = \diag(2c^2, 2s^2)$, $N = -1/(2s)$ in each bar, $\mat{K}_\sigma = -(1/s)\mat{I}$; loads
+$2c^2s$ (sideways) and $2s^3$ (vertical). At $30^\circ$: $0.75$ and $0.25$, against a limit point
+at $0.0481$, a factor $5.2$. At $65^\circ$: $0.324$ and $1.489$, against the bifurcation at
+$0.2434$, $+33\%$.
+\end{answer}
+
+\q Why is linear buckling so poor at $30^\circ$, and what does a negative eigenvalue of
+$(\mat{K}_0 + \eta\mat{K}_\sigma)$ mean in general?
+\begin{answer}
+At $30^\circ$ the truss fails by snap-through after a large prebuckling deflection ($42\%$ of
+the rise): the linearisation keeps the initial geometry. A negative $\eta$ is a critical load
+for the reversed loading; for a bearing modelled with Haringx's geometric form it is a real
+tensile buckling load (Example~\ref{B-ex:nc-bearing}).
+\end{answer}
+
+\begin{instructor}
+Do not skip the last question: most codes silently discard negative eigenvalues. The bearing
+can be shown with Figure~\ref{B-fig:nc-bearing}.
+\end{instructor}
+
+%======================================================================
+\spart{First steps in FEniCS}
+
+\qc Build the mesh: three points, two interval cells, a vector Lagrange space of degree~1.
+Write the bar energy in UFL with the unit vector $\vect{t}_0$ along each element and the
+derivative $d\vu/dS = (\operatorname{grad}\vu)\,\vect{t}_0$. Get the residual and the tangent with
+\texttt{derivative}. Check $\mat{K}$ at $\vu = \vect{0}$ against part~a.
+\begin{answer}
+$\varepsilon = \vect{t}_0\cdot d\vu/dS + \tfrac12\abs{d\vu/dS}^2$; at $\vu = \vect{0}$ the apex block of
+$\mat{K}$ is $\diag(1.5, 0.5)$ at $30^\circ$. The listing is in Exercise~\ref{B-exo:nc-computer-fenics}.
+\end{answer}
+
+\qc Linear buckling with SLEPc: assemble $\mat{K}_0$ (with $1$ on the fixed rows) and
+$-\mat{K}_\sigma$ (with $0$ there) and solve the generalised problem with a shift-and-invert
+about $0$. Why $0$ on the fixed rows of $-\mat{K}_\sigma$?
+\begin{answer}
+$0.25$ and $0.75$. The fixed rows then give $\eta = 1/0$, infinitely far from the target, so
+they never pollute the spectrum near $0$.
+\end{answer}
+
+\qc Follow the nonlinear path with the arc-length step of Algorithm~\ref{alg:nc-arc}, using the
+assembled residual and tangent. Locate the limit point from the change of the number of
+negative pivots.
+\begin{answer}
+The path follows $\eta = v(v - s)(v - 2s)$; the pivot count goes $0\to1$ at $0.04811$, mode
+$(0,1)$, ${}^1\mat{u}\T\mat{p} \neq 0$: a limit point. The script imports the Python driver: the
+algorithm does not care which code assembled $\mat{K}$.
+\end{answer}
+
+\begin{algorithm}[ht]
+\caption{Arc-length step by bordering (Crisfield's sphere)}\label{alg:nc-arc}
+\begin{algorithmic}[1]
+\Require converged $(\mat{u}_k,\eta_k)$; previous increment $(\Delta\mat{u}_{\mathrm{old}},\Delta\eta_{\mathrm{old}})$; step $\Delta s$; weight $\psi$
+\State solve $\mat{K}(\mat{u}_k)\,\mat{u}_t = \mat{p}$
+\State $\Delta\eta \gets \Delta s/\sqrt{\mat{u}_t\T\mat{u}_t + \psi^2\mat{p}\T\mat{p}}$; flip its sign if $\mat{u}_t\T\Delta\mat{u}_{\mathrm{old}} + \psi^2\mat{p}\T\mat{p}\,\Delta\eta_{\mathrm{old}} < 0$
+\State $\Delta\mat{u} \gets \Delta\eta\,\mat{u}_t$ \Comment{predictor}
+\Repeat \Comment{corrector}
+  \State $\mat{r} \gets \mat{r}(\mat{u}_k + \Delta\mat{u}, \eta_k + \Delta\eta)$;\quad $\mat{K} \gets \mat{K}(\mat{u}_k + \Delta\mat{u})$
+  \State solve $\mat{K}\,\delta\mat{u}_r = -\mat{r}$ and $\mat{K}\,\delta\mat{u}_p = \mat{p}$ \Comment{one factorisation}
+  \State find the roots $\delta\eta$ of $\norm{\Delta\mat{u} + \delta\mat{u}_r + \delta\eta\,\delta\mat{u}_p}^2 + \psi^2(\Delta\eta + \delta\eta)^2\mat{p}\T\mat{p} = \Delta s^2$
+  \State keep the root whose new increment is closest in angle to $(\Delta\mat{u},\Delta\eta)$
+  \State $\Delta\mat{u} \gets \Delta\mat{u} + \delta\mat{u}_r + \delta\eta\,\delta\mat{u}_p$;\quad $\Delta\eta \gets \Delta\eta + \delta\eta$
+\Until{$\norm{\mat{r}} < \epsilon$} \Comment{if no real root or no convergence: halve $\Delta s$}
+\State \Return $(\mat{u}_k + \Delta\mat{u}, \eta_k + \Delta\eta)$ and the number of negative pivots of $\mat{K}$
+\end{algorithmic}
+\end{algorithm}
+
+%======================================================================
+\spart{First steps in Cast3M}
+
+\qc Build the truss with two \texttt{barr} elements, \texttt{mate} ($E = 1$) and \texttt{cara}
+($\mathrm{SECT} = 1$). With \texttt{opti epsi lineaire}, compute the linear solution for a unit load,
+its stress with \texttt{sigm 'LINE'}, and call \texttt{flambage}. Which geometric matrix does
+\texttt{ksigma} use for bars?
+\begin{answer}
+The answer is read off the result: $0.250$ means the Green-strain matrix $(N/L)\mat{I}$;
+$0.333$ means $(N/L)(\mat{I} - \vect{e}\vect{e}\T)$, which ignores the axial part (Section~\ref{B-sec:nc-tools}).
+Listing: Exercise~\ref{B-exo:nc-computer-castem}.
+\end{answer}
+
+\qc Follow the nonlinear path with \texttt{pasapas} and \texttt{'GRANDS\_DEPLACEMENTS'}, imposing the
+apex deflection with \texttt{depi}. Recover the load from the reaction and plot it against
+$v(v - s)(v - 2s)$. Why does displacement control pass the limit point here?
+\begin{answer}
+The maximum should be $0.0481$. The deflection $v$ increases monotonically along the whole
+path, so each $v$ has exactly one equilibrium: no snap-back. Any difference with the cubic comes
+from the strain measure that \texttt{pasapas} uses for bars.
+\end{answer}
+
+\qc At $65^\circ$, add a sideways force $10^{-3}$ times the vertical one. What is the maximum
+load, and what would the perfect truss do?
+\begin{answer}
+About $0.2407$ (Chapter~2, and the Python code); the perfect truss bifurcates sideways at
+$0.2434$ onto an unstable branch: an unstable symmetric point, two-thirds law.
+\end{answer}
+
+\begin{instructor}
+Part~c ends the session on the main message: linear buckling, continuation and
+imperfections give three different numbers ($0.324$, $0.2434$, $0.2407$ at $65^\circ$), and the
+engineer needs to know which question each one answers.
+\end{instructor}

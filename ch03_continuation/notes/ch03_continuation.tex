@@ -1,7 +1,7 @@
 %======================================================================
 \chapter{From continuum to discrete: numerical methods}\label{ch:nc}
 %======================================================================
-% Labels of this chapter: *:nc-*  (bibitem keys nc-*). Status: outline, see ch03_continuation/README.md.
+% Labels of this chapter: *:nc-*  (bibitem keys nc-*). Status: see ch03_continuation/README.md.
 
 \framepart{Outline}
 Chapters~\ref{ch:st} and~\ref{ch:ld} worked with a few unknowns, and every
@@ -25,7 +25,8 @@ Box~1.2 written for a residual vector and a load vector. Along the
 path we detect the critical points, tell limit points from bifurcation points, and
 switch to the new branch. The von Mises truss of Chapter~\ref{ch:ld} is the test case
 throughout: two bar elements, closed-form answers, and two lessons on when linear
-buckling is wrong.
+buckling is wrong. A rubber bearing that buckles when it is pulled shows what the
+sign of an eigenvalue can mean.
 
 \paragraph{By the end of this chapter you should be able to:}
 \begin{itemize}
@@ -38,9 +39,9 @@ buckling is wrong.
   \item state the Rayleigh quotient and the min--max principle, and explain why a
         Ritz or finite element buckling load is an upper bound;
   \item follow a path through a limit point with the Riks--Crisfield arc-length method;
-  \item detect a critical point from the eigenvalues or the inertia of $\mat{K}$,
-        classify it, and switch to the bifurcated branch;
-  \item run a first linear buckling and a first arc-length computation in FEniCS and in
+  \item detect a critical point from the inertia of $\mat{K}$, classify it, and switch
+        to the bifurcated branch;
+  \item run a first linear buckling and a first nonlinear computation in FEniCS and in
         Cast3M, and check them against a closed form.
 \end{itemize}
 
@@ -52,175 +53,873 @@ Section~\ref{sec:nc-rayleigh} reads that eigenproblem as a minimisation.
 Section~\ref{sec:nc-riks} follows nonlinear paths by arc-length continuation.
 Section~\ref{sec:nc-detect} detects and classifies critical points, and
 Section~\ref{sec:nc-switch} switches branches. Section~\ref{sec:nc-tools} presents the
-two finite element codes. A summary, exercises (page~\pageref{sec:nc-exo}) and the
-references close the chapter.
+two finite element codes. A summary, exercises with solutions
+(page~\pageref{sec:nc-exo}) and the references close the chapter. The finite element
+side follows Triantafyllidis's lecture~\cite{nc-triantafyllidis2018}, the variational
+side Constantinescu and Korsunsky~\cite[Chapter~7]{nc-constantinescu2007}.
 
-\draftnote{Open (thread, 21 Nov 2026): the planned section on the asymptotic numerical
-method (Cochelin, Damil, Potier-Ferry) is not in the author's list. Proposal: one
-paragraph at the end of Section~\ref{sec:nc-riks} as an alternative to
-predictor--corrector schemes, or drop it. To be decided.}
+\draftnote{Open (thread, 21 Nov 2026): the asymptotic numerical method (Cochelin, Damil,
+Potier-Ferry) was in the first plan but is not in the author's list. Proposal: one
+paragraph at the end of Section~\ref{sec:nc-riks}, or drop it. To be decided.}
 
 %======================================================================
 \section{From the energy to the weak form}\label{sec:nc-weak}
 \index{weak form}\index{virtual work}%
-\draftnote{Planned content:
-(1)~Start small: the axially compressed column, energy
-$\tfrac12\int EI\,w''^2\dd x - \tfrac12 P\int w'^2\dd x$; its first variation is the weak form,
-integration by parts gives $EIw'''' + Pw'' = 0$ and the boundary conditions. Closed form
-$P_c = \pi^2EI/L^2$ (the elastica proper is Chapter~\ref{ch:rd}).
-(2)~Elastic body (notation of Constantinescu--Korsunsky): $\mathcal{E}(\vu,\eta) = \int_\Omega W(\tens{E})\dd V
-- \eta\,\ell(\vu)$ over $\Kad$, Green--Lagrange strain $\tens{E}$, $W = \tfrac12\,\tens{E}:\bbC:\tens{E}$.
-(3)~First variation $\mathcal{E}_{,\vu}[\delta\vu] = 0$ for all $\delta\vu \in \Kad_0$: the principle of
-virtual work, the weak form of equilibrium.
-(4)~Second variation $\mathcal{E}_{,\vu\vu}[\delta\vu,\delta\vu]$ = material part + initial-stress part
-$\int \tens{S}:(\operatorname{grad}\delta\vu\T\operatorname{grad}\delta\vu)\dd V$; stability = positive second
-variation (Trefftz criterion), the continuum version of the gbox of Section~\ref{sec:ld-energycrit}.
-gbox: the weak form is the gradient of the energy, the stability operator is its Hessian.}
+
+\paragraph{The column first.}
+\index{Euler column}%
+A straight elastic column of length $L$ and bending stiffness $EI$ is pinned at both
+ends and carries an axial load $P$. Its deflection is $w(x)$. Bending stores
+$\tfrac12 EI\,w''^2$ per unit length. The ends approach each other by
+$\displaystyle\tfrac12\int_0^L w'^2\dd x$ (the arc is longer than its chord), so the load loses that much
+work times $P$. The potential energy is
+\begin{equation}\label{eq:nc-column-energy}
+  \mathcal{E}(w,P) = \frac12\int_0^L EI\,w''^2\dd x - \frac P2\int_0^L w'^2\dd x .
+\end{equation}
+The deflection must vanish at the ends: $w$ belongs to the set $\Kad_0$ of
+kinematically admissible fields with $w(0) = w(L) = 0$.
+
+\paragraph{The first variation.}
+Perturb $w$ by $\epsilon\,\delta w$, with $\delta w \in \Kad_0$, and keep the term of order
+$\epsilon$. Equilibrium asks that it vanish for every $\delta w$:
+\begin{equation}\label{eq:nc-column-weak}
+  \int_0^L EI\,w''\,\delta w''\dd x - P\int_0^L w'\,\delta w'\dd x = 0
+  \qquad \text{for all } \delta w \in \Kad_0 .
+\end{equation}
+This is the \emph{weak form}. Integrate by parts twice and use $\delta w = 0$ at the ends:
+\begin{equation}\label{eq:nc-column-strong}
+  \int_0^L \bigl(EI\,w'''' + P\,w''\bigr)\,\delta w\dd x
+  + \Bigl[EI\,w''\,\delta w'\Bigr]_0^L = 0 .
+\end{equation}
+Since $\delta w$ is arbitrary inside, $EIw'''' + Pw'' = 0$. Since $\delta w'$ is
+arbitrary at the ends, $EIw'' = 0$ there: the moment vanishes at a pin. The weak
+form contains the differential equation \emph{and} the natural boundary condition; only
+the essential condition $w = 0$ was imposed on $\Kad_0$. The solutions
+$w = \sin(n\pi x/L)$ exist when $P = n^2\pi^2EI/L^2$, and the smallest is Euler's load
+\begin{equation}\label{eq:nc-euler}
+  P_c = \frac{\pi^2EI}{L^2} .
+\end{equation}
+
+\paragraph{An elastic body.}
+\index{Green--Lagrange strain}%
+The same steps work for any elastic body $\Omega$. We follow the author's MEC563
+lectures and keep linear elasticity with large displacements (the Saint
+Venant--Kirchhoff material). The deformation gradient is
+$\tens{F} = \tI + \operatorname{grad}\vu$, and the Green--Lagrange strain is
+\begin{equation}\label{eq:nc-green}
+  \tens{e}(\vu) = \frac12\bigl(\tens{F}\T\tens{F} - \tI\bigr)
+  = \eps(\vu) + \frac12\,\tens{q}(\vu,\vu),
+\end{equation}
+where $\eps(\vu)$ is the small strain and $\tens{q}(\vv,\vw)$ is the symmetric part of
+$\operatorname{grad}\T\vv\,\operatorname{grad}\vw$, with components
+$\tfrac12(v_{k,i}w_{k,j} + w_{k,i}v_{k,j})$. The stress is $\sig = \bbC:\tens{e}$. Dead loads
+$\vb^D$ in $\Omega$ and $\vt^D$ on $\partial\Omega_t$ are multiplied by the load parameter
+$\eta$. The potential energy is
+\begin{equation}\label{eq:nc-energy}
+  \mathcal{E}(\vu,\eta) = \frac12\int_\Omega \tens{e}(\vu):\bbC:\tens{e}(\vu)\dd V
+  - \eta\,\ell(\vu),
+  \qquad
+  \ell(\vu) = \int_\Omega \vb^D\cdot\vu\dd V + \int_{\partial\Omega_t}\vt^D\cdot\vu\dd S .
+\end{equation}
+
+\paragraph{Two variations.}
+The strain changes with $\vu$ by $\delta\tens{e} = \eps(\vv) + \tens{q}(\vu,\vv)$ in a direction
+$\vv \in \Kad_0$. The first variation is
+\begin{equation}\label{eq:nc-first}
+  D_{\vu}\mathcal{E}(\vu,\eta)[\vv] = \int_\Omega \sig : \bigl(\eps(\vv) + \tens{q}(\vu,\vv)\bigr)\dd V
+  - \eta\,\ell(\vv) .
+\end{equation}
+Setting it to zero for all $\vv$ is the principle of virtual work in the reference
+configuration~\cite[Section~7.2]{nc-constantinescu2007}. Differentiate once more, in a
+second direction $\vw$:
+\begin{equation}\label{eq:nc-second}
+  D_{\vu\vu}\mathcal{E}(\vu,\eta)[\vv,\vw] =
+  \int_\Omega \bigl(\eps(\vv) + \tens{q}(\vu,\vv)\bigr):\bbC:\bigl(\eps(\vw) + \tens{q}(\vu,\vw)\bigr)\dd V
+  + \int_\Omega \sig : \tens{q}(\vv,\vw)\dd V .
+\end{equation}
+The first integral is the material stiffness, changed by the displacement already
+reached. The second is new: the stress already present stiffens the body if it pulls
+($\sig$ positive) and softens it if it pushes. This is the \emph{initial-stress} or
+\emph{geometric} term.
+\index{geometric stiffness}%
+
+\begin{gbox}{The weak form is the gradient of the energy, the stability operator is its Hessian}\label{sec:nc-weakgbox}
+\index{weak form}\index{stability!second variation}%
+An equilibrium $\vu$ satisfies $D_{\vu}\mathcal{E}(\vu,\eta)[\vv] = 0$ for all $\vv\in\Kad_0$.
+It is stable if the second variation is positive,
+$D_{\vu\vu}\mathcal{E}(\vu,\eta)[\vv,\vv] > 0$ for all $\vv \neq \vect{0}$ in $\Kad_0$, and
+unstable if it is negative for some $\vv$.
+\end{gbox}
+
+\paragraph{Why it works.}
+The picture is the bowl of Section~\ref{sec:ld-energycrit}. Near $\vu$ the energy is
+$\mathcal{E}(\vu + \epsilon\vv) \approx \mathcal{E}(\vu) + \epsilon\,D_{\vu}\mathcal{E}[\vv]
++ \tfrac12\epsilon^2 D_{\vu\vu}\mathcal{E}[\vv,\vv]$. The linear term vanishes at equilibrium,
+and the quadratic term decides whether every direction goes uphill. Only the
+unknown has changed, from a column to a field. In infinite dimensions a positive
+second variation needs some care (it should be bounded below by a norm of $\vv$), and
+Koiter's work makes this precise~\cite{nc-koiter1945}; for the discrete models that we
+actually compute, it is exactly Section~\ref{sec:ld-energycrit}.
+
+For the column, the axial stress before buckling is $\sigma = -P/A$ and the only
+component of $\tens{q}(\vv,\vv)$ it meets is $v_{k,1}v_{k,1} \approx w'^2$. The geometric
+term is $\displaystyle -P\int_0^L w'^2\dd x$, the second integral of~\eqref{eq:nc-column-energy}: the
+work of the load in the end shortening \emph{is} the initial-stress term.
 
 %======================================================================
 \section{From fields to matrices: finite elements}\label{sec:nc-fe}
 \index{finite elements}\index{tangent stiffness}%
-\draftnote{Planned content:
-(1)~Interpolation $\vu \approx \mat{N}\mat{u}$; $\mathcal{E}(\mat{u},\eta)$ becomes a function of the nodal
-values: the discrete systems of Chapter~\ref{ch:ld} are recovered.
-(2)~Residual $\mat{r}(\mat{u},\eta) = \mathcal{E}_{,\mat{u}} = \mat{f}_{\mathrm{int}}(\mat{u}) - \eta\,\mat{p}$
-(reference load vector $\mat{p}$); tangent stiffness $\mat{K} = \mathcal{E}_{,\mat{u}\mat{u}}$
-= material part (with initial displacements) + geometric part $\mat{K}_\sigma$.
-(3)~Worked example: the two-bar truss of Section~\ref{sec:ld-snap} as two bar elements with
-Green strain; assembly by hand gives exactly~\eqref{eq:ld-truss-K}.
-(4)~Automatic differentiation: in FEniCS the residual and the tangent are derived from the
-energy form (\texttt{derivative}); in Cast3M they are assembled element by element.
-Box~3.1: from energy to residual and tangent.}
+
+\paragraph{Interpolation.}
+Write the displacement as a combination of shape functions $N_i(\vx)$ that vanish
+outside a few elements, with nodal values $u_i$:
+$\vu(\vx) \approx \sum_i N_i(\vx)\,u_i$. Collect the nodal values in the column
+$\mat{u}$. The energy~\eqref{eq:nc-energy} becomes a function
+$\mathcal{E}(\mat{u},\eta)$ of finitely many unknowns, the object of
+Chapter~\ref{ch:ld}~\cite[slide~5]{nc-triantafyllidis2018}. Its gradient and its Hessian are
+\begin{equation}\label{eq:nc-discrete}
+  \mat{r}(\mat{u},\eta) = \mathcal{E}_{,\mat{u}} = \mat{f}_{\mathrm{int}}(\mat{u}) - \eta\,\mat{p},
+  \qquad
+  \mat{K}(\mat{u}) = \mathcal{E}_{,\mat{u}\mat{u}} ,
+\end{equation}
+the \emph{residual} (internal forces minus external forces, $\mat{p}$ the reference load
+vector) and the \emph{tangent stiffness}. Taking $\vv = N_i$ in~\eqref{eq:nc-first} gives the
+row $i$ of $\mat{r}$; taking $\vv = N_i$ and $\vw = N_j$ in~\eqref{eq:nc-second} gives the
+entry $K_{ij}$. Since each shape function meets only its neighbours, $\mat{K}$ is sparse
+and banded.
+
+\paragraph{A bar element.}
+\index{bar element}%
+The truss of Section~\ref{sec:ld-snap} is the simplest finite element model there is. A
+bar joins nodes $i$ and $j$; its reference vector is $\vect{X}$, of length $L$, and its
+current vector is $\vx = \vect{X} + \vu_j - \vu_i$. Its Green strain and its energy are
+\begin{equation}\label{eq:nc-bar}
+  \varepsilon = \frac{\vx\cdot\vx - L^2}{2L^2},
+  \qquad
+  \mathcal{E}_e = \frac12\,EA\,L\,\varepsilon^2 .
+\end{equation}
+With the normal force $N = EA\,\varepsilon$, the gradient with respect to $\vu_j$ is the
+force $N\vx/L$, and $-N\vx/L$ on node $i$. One more derivative gives the element
+tangent, in two parts:
+\begin{equation}\label{eq:nc-bar-K}
+  \mat{K}_e = \begin{bmatrix} \mat{k} & -\mat{k}\\ -\mat{k} & \mat{k}\end{bmatrix},
+  \qquad
+  \mat{k} = \frac{EA}{L^3}\,\vx\,\vx\T + \frac NL\,\mat{I} .
+\end{equation}
+The first part is the material stiffness along the current bar. The second is the
+geometric stiffness: a bar in tension resists sideways motion of its end, like a
+string; in compression it helps it.
+
+\begin{example}[The truss from two elements]\label{ex:nc-truss-fe}
+Supports at $(\mp\cos\varphi, 0)$, apex at $(0,\sin\varphi)$, $L = 1$, write $s = \sin\varphi$
+and $c = \cos\varphi$. Only the apex moves, so the two elements assemble into a
+$2\times2$ matrix. At the start, $\vx = (\pm c, s)$ and $N = 0$:
+\begin{equation}\label{eq:nc-truss-K0}
+  \mat{K}_0 = EA\left(\begin{bmatrix} c^2 & cs\\ cs & s^2\end{bmatrix}
+  + \begin{bmatrix} c^2 & -cs\\ -cs & s^2\end{bmatrix}\right)
+  = EA\begin{bmatrix} 2c^2 & 0\\ 0 & 2s^2\end{bmatrix},
+\end{equation}
+the Hessian~\eqref{eq:ld-truss-K} at $v = 0$. Along the path the code assembles the full
+tangent~\eqref{eq:nc-bar-K} with the current $\vx$ and $N$, and reproduces Chapter~\ref{ch:ld}
+to round-off.
+\end{example}
+
+\begin{gbox}{Box 3.1\quad From the energy to the residual and the tangent}\label{sec:nc-box-fe}
+\index{finite elements}%
+\begin{enumerate}
+  \item Choose the shape functions; impose the essential boundary conditions on $\mat{u}$.
+  \item For each element, write the energy $\mathcal{E}_e$ in terms of its nodal values.
+  \item Element forces: its gradient. Element tangent: its Hessian, material plus geometric.
+  \item Assemble $\mat{f}_{\mathrm{int}}$ and $\mat{K}$; assemble the load vector $\mat{p}$.
+  \item Check: a finite-difference derivative of $\mat{r}$ must reproduce $\mat{K}$.
+\end{enumerate}
+\end{gbox}
+
+In FEniCS one writes the energy density in a symbolic language, and steps~3 and~4 are
+done by symbolic differentiation (\texttt{derivative}) and automatic assembly
+(Section~\ref{sec:nc-tools}). Step~5 is then not needed, which removes the most common bug
+of hand-written codes: a tangent that is not the derivative of the residual.
 
 %======================================================================
 \section{Linear buckling as an eigenproblem}\label{sec:nc-lba}
 \index{linear buckling}\index{eigenvalue problem!buckling}%
-\draftnote{Planned content:
-(1)~Linear prebuckling: $\mat{K}_0\,{}^0\mat{u} = \eta\,\mat{p}$, stresses proportional to $\eta$, so
-$\mat{K} \approx \mat{K}_0 + \eta\,\mat{K}_\sigma$.
-(2)~Critical load: $(\mat{K}_0 + \eta\,\mat{K}_\sigma)\,{}^1\mat{u} = \mat{0}$, a generalised
-symmetric eigenproblem; the smallest positive $\eta$ and its mode. Box~3.2.
-(3)~Two warnings on the truss (checked with SymPy, $EA = L = 1$):
-$\varphi = 30^\circ$, linear buckling gives $0.250$ for the true limit load $0.0481$ (a factor $5.2$:
-the prebuckling is not linear, a snap-through is not a bifurcation);
-$\varphi = 65^\circ$, it gives $0.324$ for the true sideways bifurcation at $0.2434$ ($+33\%$).
-gbox: linear buckling is exact only when the prebuckling state is linear and the critical point
-is a bifurcation (Bushnell 1981, Section~4).
-(4)~Consistent linearisation $\mat{K}_0 + \eta\,d\mat{K}/d\eta$ (initial-displacement matrix included):
-$0.0833$ at $30^\circ$, still too high.}
+
+\paragraph{The linear prebuckling assumption.}
+Suppose the structure deforms little before it buckles. Then the principal branch is
+close to the linear solution: $\mat{K}_0\,\hat{\mat{u}} = \mat{p}$, ${}^0\mat{u}(\eta) \approx \eta\,\hat{\mat{u}}$,
+and the stress in the body is $\eta\,\hat\sig$, where $\hat\sig$ is the linear stress for
+$\eta = 1$. In the second variation~\eqref{eq:nc-second} drop the terms
+$\tens{q}(\vu,\cdot)$, which are of order $\eta$ next to $\eps(\cdot)$, and keep the
+geometric term, which is of order $\eta$ next to zero. The tangent becomes linear in
+$\eta$~\cite[slide~9]{nc-triantafyllidis2018}:
+\begin{equation}\label{eq:nc-lba-K}
+  \mat{K}(\eta) \approx \mat{K}_0 + \eta\,\mat{K}_\sigma,
+  \qquad
+  \vv\T\mat{K}_\sigma\vw \leftrightarrow \int_\Omega \hat\sig : \tens{q}(\vv,\vw)\dd V .
+\end{equation}
+$\mat{K}_0$ is the usual stiffness matrix, positive definite. $\mat{K}_\sigma$, the geometric
+stiffness of the reference stress, has no sign of its own.
+
+\begin{gbox}{Box 3.2\quad Linear buckling analysis}\label{sec:nc-box-lba}
+\index{linear buckling}%
+\begin{enumerate}
+  \item Solve the linear problem $\mat{K}_0\,\hat{\mat{u}} = \mat{p}$ for the reference load.
+  \item Compute the stress $\hat\sig$ with the \emph{linear} strain, and assemble $\mat{K}_\sigma$.
+  \item Solve the generalised eigenproblem $(\mat{K}_0 + \eta\,\mat{K}_\sigma)\,{}^1\mat{u} = \mat{0}$.
+        In practice solve $-\mat{K}_\sigma\,{}^1\mat{u} = \mu\,\mat{K}_0\,{}^1\mat{u}$, with
+        $\mat{K}_0$ positive definite, and take $\eta = 1/\mu$.
+  \item The smallest positive $\eta$ is the critical load factor; its eigenvector is the mode.
+\end{enumerate}
+\end{gbox}
+
+\paragraph{The truss: a first warning.}
+For a unit load the linear normal force is $-1/(2s)$ in each bar, so
+by~\eqref{eq:nc-bar-K} $\mat{K}_\sigma = -(1/s)\,\mat{I}$. With~\eqref{eq:nc-truss-K0}, the two
+eigenvalues are
+\begin{equation}\label{eq:nc-truss-lba}
+  \eta_{\mathrm{sideways}} = 2c^2s\,EA, \qquad \eta_{\mathrm{vertical}} = 2s^3\,EA .
+\end{equation}
+Table~\ref{tab:nc-lba} compares them with the exact critical loads of
+Section~\ref{sec:ld-snap}.
+
+\begin{table}[ht]
+\centering
+\caption{The two-bar truss ($EA = L = 1$): exact first critical load and linear
+  buckling~\eqref{eq:nc-truss-lba}. Last column: the consistent linearisation
+  $\mat{K}_0 + \eta\,d\mat{K}/d\eta$ along the linear path.}
+\label{tab:nc-lba}
+\begin{tabular}{@{}lllll@{}}
+  \toprule
+  $\varphi$ & exact critical point & linear buckling & error & consistent \\
+  \midrule
+  $30^\circ$ & limit point, $\eta = 0.0481$ & $0.250$ (vertical mode) & $\times 5.2$ & $0.0833$ \\
+  $65^\circ$ & bifurcation, $\eta = 0.2434$ & $0.324$ (sideways mode) & $+33\%$ & $0.324$ \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+\begin{gbox}{Linear buckling is reliable only if the prebuckling state is nearly linear}\label{sec:nc-lbawarn}
+\index{linear buckling!validity}%
+The eigenvalue of Box~3.2 is the critical load of the \emph{linearised} problem. It is
+close to the true one when the principal branch is nearly linear up to the critical
+point and the critical point is a bifurcation. It can be far above the true load
+when the structure fails by snap-through, or when it deforms much before it buckles.
+\end{gbox}
+
+\paragraph{Why it works.}
+Look at Figure~\ref{fig:nc-truss}. At $30^\circ$ the path bends over long before
+$0.25$: at the limit point the apex has come down by $42\%$ of its rise. The
+linearisation sees neither this deflection nor the loss of height that softens the
+bars, and it predicts a vertical ``bifurcation'' that does not exist. Keeping the initial
+displacement term $\tens{q}(\vu,\cdot)$, linearised along $\eta\hat{\mat{u}}$, gives the
+consistent estimate $0.0833$: better, still $73\%$ too high, because the path is not
+linear at all. At $65^\circ$ the sideways bifurcation is real, but the apex has come down
+by $25\%$ of its rise when it happens, and the estimate is $33\%$ high. This is the
+first lesson of Bushnell's survey~\cite{nc-bushnell1981}: decide first whether the
+structure fails by bifurcation from a nearly linear state (columns, plates, cylinders
+in axial compression) or by collapse (shallow arches, domes, shells under bending),
+and use linear buckling only for the former.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch03_continuation/figures/nc_truss.pdf}
+  \caption{The two-bar truss followed by arc-length continuation (Box~3.3), against
+    linear buckling (orange line). Left, $\varphi = 30^\circ$: a limit point (black) at
+    $0.0481\,EA$, five times below linear buckling. Right, $\varphi = 65^\circ$: the
+    sideways bifurcation at $0.2434\,EA$ and the bifurcated branch (orange), found by
+    branch switching (Section~\ref{sec:nc-switch}). Solid: stable, no negative pivot.
+    Dashed: unstable.}
+  \label{fig:nc-truss}
+\end{figure}
 
 %======================================================================
 \section{The eigenproblem as a minimisation}\label{sec:nc-rayleigh}
-\index{Rayleigh quotient}\index{Rayleigh--Ritz method}\index{min--max principle}%
-\draftnote{Planned content:
-(1)~Rayleigh quotient: $\eta_c = \min\, a(\vv,\vv)/b(\vv,\vv)$
-over $\Kad_0$ with $b > 0$, $a$ the material and $-b$ the initial-stress bilinear forms; for the
-column $P_c = \min \int EI\,w''^2/\int w'^2$. The weak form of the eigenproblem is the
-stationarity of this quotient.
-(2)~Courant--Fischer min--max for the higher modes; orthogonality of modes in $a$.
-(3)~Rayleigh--Ritz: a smaller space gives a larger minimum, so every Ritz or conforming finite
-element buckling load is an upper bound. Column with $w = x(L - x)$: $12\,EI/L^2$ against
-$\pi^2EI/L^2$ ($+21.6\%$); Hermite cubic elements converge from above.
-(4)~Same structure as the free vibrations, $\omega^2 = $ Rayleigh quotient with the mass
-(Section~\ref{sec:ld-energycrit}; Constantinescu--Korsunsky Section~7.5).
-gbox: a discrete buckling load is never below the exact one (for conforming elements and a
-fixed prebuckling stress).}
+\index{Rayleigh quotient}\index{Rayleigh--Ritz method}%
+
+\paragraph{The column again.}
+At the critical load the second variation of~\eqref{eq:nc-column-energy} is zero for the
+mode and positive for every other $w$. Below it, the bending energy wins for every $w$.
+So $P_c$ is the smallest ratio of bending energy to load work:
+\begin{equation}\label{eq:nc-column-rayleigh}
+  P_c = \min_{w\in\Kad_0,\ w\neq0}\ \frac{\displaystyle\int_0^L EI\,w''^2\dd x}{\displaystyle\int_0^L w'^2\dd x} .
+\end{equation}
+Try the parabola $w = x(L - x)$. Then $w'' = -2$, the bending integral is $4L$, the
+load integral is $L^3/3$, and the ratio is $12\,EI/L^2$: $21.6\%$ above
+$\pi^2EI/L^2$, from a function that does not even satisfy $EIw'' = 0$ at the ends. Add
+$x^2(L - x)$: nothing changes, since the new function has an antisymmetric part only and
+the first mode is symmetric. Add $x^3(L - x)$: the error drops to $0.056\%$
+(Exercise~\ref{exo:nc-ritz}). Every trial gives a load above $P_c$.
+
+\paragraph{The general statement.}
+Write the second variation of the linearised problem as $a(\vv,\vv) - \eta\,b(\vv,\vv)$, with
+\begin{equation}\label{eq:nc-ab}
+  a(\vv,\vw) = \int_\Omega \eps(\vv):\bbC:\eps(\vw)\dd V,
+  \qquad
+  b(\vv,\vw) = -\int_\Omega \hat\sig:\tens{q}(\vv,\vw)\dd V .
+\end{equation}
+The form $a$ is positive definite. The form $b$ is positive in the directions that the
+reference stress softens.
+
+\begin{gbox}{The critical load is the minimum of the Rayleigh quotient, and every Ritz approximation is above it}\label{sec:nc-rayleighgbox}
+\index{Rayleigh quotient}\index{upper bound}%
+\begin{equation}\label{eq:nc-rayleigh}
+  \eta_c = \min_{b(\vv,\vv)>0}\ R(\vv), \qquad R(\vv) = \frac{a(\vv,\vv)}{b(\vv,\vv)} .
+\end{equation}
+The minimiser is the mode. If the minimum is taken over a smaller space, for instance a
+finite element space $\Kad_h \subset \Kad_0$, the result $\eta_h$ satisfies
+$\eta_h \ge \eta_c$.
+\end{gbox}
+
+\paragraph{Why it works.}
+Picture $a - \eta\,b$ as a bowl that flattens as $\eta$ grows. It stays a bowl as long
+as $a(\vv,\vv) > \eta\,b(\vv,\vv)$ for every $\vv$, that is, as long as $\eta$ is below every
+ratio $a/b$; it first becomes flat in one direction at the smallest ratio. Make
+$R(\vv + \epsilon\vw)$ stationary in $\epsilon$: exactly as for the free vibrations
+in~\cite[Section~7.5, eq.~(7.59)]{nc-constantinescu2007}, the first variation is
+\begin{equation}\label{eq:nc-weak-eig}
+  a(\vv,\vw) - R(\vv)\,b(\vv,\vw) = 0 \qquad \text{for all } \vw \in \Kad_0 ,
+\end{equation}
+the weak form of the eigenproblem. A minimum over fewer functions cannot be lower, which
+is the upper bound. With finite elements, \eqref{eq:nc-weak-eig} for $\vv,\vw$ in
+$\Kad_h$ is $\mat{K}_0\,{}^1\mat{u} = \eta\,(-\mat{K}_\sigma)\,{}^1\mat{u}$: Box~3.2 is the
+Rayleigh--Ritz method~\cite[Section~7.4]{nc-constantinescu2007}.
+
+\paragraph{Higher modes.}
+\index{min--max principle}%
+The $k$-th eigenvalue is a min--max: the minimum, over all $k$-dimensional subspaces, of
+the largest value of $R$ on the subspace (Courant and Fischer). A finite element space
+offers fewer subspaces, so \emph{every} discrete eigenvalue is above the exact one of the
+same rank. Two modes are orthogonal in both $a$ and $b$, as the vibration modes are
+in stiffness and mass~\cite[Section~7.5]{nc-constantinescu2007}. Cubic Hermite elements
+for the column give $\pi^2$ from above with an error that falls like $h^4$
+(Figure~\ref{fig:nc-ritz}): $12$ with one element, $9.944$ with two, $9.8747$ with four.
+The bound needs a conforming element and the same reference stress; reduced
+integration or a mesh-dependent prebuckling stress can break it.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch03_continuation/figures/nc_ritz.pdf}
+  \caption{Pinned column, cubic Hermite elements: the relative error of the first
+    buckling load is positive and falls like $h^4$.}
+  \label{fig:nc-ritz}
+\end{figure}
+
+\paragraph{The sign of $b$.}
+In a column, a truss or a plate under compression, $b$ is positive (or zero) in every
+direction and all the eigenvalues $\eta = a/b$ are positive. If $b$ takes both signs,
+negative eigenvalues appear: by~\eqref{eq:nc-rayleigh}, an eigenvalue $\eta < 0$ is a
+critical load for the \emph{reversed} loading. Codes discard them. They can be real.
+
+\begin{example}[A rubber bearing buckles in tension]\label{ex:nc-bearing}
+\index{elastomeric bearing}\index{tension buckling}%
+A seismic isolation bearing is a stack of thin rubber layers bonded to steel plates. It
+is stiff in bending (the steel plates stay plane) and very soft in shear (the rubber).
+Model it as a Timoshenko column with deflection $w$, rotation $\theta$ of the plates, bending
+stiffness $EI$ and shear stiffness $GA_s$, clamped against rotation at both ends, the top
+free to sway. The material form is
+$a = \displaystyle\int_0^L \bigl(EI\theta'^2 + GA_s(w' - \theta)^2\bigr)\dd x$. Two geometric forms are in use. Engesser's,
+$b_E = \displaystyle\int_0^L w'^2\dd x$, is the column's. Haringx's,
+$b_H = \displaystyle\int_0^L \bigl(w'^2 - (w' - \theta)^2\bigr)\dd x$, measures the load work with the rotation of the plates
+and has \emph{both signs}. With $P_E = \pi^2EI/L^2$, they give
+\begin{equation}\label{eq:nc-haringx}
+  \text{Engesser: } P = \frac{P_E}{1 + P_E/GA_s},
+  \qquad
+  \text{Haringx: } P\Bigl(1 + \frac{P}{GA_s}\Bigr) = P_E .
+\end{equation}
+Haringx's quadratic has a negative root, $P = -\tfrac12GA_s\bigl(1 + \sqrt{1 + 4P_E/GA_s}\bigr)$:
+buckling under a tensile load. For a bearing, $GA_s \ll P_E$, and both roots are close to
+$\pm\sqrt{P_E\,GA_s}$. With $GA_s = EI/L^2 \approx 0.1\,P_E$, the finite element eigenproblem
+(Exercise~\ref{exo:nc-computer-bearing}) returns $2.681$ and $-3.681$ (in units of $EI/L^2$),
+to five digits of~\eqref{eq:nc-haringx}; Engesser's form returns $0.908$ and no tension root.
+\end{example}
+
+Kelly found the tension root in the classical analysis of bearings and showed that it
+is consistent with tests~\cite{nc-kelly2003}; Kelly and Takhirov confirmed it with a
+three-dimensional finite element model of a laminated bearing~\cite{nc-kelly2007}. Why two
+formulas? Ba\v{z}ant showed that both follow from admissible finite strain measures, and
+differ in how the shear stiffness depends on the axial stress; with a constant shear
+stiffness, Haringx's form is the right one for helical springs and built-up
+columns~\cite{nc-bazant2003}. The geometric stiffness is part of the model, not a detail
+of the code (Figure~\ref{fig:nc-bearing}).
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch03_continuation/figures/nc_bearing.pdf}
+  \caption{Critical loads of a shear-soft column against its shear stiffness. Lines:
+    the formulas~\eqref{eq:nc-haringx}. Dots: the finite element eigenproblem with
+    Haringx's geometric form. Negative loads are tensile: the bearing buckles when it is
+    pulled. Engesser's form has no negative eigenvalue.}
+  \label{fig:nc-bearing}
+\end{figure}
+
+\draftnote{Proposal (thread, 21 Nov 2026), for the author: the bearing is the ``surprising
+example'' of this chapter. It comes straight out of the eigenproblem (a negative
+eigenvalue that every code throws away), it is structural engineering (seismic
+isolation), and it shows that $\mat{K}_\sigma$ is a modelling choice. A FEniCS computation of a
+plane-strain bearing (rubber layers and steel plates) could follow in the exercises, or in
+Chapter~\ref{ch:so} with large strains. Tensile buckling of structures with a slider
+(Zaccaria, Bigoni, Noselli, Misseroni, \emph{Proc. R. Soc. A} 467, 2011) is a second
+candidate. Keep, move or drop?}
 
 %======================================================================
 \section{Following nonlinear paths: arc-length methods}\label{sec:nc-riks}
 \index{continuation!arc-length}\index{Riks method}\index{Crisfield method}%
-\draftnote{Planned content:
-(1)~Load control fails at a limit point, displacement control fails at a snap-back;
-Box~1.2 with $\mat{f} = \mat{r}$, $\mat{J} = \mat{K}$, $\mat{f}_r = -\mat{p}$.
-(2)~Riks (linearised constraint, normal plane) and Crisfield (spherical constraint, quadratic
-equation for $\delta\eta$, choice of the root); the bordering algorithm: two solves with
-$\mat{K}$ per iteration, no augmented matrix needed (essential with a sparse FE solver).
-(3)~Scaling of load and displacement in the arc length; step control by the number of
-Newton iterations.
-(4)~Test: the truss at $30^\circ$ through both limit points, against~\eqref{eq:ld-truss-principal}.
-Box~3.3: Riks--Crisfield arc-length step.}
+
+\paragraph{Load control and its limit.}
+The standard finite element procedure increases the load in steps and corrects with
+Newton's method at fixed load~\cite[slides~4 and~6]{nc-triantafyllidis2018}:
+\begin{equation}\label{eq:nc-newton}
+  \mat{K}(\mat{u}^{(j)})\,\delta\mat{u} = -\mat{r}(\mat{u}^{(j)},\eta_{k+1}),
+  \qquad \mat{u}^{(j+1)} = \mat{u}^{(j)} + \delta\mat{u} .
+\end{equation}
+For the truss at $30^\circ$, with steps of $0.002$, Newton fails at $\eta = 0.050$, just
+past the limit load $0.0481$: there is no equilibrium nearby. Imposing the apex
+deflection instead of the load (displacement control) goes through this limit point,
+but it fails in turn wherever the controlled displacement turns back, at a snap-back.
+Chapter~\ref{ch:st} gave the cure: let the load be an unknown, and add one equation that
+fixes the length of the step along the path.
+
+\paragraph{Bordering.}
+\index{bordering}%
+Box~1.2 solved the augmented system, with the matrix $\mat{K}$ bordered by the column
+$-\mat{p}$ and the row of the tangent. A finite element code does not want this matrix: it
+would destroy the band structure that its solver relies on. Since the residual is linear
+in $\eta$, split the correction instead:
+\begin{equation}\label{eq:nc-bordering}
+  \delta\mat{u} = \delta\mat{u}_r + \delta\eta\,\delta\mat{u}_p,
+  \qquad
+  \mat{K}\,\delta\mat{u}_r = -\mat{r},
+  \qquad
+  \mat{K}\,\delta\mat{u}_p = \mat{p} .
+\end{equation}
+Any $\delta\eta$ satisfies the linearised equilibrium. Two solves with the same
+factorised $\mat{K}$, and the constraint picks $\delta\eta$.
+
+\paragraph{Riks and Crisfield.}
+Let $(\Delta\mat{u},\Delta\eta)$ be the increment since the last converged point, and
+$\psi$ a weight that makes load and displacement comparable. Riks~\cite{nc-riks1979}
+keeps the correction in the plane normal to the predictor
+$(\Delta\mat{u}_0,\Delta\eta_0)$:
+\begin{equation}\label{eq:nc-riks}
+  \Delta\mat{u}_0\T(\Delta\mat{u} - \Delta\mat{u}_0) + \psi^2\,\Delta\eta_0\,(\Delta\eta - \Delta\eta_0)\,\mat{p}\T\mat{p} = 0,
+\end{equation}
+which is linear in $\delta\eta$. Crisfield~\cite{nc-crisfield1981} keeps the increment on
+a sphere,
+\begin{equation}\label{eq:nc-crisfield}
+  \Delta\mat{u}\T\Delta\mat{u} + \psi^2\,\Delta\eta^2\,\mat{p}\T\mat{p} = \Delta s^2,
+\end{equation}
+which is quadratic in $\delta\eta$. Of its two roots he takes the one whose new increment
+makes the smaller angle with the previous one, so that the path is not travelled
+backwards. With $\psi = 0$ the sphere is a cylinder in displacement space, Crisfield's
+usual choice for structures.
+
+\begin{gbox}{Box 3.3\quad An arc-length step (bordering)}\label{sec:nc-box-arc}
+\index{continuation!arc-length}%
+Given a point $(\mat{u}_k,\eta_k)$, the previous increment, a step $\Delta s$.
+\begin{enumerate}
+  \item Predictor: solve $\mat{K}\,\mat{u}_t = \mat{p}$; take
+        $\Delta\eta = \pm\Delta s/\sqrt{\mat{u}_t\T\mat{u}_t + \psi^2\mat{p}\T\mat{p}}$,
+        $\Delta\mat{u} = \Delta\eta\,\mat{u}_t$, with the sign that keeps the direction of
+        the previous increment.
+  \item Corrector: with $\mat{r} = \mat{r}(\mat{u}_k + \Delta\mat{u},\eta_k + \Delta\eta)$, solve
+        $\mat{K}\,\delta\mat{u}_r = -\mat{r}$ and $\mat{K}\,\delta\mat{u}_p = \mat{p}$.
+  \item Find $\delta\eta$ from the constraint~\eqref{eq:nc-riks} (Riks) or~\eqref{eq:nc-crisfield}
+        (Crisfield, closest root); update $\Delta\mat{u} \leftarrow \Delta\mat{u} + \delta\mat{u}_r + \delta\eta\,\delta\mat{u}_p$,
+        $\Delta\eta \leftarrow \Delta\eta + \delta\eta$.
+  \item Repeat 2--3 until $\norm{\mat{r}}$ is small. If it does not converge, halve $\Delta s$.
+  \item Record the inertia of $\mat{K}$ (Section~\ref{sec:nc-detect}); go to the next step.
+\end{enumerate}
+\end{gbox}
+
+\paragraph{The truss.}
+With $\Delta s = 0.02$ and $\psi = 1$, eighty steps take the $30^\circ$ truss from the start
+through both limit points to $v = 1.37$, beyond the inverted position
+(Figure~\ref{fig:nc-truss}, left). Every point lies on the exact
+path~\eqref{eq:ld-truss-principal} to $10^{-11}$, with Riks's plane as with Crisfield's
+sphere. The sign rule of step~1 does the work at the limit points: there the load
+component of the tangent changes sign, and the predictor follows the path downwards
+instead of bouncing back.
 
 %======================================================================
 \section{Detecting and classifying critical points}\label{sec:nc-detect}
 \index{critical point!detection}\index{inertia of a matrix}%
-\draftnote{Planned content:
-(1)~Monitors along the path: sign of $\det\mat{K}$, smallest eigenvalues of $\mat{K}$
-(SLEPc, shift-invert), and the inertia: the number of negative pivots of
-$\mat{K} = \mat{L}\mat{D}\mat{L}\T$ counts the negative eigenvalues (Sylvester), at no extra cost
-in a direct solver.
-(2)~Locating the point: bisection on the step, or the extended system
-$\mat{r} = \mat{0}$, $\mat{K}{}^1\mat{u} = \mat{0}$, $\norm{{}^1\mat{u}} = 1$ solved by Newton.
-(3)~Classification by the test~\eqref{eq:ld-limit-test}: ${}^1\mat{u}\T\mat{p} \neq 0$ limit point,
-$= 0$ bifurcation; the sign of the load component of the tangent.
-(4)~Truss at $65^\circ$: one negative pivot appears at $0.2434$ with $\eta$ still increasing:
-a bifurcation, mode $(1,0)$.}
+
+\paragraph{Counting negative pivots.}
+A direct solver factorises the tangent as $\mat{K} = \mat{L}\mat{D}\mat{L}\T$, with
+$\mat{L}$ lower triangular and $\mat{D}$ (block) diagonal. Sylvester's law of inertia
+says that $\mat{K}$ and $\mat{D}$ have the same number of negative eigenvalues. The count
+is free, since the factorisation is needed anyway to solve~\eqref{eq:nc-bordering}.
+
+\begin{gbox}{The number of negative pivots is the number of unstable directions}\label{sec:nc-inertia}
+\index{inertia of a matrix}\index{stability!energy criterion}%
+On a path, an equilibrium is stable while $\mat{D}$ has no negative entry. Each time the
+count changes between two points, an eigenvalue of $\mat{K}$ has crossed zero: a critical
+point lies in between. An $m$-fold critical point changes the count by $m$.
+\end{gbox}
+
+\paragraph{Why it works.}
+$\mat{L}$ is invertible, so the change of variables $\mat{y} = \mat{L}\T\mat{x}$ turns the
+energy $\tfrac12\mat{x}\T\mat{K}\mat{x}$ into $\tfrac12\mat{y}\T\mat{D}\mat{y}$: the number of
+downhill directions cannot change. Counting is safer than watching the sign of
+$\det\mat{K}$, which misses two eigenvalues crossing in the same step, and cheaper than
+computing eigenvalues~\cite[slides~3 and~6]{nc-triantafyllidis2018}.
+
+\paragraph{Locating and classifying.}
+Bisection between the two points pins the critical point down: correct the midpoint onto
+the path, look at its inertia, keep the half where the count changes. A direct alternative
+solves the \emph{extended system} $\mat{r}(\mat{u},\eta) = \mat{0}$,
+$\mat{K}(\mat{u})\,\boldsymbol{\phi} = \mat{0}$, $\norm{\boldsymbol{\phi}} = 1$ by Newton's
+method~\cite{nc-wriggers1990} (Exercise~\ref{exo:nc-extended}). At the point, the
+eigenvector of the zero eigenvalue is the mode, and the test~\eqref{eq:ld-limit-test} of
+Chapter~\ref{ch:ld} classifies it: since $\mathcal{E}_{,\mat{u}\eta} = -\mat{p}$,
+\begin{equation}\label{eq:nc-classify}
+  {}^1\mat{u}\T\mat{p} \neq 0: \text{ limit point},
+  \qquad
+  {}^1\mat{u}\T\mat{p} = 0: \text{ bifurcation point}.
+\end{equation}
+A limit point is also seen on the path itself: the load increment changes sign there,
+while at a bifurcation the load keeps rising as a pivot turns negative.
+
+\paragraph{The truss.}
+At $30^\circ$ the count goes $0 \to 1 \to 0$. Bisection puts the first change at
+$\eta = 0.048113$, $v = 0.21132$, mode $(0,1)$, ${}^1\mat{u}\T\mat{p} \neq 0$: a limit point,
+with the closed form $v = s(1 - 1/\sqrt3)$. The second change, at $\eta = -0.048113$,
+$v = 0.78868$, is the lower limit point: past it, the inverted truss is stable again. At
+$65^\circ$ the count changes first at $\eta = 0.24337$, $v = 0.22500$, mode $(1,0)$,
+${}^1\mat{u}\T\mat{p} = 0$: the sideways bifurcation, at $v = s - R$ exactly.
 
 %======================================================================
 \section{Branch switching}\label{sec:nc-switch}
 \index{branch switching}%
-\draftnote{Planned content:
-(1)~Directions of the branches from the second-order (bifurcation) equation, as in
-Section~\ref{sec:st-continuation}; Koiter's $\eta_1$, $\eta_2$ (Box~2.2) give
-the start of the new branch.
-(2)~Practice in FE codes: predictor $\mat{u}_c + \epsilon\,{}^1\mat{u}$ followed by the corrector,
-or an imperfection in the shape of the mode (load or geometry) and continuation of the
-imperfect structure.
-(3)~Truss at $65^\circ$: the bifurcated branch is the circle~\eqref{eq:ld-truss-branch}; with a
-sideways load the maximum loads reproduce the two-thirds law of Section~\ref{sec:ld-powerlaws}.
-gbox: an imperfection in the shape of the first mode is the safe way to switch, and it also
-measures the imperfection sensitivity.}
+
+At a simple bifurcation point the new branch leaves in the direction of the mode
+(Section~\ref{sec:st-continuation}); Koiter's coefficients of Box~2.2 give its curvature.
+A finite element code uses this in two ways.
+
+\paragraph{Along the mode.}
+Step from $(\mat{u}_c,\eta_c)$ to $\mat{u}_c + \Delta s\,{}^1\mat{u}$, and correct on the plane
+${}^1\mat{u}\T(\mat{u} - \mat{u}_c) = \Delta s$, which the principal branch does not cross
+again nearby. The corrected point is on the new branch; continue from it with Box~3.3,
+with the first increment as direction~\cite[slide~4]{nc-triantafyllidis2018}. For the truss
+at $65^\circ$, the switched branch follows the circle~\eqref{eq:ld-truss-branch} to
+$10^{-13}$, and its tangent has one negative pivot all along: the branch is unstable, as
+found in Chapter~\ref{ch:ld} (Figure~\ref{fig:nc-truss}, right).
+
+\paragraph{Through an imperfection.}
+Perturb the structure in the shape of the mode and follow the perturbed path. For the
+truss, a sideways load $e\,\eta$ does it. There is no bifurcation any more and no singular
+$\mat{K}$ on the way. The maximum loads are $0.2428$, $0.2407$ and $0.2315\,EA$ for
+$e = 10^{-4}$, $10^{-3}$, $10^{-2}$, against $0.2434$ for the perfect truss: the drop grows
+like $e^{2/3}$, the law of an unstable symmetric point (Section~\ref{sec:ld-powerlaws}).
+
+\begin{gbox}{An imperfection in the shape of the first mode is the safe way to switch, and it measures the sensitivity}\label{sec:nc-imperfect-switch}
+\index{branch switching}\index{imperfection sensitivity}%
+Perturb with a small multiple of the mode (as a load or as an initial geometry) and
+continue. The computation never meets a singular matrix, and the maximum load against the
+size of the perturbation is the imperfection-sensitivity curve.
+\end{gbox}
+
+\paragraph{Why it works.}
+An imperfection unfolds the bifurcation (Section~\ref{sec:st-imperfection}): the
+crossing branches separate into smooth paths, and continuation follows a smooth path.
+The danger is the choice of the shape. A perturbation orthogonal to the critical mode
+does not trigger it, and a computation with a badly chosen imperfection can pass a
+bifurcation without seeing it; Triantafyllidis shows this on fibre composites, where
+different imperfections select different modes~\cite[slide~20]{nc-triantafyllidis2018}.
+Watch the inertia anyway.
 
 %======================================================================
 \section{Two finite element codes}\label{sec:nc-tools}
 \index{FEniCS}\index{Cast3M}%
-\draftnote{Planned content (short, a map rather than a manual):
-FEniCS: the energy written in UFL, residual and tangent by \texttt{derivative}, Newton by PETSc
-SNES, the eigenproblem by SLEPc (generalised Hermitian, shift-and-invert), arc-length written on
-top of the Newton solver by bordering.
-Cast3M: bar and beam elements, \texttt{KSIG} for the initial-stress matrix and \texttt{VIBR} for the
-eigenproblem, \texttt{PASAPAS} for the nonlinear path with its arc-length option.
-The same checks for both: closed form first, then mesh refinement.}
+
+The exercises run the truss in two codes. They are built on opposite ideas.
+
+\paragraph{FEniCS.}
+One writes the energy density in UFL, a symbolic language close to the formulas
+of Section~\ref{sec:nc-weak}: for a bar, the Green strain $\varepsilon$ of~\eqref{eq:nc-bar}
+and the energy $\tfrac12EA\,\varepsilon^2$ on each element. The residual and the tangent are
+obtained by symbolic differentiation (\texttt{derivative}), assembled into PETSc
+matrices~\cite{nc-logg2012}. The eigenproblem of Box~3.2 goes to SLEPc~\cite{nc-hernandez2005},
+with a shift-and-invert transformation about $0$, so that the eigenvalues closest to zero
+converge first. The arc-length step of Box~3.3 is not part of the library; it is written
+on top of the assembly, and the same Python function drives the hand-written bar code
+and the FEniCS model.
+
+\paragraph{Cast3M.}
+The element library is fixed and the commands are high level. Linear buckling follows
+Box~3.2 step by step: a linear solution with the linear strain, its stress
+(\texttt{sigm 'LINE'}), the geometric stiffness (\texttt{ksigma ... 'FLAM'}), and the
+procedure \texttt{flambage}, which returns the load factors and the modes. The nonlinear
+path is computed by \texttt{pasapas} with \texttt{'GRANDS\_DEPLACEMENTS'}; for the truss we
+impose the apex deflection, which goes through the limit point because the path has no
+snap-back.
+
+\begin{gbox}{Trust a code after it has reproduced a closed form}\label{sec:nc-trust}
+\index{verification}%
+Before a new structure, run the truss: linear buckling $0.250$ (vertical mode) and $0.750$
+(sideways) at $30^\circ$; limit load $0.0481$; bifurcation at $65^\circ$ at $0.2434$.
+A linear buckling load of $0.333$ instead of $0.250$ means that the code uses the geometric
+matrix $(N/L)(\mat{I} - \vect{e}\vect{e}\T)$ of small rotations, not the Green-strain matrix
+$(N/L)\,\mat{I}$ of~\eqref{eq:nc-bar-K}.
+\end{gbox}
+
+\draftnote{Open (thread): the FEniCSx and Cast3M inputs have not been run here (no
+installation in the build environment). Check the numbers of the box once, with the
+author's versions. Arc-length in Cast3M: an option of \texttt{pasapas} to be checked; the
+truss does not need it.}
 
 %======================================================================
 \framepart{Summary}
 \begin{gbox*}
 \begin{itemize}
-  \item \textbf{To be written.} \draftnote{take-home messages, one per section.}
+  \item \textbf{Weak form and stability operator.} The first variation of the energy is the
+        principle of virtual work; the second is the stability operator, with a material
+        part and an initial-stress (geometric) part $\displaystyle\int_\Omega\sig:\tens{q}(\vv,\vw)\dd V$.
+  \item \textbf{Finite elements.} Interpolation turns $\mathcal{E}(\vu,\eta)$ into
+        $\mathcal{E}(\mat{u},\eta)$: residual $\mat{r} = \mat{f}_{\mathrm{int}} - \eta\mat{p}$,
+        tangent $\mat{K}$, and everything of Chapter~\ref{ch:ld} applies.
+  \item \textbf{Linear buckling.} $(\mat{K}_0 + \eta\mat{K}_\sigma)\,{}^1\mat{u} = \mat{0}$. Reliable
+        for bifurcation from a nearly linear state; for the truss it is $5.2$ times too high
+        at $30^\circ$ (snap-through) and $33\%$ too high at $65^\circ$.
+  \item \textbf{Rayleigh quotient.} $\eta_c = \min a/b$; Ritz and conforming finite elements
+        give upper bounds, for every mode (min--max). Negative eigenvalues are buckling
+        under the reversed load: a rubber bearing buckles in tension.
+  \item \textbf{Arc-length.} Load and displacement are both unknown; bordering needs two
+        solves with $\mat{K}$; Riks uses a plane, Crisfield a sphere and the closest root.
+  \item \textbf{Detection.} The number of negative pivots of $\mat{K} = \mat{L}\mat{D}\mat{L}\T$
+        counts the unstable directions; a change locates a critical point;
+        ${}^1\mat{u}\T\mat{p}$ tells a limit point from a bifurcation.
+  \item \textbf{Switching.} Step along the mode, or perturb in its shape; the second way
+        also gives the imperfection sensitivity.
+  \item \textbf{Codes.} Check every code on a closed form first; the geometric stiffness is
+        a modelling choice that the check reveals.
 \end{itemize}
 \end{gbox*}
 
 %======================================================================
 \framepart{Exercises}\label{sec:nc-exo}
 \framesub{Short questions}
-\draftnote{Planned: Rayleigh quotient of the column with a trial function; which is larger,
-the Ritz or the exact load, and why; linear buckling of the truss by hand at $30^\circ$;
-counting negative pivots; which root of Crisfield's quadratic; limit point or bifurcation from
-a computed tangent; why linear buckling fails for a snap-through.}
+
+\exercise{A natural boundary condition}\label{exo:nc-natural}
+\index{weak form}%
+A column is clamped at $x = 0$ and free at $x = L$, under the axial load $P$. Which
+conditions go into $\Kad_0$, and which ones come out of the weak form?
+\begin{solution}
+Essential: $w(0) = w'(0) = 0$, imposed on $\Kad_0$. Integrating~\eqref{eq:nc-column-weak} by
+parts leaves $[EIw''\delta w' - (EIw''' + Pw')\delta w]$ at $x = L$, with $\delta w$, $\delta w'$
+free there: $EIw''(L) = 0$ (no moment) and $EIw'''(L) + Pw'(L) = 0$ (no transverse force on
+the deformed end).
+\end{solution}
+
+\exercise{A one-line Ritz estimate}\label{exo:nc-sine}
+\index{Rayleigh quotient}%
+Compute~\eqref{eq:nc-column-rayleigh} with $w = \sin(\pi x/L)$, then with $w = x(L - x)$. Which is
+larger, and could the order be reversed by another trial function?
+\begin{solution}
+$\sin$: $\pi^2EI/L^2$, the exact mode. Parabola: $12\,EI/L^2$. No admissible function can give
+less than $\pi^2EI/L^2$, the minimum; the parabola is admissible ($w = 0$ at the ends), even
+though it violates the natural condition $w'' = 0$.
+\end{solution}
+
+\exercise{Linear buckling of the truss by hand}\label{exo:nc-lba-hand}
+\index{linear buckling}%
+For $\varphi = 30^\circ$, $EA = L = 1$: write $\mat{K}_0$ and $\mat{K}_\sigma$, and find the two
+linear buckling loads and modes.
+\begin{solution}
+$\mat{K}_0 = \diag(2c^2, 2s^2) = \diag(1.5, 0.5)$. The linear normal force is $-1/(2s) = -1$ per
+bar, so $\mat{K}_\sigma = 2\times(-1)\,\mat{I} = -2\mat{I}$. Loads $0.5/2 = 0.25$ (vertical mode $(0,1)$)
+and $1.5/2 = 0.75$ (sideways mode $(1,0)$).
+\end{solution}
+
+\exercise{Counting pivots}\label{exo:nc-pivots}
+\index{inertia of a matrix}%
+Factorise $\mat{K} = \bigl[\begin{smallmatrix} 2 & 2\\ 2 & 1\end{smallmatrix}\bigr]$ as
+$\mat{L}\mat{D}\mat{L}\T$. How many unstable directions?
+\begin{solution}
+$\mat{L} = \bigl[\begin{smallmatrix}1&0\\1&1\end{smallmatrix}\bigr]$, $\mat{D} = \diag(2,-1)$:
+one negative pivot, one unstable direction. Check: $\det\mat{K} = -2 < 0$, eigenvalues of
+opposite signs.
+\end{solution}
+
+\exercise{Which root?}\label{exo:nc-root}
+\index{Crisfield method}%
+Why does Crisfield's constraint give two values of $\delta\eta$, and what goes wrong with the
+wrong one?
+\begin{solution}
+A line (the linearised equilibrium, parametrised by $\delta\eta$) cuts a sphere twice. One
+intersection continues forward, the other lies near the previous point: with it the
+computation turns back and retraces the path. The rule ``closest angle to the previous
+increment'' keeps the forward one.
+\end{solution}
+
+\exercise{Limit or bifurcation?}\label{exo:nc-classify}
+\index{limit point}\index{bifurcation point}%
+A computation finds a zero pivot with the mode ${}^1\mat{u}$ orthogonal to the load vector,
+and the load still rising. What is it, and what should the next computation be?
+\begin{solution}
+${}^1\mat{u}\T\mat{p} = 0$ and a rising load: a bifurcation point. Switch branches along the mode,
+or rerun with an imperfection in the shape of the mode to get the maximum load.
+\end{solution}
+
+\exercise{Why linear buckling misses a snap-through}\label{exo:nc-snap}
+\index{linear buckling!validity}%
+Explain in three lines why Box~3.2 gives $0.25$ for the $30^\circ$ truss whose true limit
+load is $0.048$.
+\begin{solution}
+The limit point comes from the change of geometry: the bars lose height and the vertical
+stiffness falls. Box~3.2 keeps the initial geometry and only adds the stress; it sees a
+column-like softening, five times too slow.
+\end{solution}
+
+\exercise{Tension buckling}\label{exo:nc-tension}
+\index{tension buckling}%
+Why can Engesser's form of Example~\ref{ex:nc-bearing} never give a tensile buckling load,
+while Haringx's can?
+\begin{solution}
+$\eta = a/b$ with $a > 0$. Engesser's $b = \displaystyle\int_0^L w'^2\dd x \ge 0$: every eigenvalue is positive.
+Haringx's $b = \displaystyle\int_0^L \bigl(w'^2 - (w' - \theta)^2\bigr)\dd x$ is negative for shear-dominated fields
+($w' - \theta$ large), so negative eigenvalues exist.
+\end{solution}
 
 \framesub{Problems}
-\draftnote{Planned: Ritz and finite elements for the column (convergence from above);
-the truss as two bar elements, tangent stiffness assembled by hand, $\mat{K}_0$, $\mat{K}_\sigma$
-and the linear buckling loads at $30^\circ$ and $65^\circ$; the extended system for a critical
-point and its Jacobian.}
+
+\exercise{Rayleigh--Ritz and finite elements for the column}\label{exo:nc-ritz}
+\index{Rayleigh--Ritz method}%
+For the pinned column ($EI = L = 1$): (a)~use $w = \sum_{k=1}^M c_k\,x^k(1 - x)$ in the
+Rayleigh quotient for $M = 1, \dots, 4$; explain why $M = 2$ does not improve on $M = 1$;
+(b)~build cubic Hermite elements and show that the error falls like $h^4$, from above.
+\begin{solution}
+(a)~$M = 1$ and $2$: $12$; $M = 3$ and $4$: $9.875098$ ($+0.056\%$). The function
+$x^2(1-x)$ adds an antisymmetric part about $x = \tfrac12$, which the symmetric first mode does
+not use; $x^3(1-x)$ adds a new symmetric part. (b)~$12$, $9.943847$, $9.874659$, $9.869928$,
+$9.869625$ for $1$, $2$, $4$, $8$, $16$ elements; the ratio of successive errors tends to
+$16$. The second mode also converges from above: $48$, $39.7754$, $39.4986$ against
+$4\pi^2 = 39.4784$.
+\lstinputlisting[firstline=4]{ch03_continuation/code/python/ex_ritz_column.py}
+\end{solution}
+
+\exercise{The truss as two bar elements}\label{exo:nc-truss-fe}
+\index{bar element}%
+(a)~Derive the element force and tangent~\eqref{eq:nc-bar-K} from~\eqref{eq:nc-bar}.
+(b)~Assemble $\mat{K}$ at a general apex position $(u, -v)$ and recover~\eqref{eq:ld-truss-K} on
+$u = 0$. (c)~Derive~\eqref{eq:nc-truss-lba}. (d)~Show that the consistent linearisation gives
+$\eta = 2s^3/3$ for the vertical mode ($0.0833$ at $30^\circ$).
+\begin{solution}
+(a)~$\partial\varepsilon/\partial\vu_j = \vx/L^2$, so $\partial\mathcal{E}_e/\partial\vu_j = EAL\varepsilon\,\vx/L^2 = N\vx/L$;
+differentiating $N\vx/L$ again gives $(EA/L^3)\vx\vx\T + (N/L)\mat{I}$. (b)~With $\vx = (\pm c + u, s - v)$
+and $N = EA\varepsilon$, sum the apex blocks; on $u = 0$ the off-diagonal terms cancel and
+$K_{vv}/EA = 2(s - v)^2 + 2\varepsilon$, $K_{uu}/EA = 2c^2 + 2\varepsilon$, with $\varepsilon = \tfrac12(v^2 - 2vs)$,
+which is~\eqref{eq:ld-truss-K}. (c)~Section~\ref{sec:nc-lba}. (d)~On the linear path
+$v = \eta/(2s^2)$: $K_{vv}/EA \approx 2s^2 - 4sv - 2sv = 2s^2 - 3\eta/s$, zero at
+$\eta = 2s^3/3$.
+\end{solution}
+
+\exercise{The extended system}\label{exo:nc-extended}
+\index{critical point!detection}%
+Unknowns $(\mat{u},\boldsymbol{\phi},\eta)$, equations $\mat{r}(\mat{u},\eta) = \mat{0}$,
+$\mat{K}(\mat{u})\boldsymbol{\phi} = \mat{0}$, $\mat{l}\T\boldsymbol{\phi} = 1$ for a fixed vector
+$\mat{l}$~\cite{nc-wriggers1990}. (a)~Write the Jacobian of Newton's method. (b)~Show that it is
+invertible at a limit point with $\boldsymbol{\phi}\T\mat{p} \neq 0$ and
+$\mathcal{E}_3 = \mathcal{E}_{,ijk}\phi_i\phi_j\phi_k \neq 0$. (c)~Show that it is singular at a
+bifurcation point. What does a code do then?
+\begin{solution}
+(a)~$\begin{bmatrix} \mat{K} & \mat{0} & -\mat{p}\\ \mathcal{E}_{,\mat{u}\mat{u}\mat{u}}[\boldsymbol{\phi}] & \mat{K} & \mat{0}\\ \mat{0}\T & \mat{l}\T & 0\end{bmatrix}$
+(dead loads: $\mat{K}$ does not depend on $\eta$). (b)~Let $(\mat{a},\mat{b},c)$ be in the kernel.
+$\boldsymbol{\phi}\T$ times the first row gives $c\,\boldsymbol{\phi}\T\mat{p} = 0$, so $c = 0$ and $\mat{a} = \alpha\boldsymbol{\phi}$.
+$\boldsymbol{\phi}\T$ times the second row gives $\alpha\mathcal{E}_3 = 0$, so $\alpha = 0$; then
+$\mat{b} = \beta\boldsymbol{\phi}$ and the last row gives $\beta = 0$. (c)~If $\boldsymbol{\phi}\T\mat{p} = 0$,
+$\mat{K}\mat{a} = c\,\mat{p}$ is solvable for any $c$: $\mat{a} = c\,\dot{\mat{u}} + \alpha\boldsymbol{\phi}$ with
+$\dot{\mat{u}} = d\,{}^0\mat{u}/d\eta$. The second row is solvable if
+$c\,\kappa' + \alpha\,\mathcal{E}_3 = 0$, a one-parameter family: the kernel is not zero. Codes
+perturb the system (an imperfection, or a penalty term as in~\cite{nc-wriggers1990}).
+\end{solution}
+
+\exercise{Engesser and Haringx}\label{exo:nc-haringx}
+\index{elastomeric bearing}%
+For the Timoshenko column of Example~\ref{ex:nc-bearing}, pinned at both ends, take
+$w = A\sin kx$, $\theta = B\cos kx$, $k = \pi/L$. (a)~Derive both formulas~\eqref{eq:nc-haringx}.
+(b)~Show that for $GA_s \ll P_E$ both Haringx roots are close to $\pm\sqrt{P_EGA_s}$.
+(c)~What do the two formulas give as $GA_s \to \infty$?
+\begin{solution}
+(a)~Per unit of $L/2$: $a = EIk^2B^2 + GA_s(kA - B)^2$. Engesser, $b = k^2A^2$: stationarity in $B$
+gives $B = GA_s kA/(EIk^2 + GA_s)$, then $P = GA_s(1 - B/kA) = P_E/(1 + P_E/GA_s)$.
+Haringx, $b = 2kAB - B^2$: stationarity gives $kA = B(1 + P/GA_s)$ and
+$EIk^2 = (GA_s + P)P/GA_s$, that is $P(1 + P/GA_s) = P_E$. (b)~$P^2/GA_s \approx P_E$ when
+$\abs{P} \gg GA_s$. (c)~Both tend to $P_E$; the tension root goes to $-\infty$.
+\end{solution}
 
 \framesub{Computer exercises}
-\draftnote{Planned, all on the two-bar truss of the Chapter~2 session, with known answers
-($EA = L = 1$): $\varphi = 30^\circ$, limit load $0.0481$, linear buckling $0.250$;
-$\varphi = 65^\circ$, bifurcation $0.2434$, $\eta_2 = -0.524$, limit $0.2865$, linear buckling $0.324$.
-(a)~Python: Riks--Crisfield from scratch on the two-element model, reusing the code of
-Chapter~\ref{ch:st}. (b)~FEniCS: first steps, the truss as two interval elements in the plane,
-energy in UFL, Newton, linear buckling with SLEPc, arc-length on top. (c)~Cast3M: the same truss,
-\texttt{KSIG} + \texttt{VIBR}, then \texttt{PASAPAS} with arc-length; branch switching with a
-sideways load.}
+
+\exercise{Computer: arc-length from scratch}\label{exo:nc-computer-arc}
+\index{continuation!arc-length}%
+Write a bar-element code with Green strain (Box~3.1), linear buckling (Box~3.2), the
+arc-length step by bordering (Box~3.3), the pivot count, bisection and branch switching.
+Run it on the truss at $30^\circ$ and $65^\circ$, and reproduce Table~\ref{tab:nc-lba},
+Figure~\ref{fig:nc-truss} and the imperfect maximum loads of Section~\ref{sec:nc-switch}.
+\begin{solution}
+Linear buckling $0.25$, $0.75$ ($30^\circ$) and $0.3237$, $1.4889$ ($65^\circ$); consistent
+$0.0833$. Load control fails at $\eta = 0.050$. Crisfield and Riks: $81$ points to $v = 1.366$,
+error on the exact path $1.5\times10^{-12}$ and $9.9\times10^{-12}$, pivots $0\to1\to0$. Limit
+points $\pm0.048113$ at $v = 0.21132$, $0.78868$. At $65^\circ$: bifurcation $0.24337$ at
+$v = 0.22500$, mode $(1,0)$; switched branch on the circle to $1.2\times10^{-13}$, one negative
+pivot; maxima $0.2428$, $0.2407$, $0.2315$.
+\lstinputlisting[firstline=4]{ch03_continuation/code/python/truss_fe.py}
+\lstinputlisting[firstline=4]{ch03_continuation/code/python/ex_truss.py}
+\end{solution}
+
+\exercise{Computer: a bearing that buckles in tension}\label{exo:nc-computer-bearing}
+\index{tension buckling}%
+Discretise the Timoshenko column of Example~\ref{ex:nc-bearing} with linear elements for $w$
+and $\theta$ (one Gauss point for the shear term), clamped rotations and free sway. Solve
+$a = P\,b$ with Engesser's and Haringx's forms for $GA_s/P_E$ from $0.01$ to $10$.
+\begin{solution}
+Haringx: $9.0506$ and $-109.05$ for $GA_s = 100$; $6.1219$ and $-16.122$ for $GA_s = 10$; $2.6811$
+and $-3.6811$ for $GA_s = 1$ ($EI = L = 1$, $P_E = \pi^2$), equal to~\eqref{eq:nc-haringx} to
+four or five digits. Engesser: $8.983$, $4.967$, $0.908$, no negative eigenvalue. Without the
+clamped rotations, a uniform rotation $\theta$ with $w = 0$ gives a spurious tension root
+$P = -GA_s$: boundary conditions matter in eigenproblems too.
+\lstinputlisting[firstline=4]{ch03_continuation/code/python/ex_bearing.py}
+\end{solution}
+
+\exercise{Computer: first steps in FEniCS}\label{exo:nc-computer-fenics}
+\index{FEniCS}%
+Model the $30^\circ$ truss with two interval elements in the plane. Write the bar energy in
+UFL, get the residual and the tangent by \texttt{derivative}, solve linear buckling with
+SLEPc, then follow the path with the arc-length step of Exercise~\ref{exo:nc-computer-arc}.
+\begin{solution}
+Expected: linear buckling $0.25$ and $0.75$; first critical point $0.04811$, a limit point.
+The geometric form is written with the linear normal force of the reference solution, as in
+Box~3.2; on the rows of the supports the matrix $\mat{K}_0$ carries $1$ and $-\mat{K}_\sigma$
+carries $0$, so their eigenvalues are infinite and do not disturb the shift-and-invert
+about $0$.
+\lstinputlisting[firstline=4]{ch03_continuation/code/fenics/truss_fenicsx.py}
+\end{solution}
+
+\exercise{Computer: first steps in Cast3M}\label{exo:nc-computer-castem}
+\index{Cast3M}%
+Same truss with two \texttt{barr} elements: linear buckling with \texttt{flambage}, then the
+nonlinear path with \texttt{pasapas}, imposing the apex deflection. Which geometric matrix does
+\texttt{ksigma} use for bars? Compare the path with $\eta = v(v - s)(v - 2s)\,EA$.
+\begin{solution}
+Expected: $0.250$ if \texttt{ksigma} uses the Green-strain matrix $(N/L)\mat{I}$, $0.333$ if it
+uses $(N/L)(\mat{I} - \vect{e}\vect{e}\T)$; the path should follow the cubic up to the strain
+measure used by \texttt{pasapas} for bars, with the maximum $0.0481$.
+\lstinputlisting[style=gibstyle,firstline=4]{ch03_continuation/code/cast3m/truss.dgibi}
+\end{solution}
 
 \begin{chapterbib}{99}
-\bibitem{nc-keller1977} H.~B.~Keller, Numerical solution of bifurcation and nonlinear eigenvalue problems, in P.~H.~Rabinowitz (ed.), \emph{Applications of Bifurcation Theory}, Academic Press, New York, 1977, 359--384.
+\bibitem{nc-triantafyllidis2018} N.~Triantafyllidis, \emph{Stability of Solids: from Structures to Materials}, lecture slides MEC553, Lecture~6, \'Ecole polytechnique, Palaiseau, 2018.
+\bibitem{nc-constantinescu2007} A.~Constantinescu and A.~Korsunsky, \emph{Elasticity with Mathematica: An Introduction to Continuum Mechanics and Linear Elasticity}, Cambridge University Press, 2007.
+\bibitem{nc-koiter1945} W.~T.~Koiter, \emph{On the Stability of Elastic Equilibrium}, PhD thesis, Delft, 1945; English translation NASA TT F-10833, 1967.
+\bibitem{nc-bushnell1981} D.~Bushnell, Buckling of shells---pitfall for designers, \emph{AIAA Journal} 19 (1981) 1183--1226.
 \bibitem{nc-riks1979} E.~Riks, An incremental approach to the solution of snapping and buckling problems, \emph{International Journal of Solids and Structures} 15 (1979) 529--551.
 \bibitem{nc-crisfield1981} M.~A.~Crisfield, A fast incremental/iterative solution procedure that handles snap-through, \emph{Computers \& Structures} 13 (1981) 55--62.
-\bibitem{nc-allgower2003} E.~L.~Allgower and K.~Georg, \emph{Introduction to Numerical Continuation Methods}, SIAM Classics in Applied Mathematics, Philadelphia, 2003.
-\bibitem{nc-seydel2010} R.~Seydel, \emph{Practical Bifurcation and Stability Analysis}, 3rd ed., Springer, New York, 2010.
-\bibitem{nc-cochelin2007} B.~Cochelin, N.~Damil and M.~Potier-Ferry, \emph{M\'ethode asymptotique num\'erique}, Herm\`es-Lavoisier, Paris, 2007.
+\bibitem{nc-wriggers1990} P.~Wriggers and J.~C.~Simo, A general procedure for the direct computation of turning and bifurcation points, \emph{International Journal for Numerical Methods in Engineering} 30 (1990) 155--176.
+\bibitem{nc-kelly2003} J.~M.~Kelly, Tension buckling in multilayer elastomeric bearings, \emph{Journal of Engineering Mechanics} 129 (2003) 1363--1368.
+\bibitem{nc-kelly2007} J.~M.~Kelly and S.~M.~Takhirov, Tension buckling in multilayer elastomeric isolation bearings, \emph{Journal of Mechanics of Materials and Structures} 2 (2007) 1591--1605.
+\bibitem{nc-bazant2003} Z.~P.~Ba\v{z}ant, Shear buckling of sandwich, fiber composite and lattice columns, bearings, and helical springs: paradox resolved, \emph{Journal of Applied Mechanics} 70 (2003) 75--83.
 \bibitem{nc-logg2012} A.~Logg, K.-A.~Mardal and G.~N.~Wells (eds.), \emph{Automated Solution of Differential Equations by the Finite Element Method}, Springer, Berlin, 2012.
-\bibitem{nc-triantafyllidis2011} N.~Triantafyllidis, \emph{Stability of Solids: from Structures to Materials}, lecture notes MEC563, \'Ecole polytechnique, Palaiseau, 2011.
-\bibitem{nc-constantinescu2007} A.~Constantinescu and A.~Korsunsky, \emph{Elasticity with Mathematica: An Introduction to Continuum Mechanics and Linear Elasticity}, Cambridge University Press, 2007.
+\bibitem{nc-hernandez2005} V.~Hernandez, J.~E.~Roman and V.~Vidal, SLEPc: a scalable and flexible toolkit for the solution of eigenvalue problems, \emph{ACM Transactions on Mathematical Software} 31 (2005) 351--362.
+\bibitem{nc-keller1977} H.~B.~Keller, Numerical solution of bifurcation and nonlinear eigenvalue problems, in P.~H.~Rabinowitz (ed.), \emph{Applications of Bifurcation Theory}, Academic Press, New York, 1977, 359--384.
+\bibitem{nc-allgower2003} E.~L.~Allgower and K.~Georg, \emph{Introduction to Numerical Continuation Methods}, SIAM Classics in Applied Mathematics, Philadelphia, 2003.
 \end{chapterbib}

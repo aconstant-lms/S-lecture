@@ -84,13 +84,21 @@ and the slide version (88 slides, "6-1" to "6-88").
   exercises comparing a Cast3M/FEniCS computation with the knockdown curves. Public: they may be cited with
   their NTRS numbers; the PDFs are still kept out of the repository (size).
 
+## 4b. A. Constantinescu, *Large strains and stability analysis*, MEC563 lecture slides (L03), 43 p.
+**Role: the author's own notation for large strains in the stability chapters** (Chapters 3 and 9).
+- Kinematics (F, polar decomposition, C, B); Green–Lagrange strain e(u) = ε(u) + ½q(u,u), q and r the symmetric and
+  antisymmetric parts of ∇ᵀv·∇w; St Venant–Kirchhoff energy; weak problem and Newton–Raphson; geometric stiffness
+  {v}ᵀ[K_G]{w} = ∫q(v,w):σ⁰; critical points (limit vs bifurcation from W,uλ); 3D linear buckling
+  ∫ε(v):C:ε(w) + λ∫q(v,w):σ⁰ = 0; inverted pendulum, rails, Venus flytrap, Love–Kirchhoff rods.
+- Use: Ch. 3 §3.1 (weak form, second variation); Ch. 9 (large strains, 3D bodies).
+
 ## 5. Map: sources by chapter
 | Ch | Main sources |
 |---|---|
 | 0 | Bushnell (failures), Triantafyllidis L1 (why stability) |
 | 1 | Strang, Strogatz, Guckenheimer & Holmes, Thompson & Hunt |
 | 2 | Thompson & Hunt (§1.2, §10.4), Koiter, Triantafyllidis notes A (T model pp. 24–31, two-bar truss pp. 41–45, LSK pp. 57–71), sample exam Problem 1; Ziegler (1968) |
-| 3 | Triantafyllidis L6 (FEM), Riks, Crisfield, Keller; Constantinescu & Korsunsky Ch. 7 (Rayleigh–Ritz) |
+| 3 | Triantafyllidis L6 (FEM, slides 3–9), Riks, Crisfield, Keller; Constantinescu & Korsunsky Ch. 7 (§7.2, §7.4, §7.5); author's L03 slides; Bushnell §4; Kelly (2003), Bažant (2003) |
 | 4 | Triantafyllidis BA-1 (elastica), H3, H4; Timoshenko & Gere; Audoly & Pomeau (physical examples) |
 | 5 | Bažant & Cedolin, Trahair, Shanley, Hutchinson (plastic buckling), Bushnell §7 |
 | 6 | Triantafyllidis BB-1 and L5 (von Kármán plate, double mode), H5; Brush & Almroth; Constantinescu & Korsunsky Ch. 7 |

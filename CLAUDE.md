@@ -163,6 +163,12 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
   `ch03_continuation` and prefix `nc` unchanged): weak forms, linear buckling as an eigenproblem and as a Rayleigh-quotient
   minimisation, Riks arc-length, detection, branch switching; the Chapter 2 two-bar truss is its FEniCS/Cast3M test case.
   Hub: update the plan table, `README.md` and `ch00_intro/notes/overview.tex`.
+- 2026-11-21 (Ch. 3 thread): continuum notation of Ch. 3 (from the author's MEC563 L03 slides): Green–Lagrange
+  `\tens{e}(\vu) = \eps + ½\tens{q}(\vu,\vu)`, `\tens{q}(\vv,\vw)` = sym(gradᵀv grad w), variations D_u ℰ[v], D_uu ℰ[v,w];
+  FE: residual `\mat{r} = \mat{f}_int − η\mat{p}`, `\mat{K}_0`, `\mat{K}_\sigma` (Green-strain geometric stiffness, ∫σ̂:q),
+  forms a, b, Rayleigh quotient R; arc-length weight ψ. Box 3.2 (linear buckling), Box 3.3 (arc-length by bordering)
+  and `ch03_continuation/code/python/truss_fe.py` (bar elements, Riks/Crisfield, negative pivots, branch switching)
+  can be reused by later chapters. Large-strain theory beyond St Venant–Kirchhoff stays for Ch. 9.
 
 ## Workflow
 - One conversation per chapter; touch other files only when needed (cross-references, notation).

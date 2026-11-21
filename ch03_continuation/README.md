@@ -2,73 +2,85 @@
 
 Label prefix `nc` (`sec:nc-*`, `eq:nc-*`, `fig:nc-*`, `exo:nc-*`, bibitem keys `nc-*`).
 Folder name `ch03_continuation` kept (21 Nov 2026).
-Status: outline (21 Nov 2026). The Outline frame part is written: objectives and plan. The sections carry their
-planned content as `\draftnote`s. Nothing else is drafted yet.
+Status: complete draft (21 Nov 2026). Lecture text, exercises with solutions, and the 2 h session with answers and
+instructor notes. Three open questions are marked in red: ANM, the bearing example, and the untested FEniCSx/Cast3M
+inputs. Slides: not started.
 
-## Planned content (author's list, 21 Nov 2026)
-Weak forms; linear buckling as an eigenproblem; the eigenproblem as a weak (variational) optimisation
-problem; Riks arc-length; branch switching; detecting bifurcations. Exercises: first steps in FEniCS (with
-SLEPc for eigenproblems) and Cast3M, both on the two-bar truss of the Chapter 2 session, so that students
-check against known answers.
+## Content
+1. `sec:nc-weak` From the energy to the weak form. The column first: weak form, natural boundary condition,
+   P_c = π²EI/L². Then the elastic body in the notation of the author's MEC563 L03 slides: Saint Venant–Kirchhoff,
+   e(u) = ε(u) + ½q(u,u), q(v,w) = sym(gradᵀv grad w), and the first and second variations. A gbox: the weak form
+   is the gradient, the stability operator the Hessian. The column's load work is the initial-stress term.
+2. `sec:nc-fe` From fields to matrices. Residual r = f_int − ηp, tangent K. Bar element with Green strain:
+   k = (EA/L³)xxᵀ + (N/L)I. Example: the truss from two elements gives Ch. 2's Hessian. Box 3.1.
+3. `sec:nc-lba` Linear buckling (K₀ + ηK_σ)¹u = 0 (Triantafyllidis L6, slide 9). Box 3.2. Table on the truss:
+   30°: 0.250 against 0.0481 (×5.2), consistent 0.0833; 65°: 0.324 against 0.2434 (+33 %). Gbox: reliable only
+   if the prebuckling state is nearly linear (Bushnell). Figure `nc_truss`.
+4. `sec:nc-rayleigh` The eigenproblem as a minimisation. Column with x(L − x): 12 (+21.6 %); x²(L − x) changes
+   nothing (symmetry); x³(L − x): +0.056 %. Rayleigh quotient gbox, with the weak form of the eigenproblem
+   (C&K §7.5, eq. 7.59). Ritz/FE upper bounds and the min–max principle; Hermite elements converge from above
+   at rate h⁴ (figure `nc_ritz`). The sign of b: negative eigenvalues are buckling under the reversed load.
+   **Example: a rubber bearing buckles in tension.** Haringx vs Engesser, Kelly 2003, Kelly & Takhirov 2007,
+   Bažant 2003 (figure `nc_bearing`). Marked in red as a proposal for the author.
+5. `sec:nc-riks` Arc-length. Load control fails at η = 0.050; displacement control and snap-back; bordering;
+   Riks (plane) and Crisfield (sphere, root choice). Box 3.3. The truss at 30°: 81 points, agrees with the exact
+   path to 10⁻¹¹.
+6. `sec:nc-detect` Detection by negative pivots of LDLᵀ (Sylvester; L6 slides 3 and 6), with a gbox. Bisection,
+   the extended system (Wriggers & Simo 1990), classification by ¹uᵀp. Numbers for both angles.
+7. `sec:nc-switch` Branch switching along the mode (the circle of Ch. 2 reproduced to 10⁻¹³, unstable) and
+   through an imperfection (maximum loads 0.2428, 0.2407, 0.2315, the two-thirds law). Gbox.
+8. `sec:nc-tools` FEniCS (UFL, derivative, SLEPc shift-invert) and Cast3M (sigm 'LINE', ksigma 'FLAM',
+   flambage, pasapas). Gbox: trust a code after it has reproduced a closed form. The linear buckling load
+   (0.250 against 0.333) reveals which geometric matrix a code uses.
 
-1. `sec:nc-weak` From the energy to the weak form: the column first (weak form, P_c = π²EI/L²), then the elastic
-   body (Green–Lagrange strain, ℂ, 𝒦). First variation = virtual work; second variation = material + initial-stress
-   term (Trefftz).
-2. `sec:nc-fe` From fields to matrices: interpolation; residual r = f_int(u) − η p; tangent K = material + geometric
-   K_σ. The truss as two bar elements gives exactly Ch. 2's (eq:ld-truss-K). Box 3.1.
-3. `sec:nc-lba` Linear buckling: (K₀ + η K_σ) ¹u = 0, Box 3.2. When it fails: the truss (below).
-4. `sec:nc-rayleigh` The eigenproblem as a minimisation: Rayleigh quotient, Courant–Fischer min–max, Rayleigh–Ritz
-   upper bounds (column with w = x(L − x): 12 EI/L², +21.6 %), FE converges from above; link with vibrations
-   (Constantinescu & Korsunsky §7.5).
-5. `sec:nc-riks` Arc-length: load/displacement control fail; Riks (normal plane) and Crisfield (sphere, root choice);
-   bordering (two solves with K, no augmented matrix); scaling and step control. Box 3.3. Builds on Box 1.2.
-6. `sec:nc-detect` Detection: det K, smallest eigenvalues (SLEPc), inertia by negative pivots of LDLᵀ (Sylvester);
-   bisection or extended system; limit vs bifurcation by ¹uᵀp (Ch. 2 test).
-7. `sec:nc-switch` Branch switching: bifurcation equation / Koiter coefficients; perturbation along the mode;
-   imperfection in the shape of the mode (also gives the imperfection sensitivity).
-8. `sec:nc-tools` Two FE codes, a short map: FEniCS (UFL, `derivative`, SNES, SLEPc) and Cast3M (KSIG, VIBR, PASAPAS).
+Exercises: 8 short questions; 4 problems (Ritz and FE column, truss as bar elements, the extended system,
+Engesser and Haringx); 4 computer exercises (arc-length from scratch, the bearing, FEniCS, Cast3M).
 
-## Known answers for the exercises (two-bar truss, EA = L = 1, Green–Lagrange strain)
-Checked with SymPy in this thread. Classical linear buckling = K₀ + η K_σ about the undeformed state.
-| φ | exact critical point | linear buckling (K_σ only) | K₀ + η dK/dη |
-|---|---|---|---|
-| 30° | limit point η_max = 2s³/(3√3) = 0.0481 | 0.250 (vertical), 0.750 (sideways) | 0.0833 |
-| 65° | sideways bifurcation 0.2434 (η₂ = −0.524), limit 0.2865 | 0.324 (sideways), 1.49 (vertical) | 0.324 / 0.496 |
-
-Lessons: at 30° linear buckling is 5.2 times too high (snap-through, nonlinear prebuckling); at 65° it is 33 % too
-high. The linear buckling load depends on the strain measure in K_σ. With Green strain, K_σ = (N/L) I per bar.
-With the small-rotation geometric matrix (N/L)(I − eeᵀ) the 30° value becomes 2s³/c² = 0.333. State the
-convention used by FEniCS and by Cast3M's KSIG, and check it in the code.
-
-## Exercise session (2 h): plan
-(a) By hand, 30 min: the truss as two bar elements; K₀, K_σ, linear buckling at 30° and 65°, compared with the exact
-values of Chapter 2. (b) FEniCS, 45 min: two interval elements in the plane, energy in UFL, Newton, linear
-buckling with SLEPc, then arc-length through the limit point at 30°. (c) Cast3M, 45 min: the same truss,
-KSIG + VIBR, PASAPAS with arc-length; at 65° switch branches with a sideways load 10⁻³ η (Ch. 2: η_m = 0.2407).
-Computer exercises in the notes: the same three, plus Riks–Crisfield from scratch in Python (reusing
-`ch01_bifurcation/code/python/arclength.py`).
+## Files
+- `notes/ch03_continuation.tex`: the chapter. `figures/nc_truss.pdf`, `nc_ritz.pdf` and `nc_bearing.pdf` are made by
+  `code/figures/fig_ch3.py`.
+- `code/python/truss_fe.py`: bar elements with Green strain, K₀, K_σ, linear buckling, Riks/Crisfield by
+  bordering, negative pivots (scipy `ldl`), bisection, branch switching. It is a general bar code, reusable later.
+- `code/python/ex_truss.py`: all truss numbers of the chapter. `ex_ritz_column.py`: Ritz and Hermite FE for the column.
+  `ex_bearing.py`: Timoshenko column, Engesser vs Haringx, tension root.
+- `code/fenics/truss_fenicsx.py`: dolfinx 0.9. The energy is written in UFL, the derivatives come from `derivative`,
+  linear buckling uses SLEPc (GNHEP, shift-invert at 0), and the path reuses the Python driver. **Not run.**
+- `code/cast3m/truss.dgibi`: `flambage` (after the author's Cast3M guide, ch_eigen) and `pasapas` with
+  `'GRANDS_DEPLACEMENTS'` and imposed apex deflection. **Not run.**
+- `exercises/ch03_session.tex`: the 2 h session. (a) Truss matrices and linear buckling by hand; (b) FEniCS,
+  with Algorithm 3.1 (arc-length by bordering, CMAME style); (c) Cast3M. Listed in `preamble/manual_chapters.tex`.
 
 ## Decisions and open questions
-- (author, 21 Nov 2026) Title "From continuum to discrete: numerical methods" replaces "Continuation and finite
-  elements"; folder and prefix unchanged. The hub should update the plan table in `CLAUDE.md`, `README.md` and the
-  roadmap in `ch00_intro/notes/overview.tex`.
-- The two-bar truss of Chapter 2 is the test case of the whole chapter. The Euler column is used only in its
+- (author, 21 Nov 2026) The title is "From continuum to discrete: numerical methods". Folder and prefix are unchanged.
+  The hub should update the plan table in `CLAUDE.md`, `README.md` and the roadmap in `ch00_intro/notes/overview.tex`.
+- The Chapter 2 two-bar truss is the test case of the whole chapter. The Euler column is used only in its
   linearised form, for the weak form and Rayleigh–Ritz. The elastica stays in Chapter 4.
-- Mode symbol in linear buckling: ¹u, as in Chapter 2 (not φ, which is the truss angle).
-- Open: ANM (Cochelin, Damil, Potier-Ferry) was in the old plan but is not in the author's list. Proposal: one
-  paragraph in `sec:nc-riks`, or drop it.
-- Open: FEniCS version. Proposal: FEniCSx (dolfinx ≥ 0.9, petsc4py/slepc4py), not legacy FEniCS. Arc-length has to be
-  written by hand on top of the Newton solver.
-- Open: Cast3M version and keywords (KSIG, VIBR, PASAPAS arc-length option). Check them against the author's Cast3M
-  version. The author's repository `Castem_Introduction` may have reusable inputs.
-- New notation to propose when drafting: residual `\mat{r}`, reference load vector `\mat{p}`, `\mat{K}_0`, `\mat{K}_\sigma`,
-  Green–Lagrange strain `\tens{E}` and 2nd Piola–Kirchhoff stress `\tens{S}`, bilinear forms a, b, and a `\grad`
-  operator (no macro yet in `preamble/notation.tex`).
-- Bibliography to add, after checking against the sources: Bushnell (1981), §4 on when linear bifurcation is enough;
-  Crisfield, *Non-linear Finite Element Analysis of Solids and Structures* (Wiley, 1991/1997); Wriggers & Simo
-  (1990) or Wriggers, Wagner & Miehe (1988) for the extended system; the SLEPc paper (Hernandez, Roman & Vidal, 2005).
+- Large strains: §3.1 uses the author's MEC563 L03 slides (St Venant–Kirchhoff, e = ε + ½q, K + λK_G with
+  K_G ↔ ∫q(v,w):σ⁰). Polar decomposition, constitutive choices and loss of ellipticity stay for Chapter 9.
+- Geometric stiffness convention: Green strain, K_σ ↔ ∫σ̂:q(v,w), as in L6 slide 9. For a bar this is (N/L)I.
+  The small-rotation matrix (N/L)(I − eeᵀ) gives 0.333 instead of 0.250 at 30°. The chapter uses this difference
+  as a check on codes.
+- Symbols: the arc-length weight is ψ (Crisfield); the plate rotation of the bearing is θ. The mode is ¹u, as in Ch. 2.
+- Open (red): the ANM paragraph, or drop it.
+- Open (red, proposal): the bearing that buckles in tension is the "surprising example" asked for by the author
+  (21 Nov 2026). Keep it here, move it to Ch. 9 with a FEniCS plane-strain bearing, or drop it?
+  A second candidate is tensile buckling with a slider (Zaccaria, Bigoni, Noselli & Misseroni 2011).
+- Open (red): the FEniCSx and Cast3M inputs have not been run. FEniCSx could not be installed in the build
+  environment: pip has no wheel and the conda download was refused. Cast3M is not available. Run both once,
+  and check which geometric matrix `ksigma` uses for `barr` and which strain measure `pasapas` uses for bars.
+  Arc-length in `pasapas` was not found in the author's guide; the truss does not need it.
+- FEniCSx version: dolfinx 0.9 API (`fem.functionspace`, `create_mesh` with a `ufl.Mesh`,
+  `assemble_matrix(..., diagonal=0.0)`).
 
 ## Sources
-Triantafyllidis L6 (FEM for stability), Riks, Crisfield, Keller; Constantinescu & Korsunsky Ch. 7 (Rayleigh–Ritz
-§7.4, free vibrations §7.5); Bushnell (1981) §4. Details and page numbers: `SOURCES.md`. Please upload
-Triantafyllidis's L6 slides and Constantinescu & Korsunsky Ch. 7 for the drafting round.
+- Triantafyllidis, MEC553 Lecture 6 (2018), slides 3–9: incremental Newton–Raphson, LDLᵀ stability check and
+  bisection, the geometric stiffness method and its caution. Slides 10–24 (fibre composites) are for Ch. 9.
+- Constantinescu & Korsunsky (2007), Ch. 7: §7.2 extremum theorems (book p. 192, PDF p. 204); §7.4 Rayleigh–Ritz
+  (book pp. 197–199, PDF pp. 209–211); §7.5 free vibrations, Rayleigh quotient, orthogonality, approximate spectra
+  (book pp. 204–209, PDF pp. 216–221).
+- Author, MEC563 "Large strains and stability analysis" (L03 slides, 43 p.): e = ε + ½q, energy, Newton–Raphson,
+  K_G, critical points (limit vs bifurcation), 3D buckling eigenproblem.
+- The author's Cast3M guide (repository `Castem_Introduction`, ch_eigen and ch_largestrain): ksigma 'FLAM',
+  flambage, pasapas entries.
+- Checked references: Kelly (2003), Kelly & Takhirov (2007), Bažant (2003), Wriggers & Simo (1990).
+  Riks (1979), Crisfield (1981), Hernandez, Roman & Vidal (2005) are as in the hub list or standard.
