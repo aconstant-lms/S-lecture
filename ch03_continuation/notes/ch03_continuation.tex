@@ -112,7 +112,9 @@ $\tens{F} = \tI + \operatorname{grad}\vu$, and the Green--Lagrange strain is
 \end{equation}
 where $\eps(\vu)$ is the small strain and $\tens{q}(\vv,\vw)$ is the symmetric part of
 $\operatorname{grad}\T\vv\,\operatorname{grad}\vw$, with components
-$\tfrac12(v_{k,i}w_{k,j} + w_{k,i}v_{k,j})$. The stress is $\sig = \bbC:\tens{e}$. Dead loads
+$\tfrac12(v_{k,i}w_{k,j} + w_{k,i}v_{k,j})$. The stress is $\sig = \bbC:\tens{e}$, the second
+Piola--Kirchhoff stress, measured per unit reference area. Small strain and finite rotations is
+exactly the regime of buckling, and the one of Audoly and Pomeau~\cite[Section~2.5]{nc-audoly2010}. Dead loads
 $\vb^D$ in $\Omega$ and $\vt^D$ on $\partial\Omega_t$ are multiplied by the load parameter
 $\eta$. The potential energy is
 \begin{equation}\label{eq:nc-energy}
@@ -436,7 +438,8 @@ to five digits of~\eqref{eq:nc-haringx}; Engesser's form returns $0.908$ and no 
 Kelly found the tension root in the classical analysis of bearings and showed that it
 is consistent with tests~\cite{nc-kelly2003}; Kelly and Takhirov confirmed it with a
 three-dimensional finite element model of a laminated bearing~\cite{nc-kelly2007}. Why two
-formulas? Ba\v{z}ant showed that both follow from admissible finite strain measures, and
+formulas? Once rotations are finite, ``the stress'' needs a choice of configuration and of
+frame~\cite[Section~2.5]{nc-audoly2010}. Ba\v{z}ant showed that both formulas follow from admissible finite strain measures, and
 differ in how the shear stiffness depends on the axial stress; with a constant shear
 stiffness, Haringx's form is the right one for helical springs and built-up
 columns~\cite{nc-bazant2003}. The geometric stiffness is part of the model, not a detail
@@ -910,6 +913,7 @@ measure used by \texttt{pasapas} for bars, with the maximum $0.0481$.
 \begin{chapterbib}{99}
 \bibitem{nc-triantafyllidis2018} N.~Triantafyllidis, \emph{Stability of Solids: from Structures to Materials}, lecture slides MEC553, Lecture~6, \'Ecole polytechnique, Palaiseau, 2018.
 \bibitem{nc-constantinescu2007} A.~Constantinescu and A.~Korsunsky, \emph{Elasticity with Mathematica: An Introduction to Continuum Mechanics and Linear Elasticity}, Cambridge University Press, 2007.
+\bibitem{nc-audoly2010} B.~Audoly and Y.~Pomeau, \emph{Elasticity and Geometry: From Hair Curls to the Non-linear Response of Shells}, Oxford University Press, Oxford, 2010.
 \bibitem{nc-koiter1945} W.~T.~Koiter, \emph{On the Stability of Elastic Equilibrium}, PhD thesis, Delft, 1945; English translation NASA TT F-10833, 1967.
 \bibitem{nc-bushnell1981} D.~Bushnell, Buckling of shells---pitfall for designers, \emph{AIAA Journal} 19 (1981) 1183--1226.
 \bibitem{nc-riks1979} E.~Riks, An incremental approach to the solution of snapping and buckling problems, \emph{International Journal of Solids and Structures} 15 (1979) 529--551.

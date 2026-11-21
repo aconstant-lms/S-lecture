@@ -92,6 +92,18 @@ and the slide version (88 slides, "6-1" to "6-88").
   ∫ε(v):C:ε(w) + λ∫q(v,w):σ⁰ = 0; inverted pendulum, rails, Venus flytrap, Love–Kirchhoff rods.
 - Use: Ch. 3 §3.1 (weak form, second variation); Ch. 9 (large strains, 3D bodies).
 
+## 4c. B. Audoly & Y. Pomeau, *Elasticity and Geometry: From Hair Curls to the Non-linear Response of Shells*
+(Oxford University Press, 2010), 597 p. **Role: physical examples and pictures** (PDF page = book page + 11).
+- Ch. 2 3D elasticity; §2.5 stress and strain for finite displacements, second Piola–Kirchhoff stress (book p. 47).
+- Ch. 3 Kirchhoff rods (Darboux vector, twist, Kirchhoff equations, spinning-top analogy, localized helix, p. 59);
+  Ch. 4 mechanics of the human hair (p. 105); Ch. 5 rippled leaves, uncoiled springs (p. 132). → Ch. 4.
+- Ch. 6 plates, Theorema egregium, developable surfaces, Föppl–von Kármán (p. 157); Ch. 7 end effects in plate
+  buckling (p. 214); Ch. 8 finite-amplitude buckling of a strip, Euler column, secondary buckling, delamination
+  (p. 251); Ch. 9 crumpled paper, d-cones and ridges (p. 325); Ch. 10 fractal buckling near edges (p. 369). → Ch. 6.
+- Ch. 11 geometric rigidity of surfaces (p. 403); Ch. 12 shells of revolution (p. 435); Ch. 13 the elastic torus
+  (p. 454); Ch. 14 spherical shell pushed by a wall (p. 490). → Ch. 7, 8.
+- Used in Ch. 3: §2.5 (finite rotations, choice of stress measure).
+
 ## 5. Map: sources by chapter
 | Ch | Main sources |
 |---|---|
@@ -99,7 +111,7 @@ and the slide version (88 slides, "6-1" to "6-88").
 | 1 | Strang, Strogatz, Guckenheimer & Holmes, Thompson & Hunt |
 | 2 | Thompson & Hunt (§1.2, §10.4), Koiter, Triantafyllidis notes A (T model pp. 24–31, two-bar truss pp. 41–45, LSK pp. 57–71), sample exam Problem 1; Ziegler (1968) |
 | 3 | Triantafyllidis L6 (FEM, slides 3–9), Riks, Crisfield, Keller; Constantinescu & Korsunsky Ch. 7 (§7.2, §7.4, §7.5); author's L03 slides; Bushnell §4; Kelly (2003), Bažant (2003) |
-| 4 | Triantafyllidis BA-1 (elastica), H3, H4; Timoshenko & Gere; Audoly & Pomeau (physical examples) |
+| 4 | Triantafyllidis BA-1 (elastica), H3, H4; Timoshenko & Gere; Audoly & Pomeau Ch. 3–5 (rods, hair, ribbons) |
 | 5 | Bažant & Cedolin, Trahair, Shanley, Hutchinson (plastic buckling), Bushnell §7 |
 | 6 | Triantafyllidis BB-1 and L5 (von Kármán plate, double mode), H5; Brush & Almroth; Constantinescu & Korsunsky Ch. 7 |
 | 7 | Brush & Almroth, Koiter, NASA SP-8007 (1968, 2020), Bushnell §3–8, H7 |

@@ -80,6 +80,8 @@ Engesser and Haringx); 4 computer exercises (arc-length from scratch, the bearin
   (book pp. 204–209, PDF pp. 216–221).
 - Author, MEC563 "Large strains and stability analysis" (L03 slides, 43 p.): e = ε + ½q, energy, Newton–Raphson,
   K_G, critical points (limit vs bifurcation), 3D buckling eigenproblem.
+- Audoly & Pomeau (2010) §2.5 (book pp. 47–48): small strain and finite rotations, second Piola–Kirchhoff
+  stress, and the ambiguity of the stress under finite rotations (cited in §3.1 and in the bearing example).
 - The author's Cast3M guide (repository `Castem_Introduction`, ch_eigen and ch_largestrain): ksigma 'FLAM',
   flambage, pasapas entries.
 - Checked references: Kelly (2003), Kelly & Takhirov (2007), Bažant (2003), Wriggers & Simo (1990).
