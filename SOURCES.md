@@ -119,6 +119,22 @@ Mathematical Sciences 156, 2004), 355 p. **Role: precise statements behind the "
   Ch. 3 (Crandall–Rabinowitz for branch switching, Morse index for the pivot count), Ch. 4 and 6 (Euler column,
   plates as elliptic problems).
 
+## 4e. Candidate (not yet uploaded): R. C. Hibbeler, *Mechanics of Materials* (Pearson; 10th ed. 2017, 11th ed. 2022)
+**Role: engineering practice, numbers and real sections** (author, 21 Nov 2026: "very engineering and technical";
+suggested by the Ch. 3 thread for later chapters). Chapter and page numbers to be checked on the uploaded edition.
+- Chapter "Buckling of columns": critical load, ideal pinned column, other supports and effective length,
+  secant formula for eccentric loads, inelastic buckling (tangent modulus, Engesser, Shanley), design formulas
+  for steel, aluminium and timber columns, eccentrically loaded columns.
+- Ch. 4 (rods): effective-length table and the Euler hyperbola against slenderness, as a bridge from the
+  elastica to design; the secant formula as a closed-form imperfect column (links to the Ch. 2 power laws);
+  worked numbers on rolled steel sections for the exercises.
+- Ch. 5 (thin-walled, real materials): tangent-modulus and Shanley columns; the design column curves (steel,
+  aluminium, timber) against the elastic and plastic limits; interaction formulas for eccentric loads.
+- Exercise sessions and the project in pairs: homework-style problems with real data (sections, materials, loads).
+- Use as a source of numbers and engineering practice, not of theory: the theory stays with Thompson & Hunt,
+  Bažant & Cedolin and Brush & Almroth. For the column curves, the SSRC guide (Ziemian, *Guide to Stability
+  Design Criteria for Metal Structures*, 6th ed., Wiley 2010) and Trahair are the design references.
+
 ## 5. Map: sources by chapter
 | Ch | Main sources |
 |---|---|
@@ -126,8 +142,8 @@ Mathematical Sciences 156, 2004), 355 p. **Role: precise statements behind the "
 | 1 | Strang, Strogatz, Guckenheimer & Holmes, Thompson & Hunt |
 | 2 | Thompson & Hunt (§1.2, §10.4), Koiter, Triantafyllidis notes A (T model pp. 24–31, two-bar truss pp. 41–45, LSK pp. 57–71), sample exam Problem 1; Ziegler (1968) |
 | 3 | Triantafyllidis L6 (FEM, slides 3–9), Riks, Crisfield, Keller; Constantinescu & Korsunsky Ch. 7 (§7.2, §7.4, §7.5); author's L03 slides; Bushnell §4; Kelly (2003), Bažant (2003) |
-| 4 | Triantafyllidis BA-1 (elastica), H3, H4; Timoshenko & Gere; Audoly & Pomeau Ch. 3–5 (rods, hair, ribbons) |
-| 5 | Bažant & Cedolin, Trahair, Shanley, Hutchinson (plastic buckling), Bushnell §7 |
+| 4 | Triantafyllidis BA-1 (elastica), H3, H4; Timoshenko & Gere; Audoly & Pomeau Ch. 3–5 (rods, hair, ribbons); Hibbeler (effective length, secant formula; candidate) |
+| 5 | Bažant & Cedolin, Trahair, Shanley, Hutchinson (plastic buckling), Bushnell §7; Hibbeler (inelastic columns, design curves; candidate) |
 | 6 | Triantafyllidis BB-1 and L5 (von Kármán plate, double mode), H5; Brush & Almroth; Constantinescu & Korsunsky Ch. 7 |
 | 7 | Brush & Almroth, Koiter, NASA SP-8007 (1968, 2020), Bushnell §3–8, H7 |
 | 8 | Bushnell (pressure, tanks), NASA SP-8007 2020, Hutchinson (spheres), Reis, Bertoldi |
