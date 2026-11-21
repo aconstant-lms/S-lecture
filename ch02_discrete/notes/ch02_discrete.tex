@@ -1,41 +1,203 @@
 %======================================================================
 \chapter{Discrete systems: energy and Lagrangian mechanics}\label{ch:ld}
 %======================================================================
-% Skeleton. Labels of this chapter: *:ld-*  (bibitem keys ld-*).
-% Planned content: see ch02_discrete/README.md and the course plan in CLAUDE.md.
+% Outline drafted (21 Nov 2026). Labels of this chapter: *:ld-*  (bibitem keys ld-*).
+% Sections carry their planned content as \draftnote's; see ch02_discrete/README.md.
 
 \framepart{Outline}
-\draftnote{Chapter 2 is planned, not yet written. Planned content:}
+A structure with a few degrees of freedom is described by a column of
+generalised coordinates $\mat{u}$ and a load parameter $\eta$. When the loads are
+conservative, everything follows from one function, the potential energy
+$\mathcal{E}(\mat{u},\eta)$. Its gradient gives the equilibria. Its Hessian, the
+stiffness matrix $\mat{K} = \mathcal{E}_{,\mat{u}\mat{u}}$, decides their stability. A critical
+point is the load at which $\mat{K}$ first gets a zero eigenvalue, and the
+eigenvector is the buckling mode. Chapter~\ref{ch:st} found the same facts for a
+differential equation; here the Jacobian is replaced by a symmetric matrix and the
+Lyapunov function by the energy. Koiter's idea is to expand $\mathcal{E}$ along the
+mode. Two or three Taylor coefficients then decide whether the structure keeps its
+load after buckling or loses it, and how much a small imperfection lowers its
+maximum load. We work with one and two degrees of freedom: rigid bars on springs,
+the von Mises truss that snaps through, the Augusti column in which two modes
+interact. Ziegler's column under a follower load closes the chapter. It has no
+potential energy, the static method fails, and the column is lost by flutter.
+
+\paragraph{By the end of this chapter you should be able to:}
 \begin{itemize}
-  \item \draftnote{Lagrange's equations, conservative loads, the total potential energy and its Hessian.}
-  \item \draftnote{Stability by the energy criterion; critical points as zero eigenvalues of the Hessian.}
-  \item \draftnote{Koiter's asymptotic analysis with one and two degrees of freedom: stable and unstable symmetric points, asymmetric points, the two-thirds and one-half power laws.}
-  \item \draftnote{Classic models: rigid bars on springs, the von Mises truss (snap-through), the Augusti model (mode interaction), the Ziegler column (follower load, flutter).}
-  \item \draftnote{Exercises: symbolic post-buckling in Mathematica, imperfection-sensitivity curves in Python.}
+  \item write the potential energy and Lagrange's equations of a system of rigid
+        bars, springs and loads, and linearise them about an equilibrium;
+  \item decide stability from the Hessian and find the critical load and the mode
+        from $\det\mat{K} = 0$;
+  \item tell a limit point from a bifurcation point;
+  \item compute Koiter's coefficients $\eta_1$, $\eta_2$ of a simple critical point,
+        by hand for one degree of freedom and in Mathematica for two;
+  \item classify a critical point as asymmetric, stable symmetric or unstable
+        symmetric, and draw its imperfection-sensitivity curve
+        (one-half and two-thirds power laws);
+  \item explain snap-through, mode interaction, and why designing for simultaneous
+        critical loads is dangerous;
+  \item explain why a follower load needs the kinetic (dynamic) criterion, and
+        compute the flutter load of Ziegler's column.
 \end{itemize}
 
-\section{Potential energy and the Hessian}\label{sec:ld-1}
-\draftnote{To be written.}
+\paragraph{Plan of the chapter.}
+Section~\ref{sec:ld-lagrange} sets up the energy and Lagrange's equations, and
+linearises the motion about an equilibrium. Section~\ref{sec:ld-hessian} gives the
+energy criterion: stability, critical points, modes, limit and bifurcation points.
+Section~\ref{sec:ld-koiter} expands the energy along the mode and finds the three
+simple critical points on rigid-bar models. Section~\ref{sec:ld-imperfect} measures
+imperfection sensitivity. Section~\ref{sec:ld-snap} treats snap-through on the
+von Mises truss. Section~\ref{sec:ld-interaction} lets two modes interact in the
+Augusti column. Section~\ref{sec:ld-flutter} leaves conservative loads for
+Ziegler's column. A summary, exercises (page~\pageref{sec:ld-exo}) and the
+references close the chapter. The models and the asymptotics follow
+\cite{ld-thompson1973,ld-triantafyllidis2011}; the source of the method
+is~\cite{ld-koiter1945}, and the engineering view is in~\cite{ld-bazant1991}.
 
-\section{Koiter's asymptotic analysis}\label{sec:ld-2}
-\draftnote{To be written.}
+%======================================================================
+\section{Energy and Lagrange's equations}\label{sec:ld-lagrange}
+\draftnote{Planned (about 15 min of lecture).
+(i)~Worked example first: two rigid bars on two torsional springs under a dead load
+(the 2-dof chain); generalised coordinates $\mat{u} = (\theta_1,\theta_2)$.
+(ii)~Kinetic energy $T = \tfrac12\dot{\mat{u}}\T\mat{M}(\mat{u})\dot{\mat{u}}$, potential
+energy $\mathcal{E}(\mat{u},\eta)$ = strain energy $-$ work of the dead load;
+Lagrange's equations $\tfrac{d}{dt}\,\partial T/\partial\dot{\mat{u}} - \partial T/\partial\mat{u}
++ \mathcal{E}_{,\mat{u}} = \mat{Q}$, with $\mat{Q}$ the non-conservative generalised forces
+(zero until Section~\ref{sec:ld-flutter}).
+(iii)~Equilibrium $\mathcal{E}_{,\mat{u}} = \mat{0}$; principal branch ${}^0\mat{u}(\eta)$.
+(iv)~Linearised motion $\mat{M}\ddot{\mat{v}} + \mat{K}\mat{v} = \mat{0}$,
+$\mat{K} = \mathcal{E}_{,\mat{u}\mat{u}}$; frequencies $\omega^2$ from
+$\mat{K}\mat{x} = \omega^2\mat{M}\mat{x}$; a frequency goes to zero at the critical
+load (vibration test, Exercise~\ref{exo:st-tracedet} of Chapter~\ref{ch:st}).}
 
-\section{Snap-through and mode interaction}\label{sec:ld-3}
-\draftnote{To be written.}
+\section{The energy criterion and the Hessian}\label{sec:ld-hessian}
+\draftnote{Planned (15 min).
+(i)~Lagrange--Dirichlet (stated in Chapter~\ref{ch:st}): a strict minimum of
+$\mathcal{E}$ is stable. Key box: stable while $\mat{K}$ is positive definite.
+(ii)~Critical point: $\det\mat{K}(\eta_c) = 0$, mode ${}^1\mat{u}$ with
+$\mat{K}_c\,{}^1\mat{u} = \mat{0}$; Rayleigh quotient; the chain example by hand
+(two critical loads, two modes).
+(iii)~Limit point if ${}^1\mat{u}\T\mathcal{E}_{,\mat{u}\eta} \neq 0$, bifurcation point if
+it vanishes: the fold test $\mat{w}\T\mat{f}_r$ of Chapter~\ref{ch:st}, with
+$\mat{w} = \mat{v}$ because $\mat{K}$ is symmetric.
+(iv)~Box~2.1: finding and classifying the critical points of $\mathcal{E}(\mat{u},\eta)$.}
 
-\section{Non-conservative loads and flutter}\label{sec:ld-4}
-\draftnote{To be written.}
+\section{Koiter's analysis of a simple critical point}\label{sec:ld-koiter}
+\draftnote{Planned (25 min).
+(i)~One degree of freedom: expand $\mathcal{E}(\xi,\eta)$ about $(0,\eta_c)$;
+the path $\eta = \eta_c + \eta_1\xi + \eta_2\xi^2 + \dots$ with $\eta_1$ from
+$\mathcal{E}_{,\xi\xi\xi}$ and $\eta_2$ from $\mathcal{E}_{,\xi\xi\xi\xi}$; stability on the path
+from the sign of the slope (Chapter~\ref{ch:st}, exchange of stability).
+(ii)~Three cases on three rigid-bar models (Thompson \& Hunt):
+stable symmetric (the bar of Example~\ref{ex:st-bar}, recalled, $P/P_c \approx 1 + \theta^2/6$);
+unstable symmetric (lateral spring that stays horizontal, $P = kL\cos\theta$);
+asymmetric (spring inclined at $45^\circ$, $P/P_c = 1 - \tfrac34\theta + O(\theta^2)$, $P_c = kL/2$;
+checked in SymPy).
+(iii)~Two degrees of freedom: $\mat{u} = {}^0\mat{u}(\eta) + \xi\,{}^1\mat{u} + \xi^2\,{}^2\mat{u} + \dots$,
+${}^2\mat{u}$ orthogonal to the mode; the passive coordinate always lowers $\eta_2$
+(Lyapunov--Schmidt--Koiter as announced in Section~\ref{sec:st-reduction}).
+Example: a 2-dof model where neglecting ${}^2\mat{u}$ gives the wrong sign
+(Triantafyllidis T model, or the 2-dof chain with a nonlinear spring; to choose).
+(iv)~Key box: two coefficients decide the post-buckling.}
 
+\section{Imperfection sensitivity}\label{sec:ld-imperfect}
+\draftnote{Planned (15 min).
+(i)~Imperfection of amplitude $\bar\xi$ in the shape of the mode; equilibrium
+$(1 - \eta/\eta_c)\,\xi + \dots \propto \bar\xi\,\eta/\eta_c$.
+(ii)~Maximum load $\eta_m$: asymmetric $1 - \eta_m/\eta_c \propto \abs{\bar\xi}^{1/2}$
+(one-half power law, imperfection of the bad sign only);
+unstable symmetric $1 - \eta_m/\eta_c \propto \abs{\bar\xi}^{2/3}$ (two-thirds law);
+stable symmetric: no maximum, the deflection at $\eta_c$ grows as $\bar\xi^{1/3}$
+(Exercise~\ref{exo:st-imperfect-bar}). Exact constants derived in the text.
+(iii)~Figure: the imperfection-sensitivity curves $\eta_m/\eta_c$ against $\bar\xi$,
+exact (Python) against asymptotic. Link with the cusp~\eqref{eq:st-cusp} and
+the imperfect transcritical bifurcation (Exercise~\ref{exo:st-imptrans}).
+(iv)~Key box: the shape of the curve near $\bar\xi = 0$ is set by the critical point.
+Preview: the axially compressed cylinder (Chapter~\ref{ch:cy}).}
+
+\section{Snap-through: the von Mises truss}\label{sec:ld-snap}
+\draftnote{Planned (15 min).
+(i)~Two elastic bars, apex load, one degree of freedom (symmetric deflection $w$):
+shallow-truss closed form $P(w)$ cubic, limit points, the jump and the
+unloading path (hysteresis, as in Figure~\ref{fig:st-hysteresis}).
+(ii)~Near a limit point $\eta - \eta_m \propto -\xi^2$ and an imperfection shifts
+$\eta_m$ linearly: limit points are not imperfection-sensitive in Koiter's sense.
+(iii)~Two degrees of freedom: can an asymmetric bifurcation precede the limit
+point?}
+\draftnote{Open: with elastic bars only (axial springs) and a free apex, a SymPy/NumPy
+check finds no asymmetric bifurcation before the limit point for rises $h/a = 0.2$
+and $0.5$, with or without a vertical apex spring: the horizontal stiffness stays
+positive. The asymmetric mode needs another ingredient (bars of unequal stiffness,
+rigid bars on rotational springs, or bars that buckle). Choose from Triantafyllidis's
+two-bar truss (notes pp.~41--45) or Pecknold, Ghaboussi \& Healey (1985) once the
+sources are uploaded. This section can also replace the fishery of
+Chapter~\ref{ch:st} as the example of a fold (draftnote there).}
+
+\section{Mode interaction: the Augusti column}\label{sec:ld-interaction}
+\draftnote{Planned (10 min).
+(i)~Rigid strut on a universal joint with two springs in perpendicular planes
+(Augusti 1964): two modes, critical loads $\eta_{c1} \le \eta_{c2}$.
+(ii)~Energy as a quartic in $(\xi_1,\xi_2)$: uncoupled and coupled
+post-buckling paths, their stability, imperfection sensitivity when
+$\eta_{c1} \approx \eta_{c2}$.
+(iii)~Thompson's warning on naive optimisation: designing every mode for the same
+load creates the interaction (Bushnell 1981, \S7; Chapters~\ref{ch:tw}
+and~\ref{ch:cy}).}
+\draftnote{Open: the result depends on the kinematics of the springs. A first check
+with rotational springs on the two projected angles, and on two successive
+rotations, gives coupled (diagonal) paths that are \emph{stiffer}, not weaker,
+than the single-plane path. The spring arrangement of Augusti's model must be
+taken from Thompson \& Hunt (1973) or Ba\v{z}ant \& Cedolin (1991) before the
+section is written.}
+
+\section{Non-conservative loads and flutter: Ziegler's column}\label{sec:ld-flutter}
+\draftnote{Planned (15 min).
+(i)~Follower load: the work depends on the path, there is no $\mathcal{E}$; the
+linearised stiffness is non-symmetric.
+(ii)~Static (Euler) method: no adjacent equilibrium, hence ``no critical load''.
+Kinetic method: $\mat{M}\ddot{\mat{v}} + \mat{K}\mat{v} = \mat{0}$, eigenvalues as in
+Section~\ref{sec:st-eigen}.
+(iii)~Ziegler's double pendulum (masses $2m$ and $m$, springs $k$, bars $l$): two
+frequencies merge and become complex at $P_f = (7/2 - \sqrt2)\,k/l \approx 2.086\,k/l$
+(checked numerically).
+(iv)~Ziegler's destabilisation paradox: with equal small dampers the critical load
+tends to $\approx 1.464\,k/l$, not to the undamped value (checked numerically;
+reference value to be confirmed in Ziegler 1968 / Bolotin). Trace--determinant
+picture of Figure~\ref{fig:st-tracedet}; no new Hopf theory (decided in Chapter~\ref{ch:st}).
+(v)~Physical cases: Beck's column, pipes conveying fluid, brake squeal (one paragraph).}
+
+%======================================================================
 \framepart{Summary}
 \begin{gbox*}
 \begin{itemize}
-  \item \textbf{To be written.} \draftnote{take-home messages.}
+  \item \textbf{To be written.} \draftnote{Take-home messages, one per section.}
 \end{itemize}
 \end{gbox*}
 
 \framepart{Exercises}\label{sec:ld-exo}
 \framesub{Short questions}
-\draftnote{To be written.}
+\draftnote{Planned (8--10): positive definiteness of a $2\times2$ Hessian; critical
+load of the 2-dof chain; limit or bifurcation?; sign of $\eta_1$ from a sketch;
+which power law?; vibration test of the critical load; why the passive coordinate
+lowers $\eta_2$; why the static method fails for a follower load.}
+
+\framesub{Problems}
+\draftnote{Planned: the 2-dof chain with unequal springs (Triantafyllidis H1);
+two nonlinear springs in series (H2); the imperfect lateral-spring bar, exact and
+asymptotic two-thirds law; the inclined-spring bar and the one-half law; the shallow
+von Mises truss; the four masses linked by rods and springs (sample exam);
+Beck's column reduced to two degrees of freedom.}
+
+\framesub{Computer exercises}
+\draftnote{Planned:
+(a)~Mathematica: symbolic post-buckling. A routine that takes $\mathcal{E}(\mat{u},\eta)$,
+finds $\eta_c$ and ${}^1\mat{u}$, solves for ${}^2\mat{u}$, and returns $\eta_1$,
+$\eta_2$; applied to the three rigid-bar models and a 2-dof model
+(\texttt{code/mathematica/koiter.wl}, with a SymPy twin \texttt{code/python/koiter\_sympy.py}).
+(b)~Python: imperfection-sensitivity curves. Exact maximum load by continuation
+(reusing \texttt{ch01\_bifurcation/code/python/arclength.py}) against the
+asymptotic power laws (\texttt{code/python/ex\_imperfection.py}).
+(c)~Python: eigenvalue loci of Ziegler's column with and without damping
+(\texttt{code/python/ex\_ziegler.py}).}
 
 \begin{chapterbib}{99}
 \bibitem{ld-thompson1973} J.~M.~T.~Thompson and G.~W.~Hunt, \emph{A General Theory of Elastic Stability}, Wiley, London, 1973.
