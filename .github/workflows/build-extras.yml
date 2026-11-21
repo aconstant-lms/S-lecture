@@ -1,0 +1,61 @@
+# Exercise sheets, instructor manual and slides: built when their sources
+# change, or by hand (Actions tab, "Run workflow"). Their PDFs are uploaded
+# to the release "latest" next to the lecture notes, which are not touched.
+# The book is compiled first because the sheets cite it through main.aux.
+name: Build exercises and slides
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "*/exercises/**"
+      - "*/slides/**"
+      - "appendices/*/exercises/**"
+      - "appendices/*/slides/**"
+      - "preamble/**"
+      - "instructor_manual.tex"
+      - "exercise_sheets.tex"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-extras
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile the book, the exercise sheets and the instructor manual
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: |
+            main.tex
+            exercise_sheets.tex
+            instructor_manual.tex
+          latexmk_use_lualatex: false
+          args: -pdf -interaction=nonstopmode -file-line-error -halt-on-error
+
+      - name: Compile the slides (each deck in its own folder)
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: "ch*/slides/c*.tex"
+          work_in_root_file_dir: true
+          latexmk_use_lualatex: false
+          args: -pdf -interaction=nonstopmode -file-line-error -halt-on-error
+
+      - name: Upload to the release "latest"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp exercise_sheets.pdf S_exercise_sheets.pdf
+          cp instructor_manual.pdf S_instructor_manual.pdf
+          FILES="S_exercise_sheets.pdf S_instructor_manual.pdf"
+          for f in ch*/slides/c*.pdf; do
+            n="S_slides_$(basename "$f")"; cp "$f" "$n"; FILES="$FILES $n"
+          done
+          gh release upload latest $FILES --clobber

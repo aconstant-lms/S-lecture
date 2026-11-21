@@ -1,0 +1,34 @@
+%======================================================================
+%  slides.tex -- common preamble of the Beamer decks <chNN>/slides/cNN_*.tex
+%  Theme and colours of the MEC643 decks of the NPM notes; notation of the
+%  book (preamble/notation.tex). Decks are compiled from their own folder:
+%      cd ch01_bifurcation/slides && pdflatex c01_bifurcation.tex
+%  so this file is read as ../../preamble/slides.tex, and figures are taken
+%  from FIG/ (slide-only pictures) and ../figures/ (figures of the notes).
+%======================================================================
+\mode<presentation>
+{
+  \usetheme{Hannover}
+  \usecolortheme{rose}
+  \setbeamercolor{sidebar}{bg=yellow!60!gray,fg=yellow!40!gray}
+  \setbeamercolor{frametitle}{bg=yellow!80!gray,fg=yellow!20!gray}
+  \setbeamercovered{transparent}
+}
+\usepackage[utf8]{inputenc}
+\IfFileExists{lmodern.sty}{\usepackage{lmodern}\usepackage[T1]{fontenc}}{}
+\usepackage{amsmath,amssymb,bm,mathtools}
+\usepackage{tabularx,array,booktabs}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,patterns,decorations.pathmorphing}
+\graphicspath{{FIG/}{../figures/}}
+
+\input{../../preamble/notation}
+
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\definecolor{cu}{RGB}{31,90,200}          % blue of the book figures
+% key statement on a slide (the gbox of the notes)
+\newcommand{\keybox}[2]{\begin{block}{#1}#2\end{block}}
+
+\author{A.~Constantinescu}
+\institute{LMS, CNRS \& \'Ecole polytechnique}

@@ -15,7 +15,7 @@ frame are shared. When a convention changes in one book, check whether it should
   sections, `\framepart{Summary}` (a `gbox*` of bold-led items), `\framepart{Exercises}` (sub-parts with
   `\framesub{...}`), and the `chapterbib` which prints the `References` frame part. Frame parts are
   unnumbered, in small caps: refer to them with `\pageref`/`\nameref`, never `\ref`.
-  `chapters/ch1_stability.tex` is the template.
+  `ch01_bifurcation/notes/ch01_bifurcation.tex` is the template.
 - Index concepts with `\index{concept}` or `\index{concept!subconcept}` on the line after a section label,
   `\paragraph`, `gbox` title or exercise label (never inside captions or math). Reuse existing top-level
   entries instead of creating near-duplicates; use `sortkey@Display` for accents/math.
@@ -33,22 +33,112 @@ frame are shared. When a convention changes in one book, check whether it should
   or thematic sub-parts.
 - Constraints are added to Lagrangians with the sign `-\lambda\,(\mat{P}\vu-\vuD)`, so that the multiplier is
   the reaction (positive).
-- New symbols go into the notation list `front/notation_list.tex` as well as `preamble/notation.tex`.
+- New symbols go into the notation list `ch00_intro/notes/notation_list.tex` as well as `preamble/notation.tex`.
 - Each chapter ends with its own `chapterbib`; bibitem keys must be unique across the whole book.
-- Labels are prefixed per chapter: ch1 `*:st-*` (to be fixed for the following chapters), appendices `app:*`.
+- Labels are prefixed per chapter (table in "Course plan" below): `ch:<p>`, `sec:<p>-*`, `eq:<p>-*`,
+  `fig:<p>-*`, `exo:<p>-*`, bibitem keys `<p>-*`. Appendices `app:*`.
 - Author comments in the sources look like `%% AC: ...`; process them when asked, then delete them.
 - Red `\draftnote{...}` marks open questions for the author; leave them unless resolved.
 
+## Style models
+- Gilbert Strang (*Introduction to Applied Mathematics*, *Computational Science and Engineering*,
+  *Differential Equations and Linear Algebra*): mathematically precise, but not overburdened. Short sentences,
+  one idea each; the picture and a small example before the general statement; few symbols, each one used.
+  Displayed formulas are not crowded: no long chains of `\quad`/`\qquad` or hand-made spacing (`\,`, `\!`,
+  `\hspace`) beyond what the notation needs; split a long display into short steps instead.
+- Audoly & Pomeau for the geometric view of rods, plates and shells (scaling laws, inextensibility, boundary layers).
+
+## Repository structure
+One folder per chapter, the same sub-folders everywhere:
+
+    main.tex                     the book (lecture notes); \include{<chNN>/notes/<chNN>}
+    exercise_sheets.tex          exercise sessions, questions only (students)
+    instructor_manual.tex        same sessions with answers and instructor notes
+    preamble/                    style.tex, notation.tex (book), manual.tex + manual_chapters.tex
+                                 (sessions), slides.tex (Beamer decks), index.ist
+    ch00_intro/                  front matter: titlepage, overview (roadmap), notation_list
+    chNN_<name>/                 one chapter (NN = 01..09), with
+      README.md                  planned content, status, decisions of the chapter thread
+      notes/chNN_<name>.tex      the chapter of the book
+      exercises/chNN_session.tex the 2 h exercise session (sheet + answers + instructor notes)
+      slides/cNN_<name>.tex      Beamer deck, compiled from its own folder; FIG/ for slide-only pictures
+      figures/                   PDF figures of the notes (also used by the slides)
+      code/python|mathematica|fenics|cast3m/   computer codes of the chapter
+      code/figures/              scripts that produce figures/
+      extra/                     material kept for later revisions (not compiled)
+    appendices/appX_<name>/      appendices, same sub-folders
+
+Sessions: `\sessiontitle`, parts `\spart`, questions `\q` (or `\qc` for code questions), `answer` and
+`instructor` environments (printed only in the instructor manual). Cite the book as `\ref{B-sec:...}`.
+A new session is listed in `preamble/manual_chapters.tex`.
+
+## Course plan (9 lectures of 2 h + 9 exercise sessions of 2 h)
+Progression in dimension: discrete, 1D, 2D, 3D. Each chapter follows the same path: closed form on the
+simplest model, Mathematica for asymptotics, Python for continuation, FEniCS and Cast3M for the full problem,
+checked against the closed form. A running example: the cylinder (1 dof model, ring, shell, 3D solid).
+
+| Ch | Folder | Prefix | Title | Content |
+|---|---|---|---|---|
+| 0 | `ch00_intro` | `in` | Introduction | front matter, course overview |
+| 1 | `ch01_bifurcation` | `st` | Differential equations and bifurcation | slope test, normal forms, imperfections, rigid bar (drafted) |
+| 2 | `ch02_discrete` | `ld` | Discrete systems: energy and Lagrangian mechanics | Hessian, Koiter with 1-2 dof, von Mises truss, Augusti, Ziegler (flutter) |
+| 3 | `ch03_continuation` | `nc` | Continuation and finite elements | pseudo-arclength, Riks/Crisfield, branch switching, linear buckling, ANM, FEniCS/Cast3M |
+| 4 | `ch04_rods` | `rd` | Rods: the elastica and beyond | Kirchhoff rods, elastica, elastic foundation, twist and natural curvature |
+| 5 | `ch05_thinwalled` | `tw` | Thin-walled members and real materials | torsional buckling, cruciform column, Shanley, residual stresses, column curves |
+| 6 | `ch06_plates` | `pl` | Plates | Föppl-von Kármán, plate buckling, effective width, wrinkling, d-cones |
+| 7 | `ch07_cylinders` | `cy` | Cylindrical shells and imperfection sensitivity | classical load, Koiter, knockdown factors, rocket fuselage |
+| 8 | `ch08_shells` | `sh` | Shells in service: nozzles, prestress and deployable structures | external pressure, nozzle divergent, bistable shells, tape springs, kirigami |
+| 9 | `ch09_solids` | `so` | Three-dimensional bodies | Hill, loss of ellipticity, Biot wrinkling, pattern transformation; projects |
+
+Assessment (proposal, to be confirmed): exam + project in pairs from session 5 on, one real structure.
+Status of each chapter: its `README.md`. Skeleton chapters carry the planned content as `\draftnote`s.
+
+## Reference list (to grow; each chapter copies what it cites into its own chapterbib)
+- Textbooks: Thompson & Hunt, *A General Theory of Elastic Stability* (1973); Bažant & Cedolin, *Stability of
+  Structures* (1991); Brush & Almroth, *Buckling of Bars, Plates, and Shells* (1975); Timoshenko & Gere,
+  *Theory of Elastic Stability* (1961); Audoly & Pomeau, *Elasticity and Geometry* (2010); Nguyen Q. S.,
+  *Stability and Nonlinear Solid Mechanics* (2000); Koiter (1945, NASA TT F-10833, 1967).
+- Dynamical systems: Strang, *Differential Equations and Linear Algebra* (2014); Strogatz (2015);
+  Guckenheimer & Holmes (1983); Seydel (2010); Bergé, Pomeau & Vidal, *L'ordre dans le chaos* (1984).
+- Numerics: Keller (1977); Riks (1979); Crisfield (1981); Allgower & Georg (2003); Cochelin, Damil &
+  Potier-Ferry, *Méthode asymptotique numérique* (2007); Logg, Mardal & Wells (FEniCS book, 2012).
+- Shells and design: von Kármán & Tsien (1941); NASA SP-8007; Calladine (1983); Singer, Arbocz & Weller,
+  *Buckling Experiments*; Elishakoff (2014); Hutchinson & Koiter (1970); Hutchinson (1967, 1974).
+- Recent papers for examples and illustrations: Reis (2015, buckliphobia to buckliphilia); Lee, López Jiménez,
+  Marthelot, Hutchinson & Reis (2016); Virot, Kreilos, Schneider & Rubinstein (2017); Bertoldi, Vitelli,
+  Christensen & van Hecke (2017); Mullin, Deschanel, Bertoldi & Boyce (2007); Rafsanjani & Bertoldi (2017);
+  Gomez, Moulton & Vella (2017); Cerda & Mahadevan (2003); Bergou et al., discrete elastic rods (2008);
+  Kebadze, Guest & Pellegrino (2004); Seffen & Pellegrino (1999); Östlund & Muhammad-Klingmann (2005).
+- Before a reference enters a chapterbib, check its details (authors, journal, volume, pages) against the source.
+
+## Threads: one hub, one thread per chapter
+- The hub thread (course plan, structure, cross-chapter decisions) owns this file, `README.md`,
+  `ch00_intro/` and `preamble/`.
+- Each chapter thread works in its own folder `chNN_<name>/`, and touches other files only for
+  cross-references, notation (`preamble/notation.tex` + `ch00_intro/notes/notation_list.tex`),
+  `main.tex` and `preamble/manual_chapters.tex`.
+- At the start of a chapter thread: read this file, `chNN_<name>/README.md`, and the chapters before it.
+- At the end of each round: update `chNN_<name>/README.md` (status, decisions, open questions). A decision
+  that affects other chapters (notation, plan, a result used later) is also written under
+  "Cross-chapter decisions" below, in one dated line, so the hub and the other threads see it.
+- Pull before working (`git pull --rebase`); two threads may push on the same day.
+
+## Cross-chapter decisions
+- 2026-11-21: one folder per chapter; 9-chapter plan above; Chapter 1 keeps the prefix `st`.
+
 ## Workflow
 - One conversation per chapter; touch other files only when needed (cross-references, notation).
-- Build: `pdflatex -interaction=nonstopmode main.tex` three times. Before committing, the log must have
+- Build: `pdflatex -interaction=nonstopmode main.tex` three times (all paths are relative to the repository root). Before committing, the log must have
   no undefined references, no multiply-defined labels and no overfull boxes.
-- Python lives in `python/`: figure scripts in `python/figures/<chapter>/` (outputs into `figures/<chapter>`),
-  exercise code in `python/examples/<chapter>/`, printed in exercise solutions with
-  `\lstinputlisting[firstline=4]{...}` after the results stated in words. Never paste code inline in the .tex.
-  The book itself does not mention the repository.
+- Code lives in the chapter folder: `<chNN>/code/{python,mathematica,fenics,cast3m}/`, figure scripts in
+  `<chNN>/code/figures/` (run from their own directory, outputs into `<chNN>/figures/`). Code is printed in
+  exercise solutions with `\lstinputlisting[firstline=4]{<chNN>/code/python/...}` after the results stated in
+  words. Never paste code inline in the .tex. The book itself does not mention the repository.
 - Commit with a clear message per round of corrections and push to `main`. The commit message becomes
   the release note, so make it readable for the author.
 - Every push to `main` triggers `.github/workflows/build-pdf.yml`, which compiles the book and publishes
   `S_lecture_notes.pdf` on the release "latest": https://github.com/aconstant-lms/s-lecture/releases/latest
   After pushing, check the run succeeded and give the author that link.
+- `.github/workflows/build-extras.yml` builds the exercise sheets, the instructor manual and every deck
+  `ch*/slides/c*.tex` when their sources change, and uploads `S_exercise_sheets.pdf`, `S_instructor_manual.pdf`,
+  `S_slides_cNN_*.pdf` to the same release. Slide and manual PDFs are not versioned.

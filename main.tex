@@ -7,6 +7,8 @@
 %          chapter carries its own bibliography). The index is built by
 %          makeindex, called automatically by imakeidx (or use latexmk).
 %  Work on one chapter: uncomment the \includeonly line.
+%  Layout: one folder per chapter <chNN_name>/{notes,exercises,slides,
+%          figures,code,extra}; see README.md and CLAUDE.md.
 %======================================================================
 \documentclass[11pt,a4paper,twoside,openright]{book}
 
@@ -15,21 +17,29 @@
 
 \drafttrue        % \draftfalse hides the red [notes to the author]
 
-%\includeonly{chapters/ch1_stability}
+%\includeonly{ch01_bifurcation/notes/ch01_bifurcation}
 
 \begin{document}
 
 \frontmatter
-\input{front/titlepage}
-\input{front/overview}
+\input{ch00_intro/notes/titlepage}
+\input{ch00_intro/notes/overview}
 {\hypersetup{linkcolor=black}\tableofcontents}
-\input{front/notation_list}
+\input{ch00_intro/notes/notation_list}
 
 \mainmatter
-\include{chapters/ch1_stability}
+\include{ch01_bifurcation/notes/ch01_bifurcation}
+\include{ch02_discrete/notes/ch02_discrete}
+\include{ch03_continuation/notes/ch03_continuation}
+\include{ch04_rods/notes/ch04_rods}
+\include{ch05_thinwalled/notes/ch05_thinwalled}
+\include{ch06_plates/notes/ch06_plates}
+\include{ch07_cylinders/notes/ch07_cylinders}
+\include{ch08_shells/notes/ch08_shells}
+\include{ch09_solids/notes/ch09_solids}
 
 \appendix
-\include{appendices/appA_template}
+\include{appendices/appA_template/notes/appA_template}
 
 \backmatter
 \printindex

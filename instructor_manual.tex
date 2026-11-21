@@ -1,0 +1,25 @@
+%======================================================================
+%  Stability in Mechanics -- Instructor manual: exercise sessions with answers
+%  A. Constantinescu, LMS, CNRS & Ecole Polytechnique
+%
+%  The sessions are written once (<chNN>/exercises/chNN_session.tex) and
+%  printed twice: exercise_sheets.tex (questions only, for the students)
+%  and instructor_manual.tex (answers and instructor notes).
+%  Build: compile the book first (its .aux gives the numbers cited here
+%  as \ref{B-...}), then  pdflatex instructor_manual  (twice).
+%======================================================================
+\documentclass[11pt,a4paper,oneside,openany]{book}
+
+\usepackage{xr-hyper}          % before hyperref (loaded by the style)
+\input{preamble/style}
+\input{preamble/notation}
+\input{preamble/manual}
+\externaldocument[B-]{main}    % labels of the book: \ref{B-sec:st-pitchfork}
+
+\drafttrue        % \draftfalse hides the red status notes
+\answerstrue
+
+\begin{document}
+\pagestyle{session}
+\input{preamble/manual_chapters}
+\end{document}

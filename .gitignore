@@ -16,3 +16,14 @@ __pycache__/
 *.ind
 .claude/
 
+
+# Beamer build products
+*.nav
+*.snm
+*.vrb
+# exercise sheets, instructor manual and slides: PDFs built by the CI
+exercise_sheets.pdf
+instructor_manual.pdf
+*/slides/*.pdf
+# Mathematica
+*.mx

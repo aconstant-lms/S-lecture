@@ -1,0 +1,67 @@
+%======================================================================
+%  Course overview -- a single page, neither chapter nor section
+%======================================================================
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Course overview}
+\markboth{Course overview}{Course overview}
+\thispagestyle{plain}
+
+\noindent{\color{gray!70!black}\rule{\textwidth}{0.6pt}}\par\vspace{6pt}\noindent
+{\sffamily\bfseries\Huge Course overview\par}
+\vspace{18pt}
+
+\paragraph{Stability in mechanics.}
+A structure is loaded slowly. For a long time it deforms a little more
+under each increment. Then, at a critical load, a new shape becomes
+possible and the structure takes it: a column bows, a plate wrinkles, a
+cylinder collapses into diamonds. The course explains when this happens,
+what the structure does next, and why some structures fail far below the
+load predicted by the theory. The same mathematics serves in the opposite
+direction: deployable and morphing structures use instability on purpose.
+
+\paragraph{Roadmap.}
+The course goes up in dimension: from one unknown to finitely many, then
+to rods, plates, shells and three-dimensional bodies.
+\begin{enumerate}[itemsep=1pt]
+  \item Differential equations and bifurcation (Chapter~\ref{ch:st}).
+  \item Discrete systems: energy, Lagrangian mechanics and Koiter's analysis (Chapter~\ref{ch:ld}).
+  \item Continuation and finite elements (Chapter~\ref{ch:nc}).
+  \item Rods: the elastica and beyond (Chapter~\ref{ch:rd}).
+  \item Thin-walled members, cruciform sections and residual stresses (Chapter~\ref{ch:tw}).
+  \item Plates (Chapter~\ref{ch:pl}).
+  \item Cylindrical shells, imperfection sensitivity and rocket fuselages (Chapter~\ref{ch:cy}).
+  \item Shells in service: nozzles, prestress and deployable structures (Chapter~\ref{ch:sh}).
+  \item Three-dimensional bodies (Chapter~\ref{ch:so}).
+\end{enumerate}
+
+\paragraph{One method, four tools.}
+Every chapter follows the same path. A closed-form solution comes first,
+on the simplest model that shows the effect. Mathematica carries the
+asymptotic expansions. A short Python code follows the branches by
+continuation. FEniCS and Cast3M solve the full problem by finite elements,
+and are trusted only after they reproduce the closed form.
+
+\paragraph{What you should be able to do at the end.}
+\begin{itemize}[itemsep=1pt]
+  \item find critical points and decide their stability from the energy;
+  \item tell a stable post-buckling path from an imperfection-sensitive one;
+  \item follow equilibrium branches through limit and bifurcation points;
+  \item set up and check a buckling computation by finite elements;
+  \item explain the knockdown factors used to design thin shells.
+\end{itemize}
+
+\paragraph{Practical matters.}
+Nine sessions of two hours of lecture and two hours of exercises.
+Prerequisites: the variational toolkit and the finite element method of
+the notes \emph{Nonlinear Problems in Mechanics}.
+\draftnote{Main texts: Thompson \& Hunt, Ba\v{z}ant \& Cedolin, Brush \&
+Almroth, Audoly \& Pomeau, Guckenheimer \& Holmes; recent papers (Reis,
+Hutchinson, Bertoldi, \dots) for examples. Final list to be settled.}
+
+\paragraph{Assessment.}
+\draftnote{Proposal: written exam and a project in pairs from Session~5 on,
+on one real structure (fuselage panel, nozzle, deployable boom, cruciform
+column), combining a closed form, a continuation and a finite element run.}
+
+\cleardoublepage

@@ -1,0 +1,37 @@
+%======================================================================
+%  Exercise session, Chapter 1 (2 h). Printed by exercise_sheets.tex
+%  (questions only) and instructor_manual.tex (answers, instructor notes).
+%  No \label here. Codes in ../code/{python,mathematica}.
+%======================================================================
+\clearpage
+\renewcommand{\sessionchapter}{Chapter 1 -- Differential equations and bifurcation}
+\setcounter{spart}{0}
+\ifanswers
+\sessiontitle{Chapter 1 -- Bifurcation: session sheet with answers}
+  {Notes: Chapter~\ref{B-ch:st}.}
+\else
+\sessiontitle{Chapter 1 -- Bifurcation: session sheet}
+  {Notes: Chapter~\ref{B-ch:st}. Codes: Python and Mathematica.}
+\fi
+
+\begin{instructor}
+\draftnote{Skeleton session. Timing: 40 min part a, 40 min part b, 40 min part c.}
+\end{instructor}
+
+\spart{The pitchfork by hand}
+Consider $\dot y = ry - y^3$.
+\q Find the steady states as functions of $r$.
+\begin{answer}
+$y=0$ for all $r$, and $y=\pm\sqrt r$ for $r>0$.
+\end{answer}
+\q Decide their stability from the slope $f_y$.
+\begin{answer}
+$f_y = r-3y^2$. At $y=0$, $f_y=r$: stable for $r<0$, unstable for $r>0$.
+At $y=\pm\sqrt r$, $f_y=-2r<0$: both are stable.
+\end{answer}
+
+\spart{Following the branches with a continuation code}
+\qc \draftnote{Pseudo-arclength continuation in Python, written from scratch.}
+
+\spart{Normal forms in Mathematica}
+\qc \draftnote{Reduction to the normal forms; imperfect pitchfork.}

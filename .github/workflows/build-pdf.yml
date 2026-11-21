@@ -32,21 +32,25 @@ jobs:
         run: |
           ! grep -E "undefined references|Reference .* undefined|multiply defined" main.log
 
-      - name: Name the PDF
-        run: cp main.pdf S_lecture_notes.pdf
-
-      - name: Publish as release "latest"
+      - name: Publish on the release "latest" (replaces only the lecture notes)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          cp main.pdf S_lecture_notes.pdf
           DATE=$(date -u +'%Y-%m-%d %H:%M UTC')
           MSG=$(git log -1 --pretty=%s)
-          gh release delete latest --yes --cleanup-tag || true
-          gh release create latest S_lecture_notes.pdf \
-            --target "$GITHUB_SHA" \
-            --title "Lecture notes - latest build ($DATE)" \
-            --notes "Built from commit ${GITHUB_SHA::7}: $MSG" \
-            --latest
+          if gh release view latest >/dev/null 2>&1; then
+            gh release upload latest S_lecture_notes.pdf --clobber
+            gh release edit latest \
+              --title "Lecture notes - latest build ($DATE)" \
+              --notes "Lecture notes built from commit ${GITHUB_SHA::7}: $MSG"
+          else
+            gh release create latest S_lecture_notes.pdf \
+              --target "$GITHUB_SHA" \
+              --title "Lecture notes - latest build ($DATE)" \
+              --notes "Lecture notes built from commit ${GITHUB_SHA::7}: $MSG" \
+              --latest
+          fi
 
       - name: Keep the PDF and log as workflow artifacts (90 days)
         if: always()
