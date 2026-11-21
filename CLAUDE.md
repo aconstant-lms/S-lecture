@@ -159,6 +159,10 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
   `ch02_discrete/code/python/koiter_sympy.py` (n dof) are reused for the elastica, plates and shells.
 - 2026-11-21 (Ch. 2 thread, author): the von Mises truss replaces the fishery in Chapter 1 (fold example);
   the fishery moves to `ch01_bifurcation/extra/`.
+- 2026-11-21 (Ch. 3 thread, author): Chapter 3 is retitled "From continuum to discrete: numerical methods" (folder
+  `ch03_continuation` and prefix `nc` unchanged): weak forms, linear buckling as an eigenproblem and as a Rayleigh-quotient
+  minimisation, Riks arc-length, detection, branch switching; the Chapter 2 two-bar truss is its FEniCS/Cast3M test case.
+  Hub: update the plan table, `README.md` and `ch00_intro/notes/overview.tex`.
 
 ## Workflow
 - One conversation per chapter; touch other files only when needed (cross-references, notation).

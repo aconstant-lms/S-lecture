@@ -1,41 +1,217 @@
 %======================================================================
-\chapter{Continuation and finite elements}\label{ch:nc}
+\chapter{From continuum to discrete: numerical methods}\label{ch:nc}
 %======================================================================
-% Skeleton. Labels of this chapter: *:nc-*  (bibitem keys nc-*).
-% Planned content: see ch03_continuation/README.md and the course plan in CLAUDE.md.
+% Labels of this chapter: *:nc-*  (bibitem keys nc-*). Status: outline, see ch03_continuation/README.md.
 
 \framepart{Outline}
-\draftnote{Chapter 3 is planned, not yet written. Planned content:}
+Chapters~\ref{ch:st} and~\ref{ch:ld} worked with a few unknowns, and every
+derivative was taken by hand. A real structure is a continuum. Its potential
+energy $\mathcal{E}(\vu,\eta)$ is an integral over the body, and the unknown is a
+displacement field. This chapter turns the field into a column of numbers, and
+shows that nothing of Chapter~\ref{ch:ld} is lost on the way. The first variation of
+$\mathcal{E}$ is the weak form of equilibrium, the principle of virtual work. The
+second variation is the stability operator. Finite elements replace the field by
+nodal values $\mat{u}$, and the two variations become the residual vector and the
+tangent stiffness matrix $\mat{K}$. The energy criterion, the critical point and the
+mode are then exactly those of Chapter~\ref{ch:ld}, with many more unknowns.
+
+Two kinds of computation follow. \emph{Linear buckling} assumes a linear prebuckling
+state and asks for the load at which $\mat{K}$ becomes singular: a generalised
+eigenvalue problem. Its smallest eigenvalue is the minimum of a Rayleigh quotient,
+so the eigenproblem is itself a weak (variational) problem, and any finite element
+or Ritz approximation gives an upper bound. \emph{Nonlinear continuation} follows the
+equilibrium path with the arc-length methods of Riks and Crisfield, which are
+Box~1.2 written for a residual vector and a load vector. Along the
+path we detect the critical points, tell limit points from bifurcation points, and
+switch to the new branch. The von Mises truss of Chapter~\ref{ch:ld} is the test case
+throughout: two bar elements, closed-form answers, and two lessons on when linear
+buckling is wrong.
+
+\paragraph{By the end of this chapter you should be able to:}
 \begin{itemize}
-  \item \draftnote{Following a branch: natural parameter, pseudo-arclength (Keller), Riks and Crisfield arc-length.}
-  \item \draftnote{Detecting and classifying critical points along a branch; branch switching.}
-  \item \draftnote{From the weak form to the discrete problem: tangent stiffness, linear buckling as an eigenproblem.}
-  \item \draftnote{Tools: a continuation code in Python written from scratch, FEniCS (with SLEPc) and Cast3M (PASAPAS, VIBR), all checked first on the discrete models of Chapter 2.}
-  \item \draftnote{Asymptotic numerical method as an alternative to predictor-corrector schemes.}
+  \item write the weak form of equilibrium and the second variation of the energy of an
+        elastic body, and recognise the initial-stress (geometric) term;
+  \item derive the residual and the tangent stiffness of a finite element model from
+        its energy, and split $\mat{K}$ into its material and geometric parts;
+  \item set up linear buckling as the eigenproblem $(\mat{K}_0 + \eta\,\mat{K}_\sigma)\,{}^1\mat{u} = \mat{0}$,
+        and say when it is (and is not) a good estimate;
+  \item state the Rayleigh quotient and the min--max principle, and explain why a
+        Ritz or finite element buckling load is an upper bound;
+  \item follow a path through a limit point with the Riks--Crisfield arc-length method;
+  \item detect a critical point from the eigenvalues or the inertia of $\mat{K}$,
+        classify it, and switch to the bifurcated branch;
+  \item run a first linear buckling and a first arc-length computation in FEniCS and in
+        Cast3M, and check them against a closed form.
 \end{itemize}
 
-\section{Following a branch}\label{sec:nc-1}
-\draftnote{To be written.}
+\paragraph{Plan of the chapter.}
+Section~\ref{sec:nc-weak} goes from the energy of an elastic body to the weak form and
+the second variation. Section~\ref{sec:nc-fe} discretises them by finite elements.
+Section~\ref{sec:nc-lba} sets up linear buckling as an eigenproblem, and
+Section~\ref{sec:nc-rayleigh} reads that eigenproblem as a minimisation.
+Section~\ref{sec:nc-riks} follows nonlinear paths by arc-length continuation.
+Section~\ref{sec:nc-detect} detects and classifies critical points, and
+Section~\ref{sec:nc-switch} switches branches. Section~\ref{sec:nc-tools} presents the
+two finite element codes. A summary, exercises (page~\pageref{sec:nc-exo}) and the
+references close the chapter.
 
-\section{Critical points and branch switching}\label{sec:nc-2}
-\draftnote{To be written.}
+\draftnote{Open (thread, 21 Nov 2026): the planned section on the asymptotic numerical
+method (Cochelin, Damil, Potier-Ferry) is not in the author's list. Proposal: one
+paragraph at the end of Section~\ref{sec:nc-riks} as an alternative to
+predictor--corrector schemes, or drop it. To be decided.}
 
-\section{Linear buckling as an eigenproblem}\label{sec:nc-3}
-\draftnote{To be written.}
+%======================================================================
+\section{From the energy to the weak form}\label{sec:nc-weak}
+\index{weak form}\index{virtual work}%
+\draftnote{Planned content:
+(1)~Start small: the axially compressed column, energy
+$\tfrac12\int EI\,w''^2\dd x - \tfrac12 P\int w'^2\dd x$; its first variation is the weak form,
+integration by parts gives $EIw'''' + Pw'' = 0$ and the boundary conditions. Closed form
+$P_c = \pi^2EI/L^2$ (the elastica proper is Chapter~\ref{ch:rd}).
+(2)~Elastic body (notation of Constantinescu--Korsunsky): $\mathcal{E}(\vu,\eta) = \int_\Omega W(\tens{E})\dd V
+- \eta\,\ell(\vu)$ over $\Kad$, Green--Lagrange strain $\tens{E}$, $W = \tfrac12\,\tens{E}:\bbC:\tens{E}$.
+(3)~First variation $\mathcal{E}_{,\vu}[\delta\vu] = 0$ for all $\delta\vu \in \Kad_0$: the principle of
+virtual work, the weak form of equilibrium.
+(4)~Second variation $\mathcal{E}_{,\vu\vu}[\delta\vu,\delta\vu]$ = material part + initial-stress part
+$\int \tens{S}:(\operatorname{grad}\delta\vu\T\operatorname{grad}\delta\vu)\dd V$; stability = positive second
+variation (Trefftz criterion), the continuum version of the gbox of Section~\ref{sec:ld-energycrit}.
+gbox: the weak form is the gradient of the energy, the stability operator is its Hessian.}
 
-\section{Continuation with finite elements}\label{sec:nc-4}
-\draftnote{To be written.}
+%======================================================================
+\section{From fields to matrices: finite elements}\label{sec:nc-fe}
+\index{finite elements}\index{tangent stiffness}%
+\draftnote{Planned content:
+(1)~Interpolation $\vu \approx \mat{N}\mat{u}$; $\mathcal{E}(\mat{u},\eta)$ becomes a function of the nodal
+values: the discrete systems of Chapter~\ref{ch:ld} are recovered.
+(2)~Residual $\mat{r}(\mat{u},\eta) = \mathcal{E}_{,\mat{u}} = \mat{f}_{\mathrm{int}}(\mat{u}) - \eta\,\mat{p}$
+(reference load vector $\mat{p}$); tangent stiffness $\mat{K} = \mathcal{E}_{,\mat{u}\mat{u}}$
+= material part (with initial displacements) + geometric part $\mat{K}_\sigma$.
+(3)~Worked example: the two-bar truss of Section~\ref{sec:ld-snap} as two bar elements with
+Green strain; assembly by hand gives exactly~\eqref{eq:ld-truss-K}.
+(4)~Automatic differentiation: in FEniCS the residual and the tangent are derived from the
+energy form (\texttt{derivative}); in Cast3M they are assembled element by element.
+Box~3.1: from energy to residual and tangent.}
 
+%======================================================================
+\section{Linear buckling as an eigenproblem}\label{sec:nc-lba}
+\index{linear buckling}\index{eigenvalue problem!buckling}%
+\draftnote{Planned content:
+(1)~Linear prebuckling: $\mat{K}_0\,{}^0\mat{u} = \eta\,\mat{p}$, stresses proportional to $\eta$, so
+$\mat{K} \approx \mat{K}_0 + \eta\,\mat{K}_\sigma$.
+(2)~Critical load: $(\mat{K}_0 + \eta\,\mat{K}_\sigma)\,{}^1\mat{u} = \mat{0}$, a generalised
+symmetric eigenproblem; the smallest positive $\eta$ and its mode. Box~3.2.
+(3)~Two warnings on the truss (checked with SymPy, $EA = L = 1$):
+$\varphi = 30^\circ$, linear buckling gives $0.250$ for the true limit load $0.0481$ (a factor $5.2$:
+the prebuckling is not linear, a snap-through is not a bifurcation);
+$\varphi = 65^\circ$, it gives $0.324$ for the true sideways bifurcation at $0.2434$ ($+33\%$).
+gbox: linear buckling is exact only when the prebuckling state is linear and the critical point
+is a bifurcation (Bushnell 1981, Section~4).
+(4)~Consistent linearisation $\mat{K}_0 + \eta\,d\mat{K}/d\eta$ (initial-displacement matrix included):
+$0.0833$ at $30^\circ$, still too high.}
+
+%======================================================================
+\section{The eigenproblem as a minimisation}\label{sec:nc-rayleigh}
+\index{Rayleigh quotient}\index{Rayleigh--Ritz method}\index{min--max principle}%
+\draftnote{Planned content:
+(1)~Rayleigh quotient: $\eta_c = \min\, a(\vv,\vv)/b(\vv,\vv)$
+over $\Kad_0$ with $b > 0$, $a$ the material and $-b$ the initial-stress bilinear forms; for the
+column $P_c = \min \int EI\,w''^2/\int w'^2$. The weak form of the eigenproblem is the
+stationarity of this quotient.
+(2)~Courant--Fischer min--max for the higher modes; orthogonality of modes in $a$.
+(3)~Rayleigh--Ritz: a smaller space gives a larger minimum, so every Ritz or conforming finite
+element buckling load is an upper bound. Column with $w = x(L - x)$: $12\,EI/L^2$ against
+$\pi^2EI/L^2$ ($+21.6\%$); Hermite cubic elements converge from above.
+(4)~Same structure as the free vibrations, $\omega^2 = $ Rayleigh quotient with the mass
+(Section~\ref{sec:ld-energycrit}; Constantinescu--Korsunsky Section~7.5).
+gbox: a discrete buckling load is never below the exact one (for conforming elements and a
+fixed prebuckling stress).}
+
+%======================================================================
+\section{Following nonlinear paths: arc-length methods}\label{sec:nc-riks}
+\index{continuation!arc-length}\index{Riks method}\index{Crisfield method}%
+\draftnote{Planned content:
+(1)~Load control fails at a limit point, displacement control fails at a snap-back;
+Box~1.2 with $\mat{f} = \mat{r}$, $\mat{J} = \mat{K}$, $\mat{f}_r = -\mat{p}$.
+(2)~Riks (linearised constraint, normal plane) and Crisfield (spherical constraint, quadratic
+equation for $\delta\eta$, choice of the root); the bordering algorithm: two solves with
+$\mat{K}$ per iteration, no augmented matrix needed (essential with a sparse FE solver).
+(3)~Scaling of load and displacement in the arc length; step control by the number of
+Newton iterations.
+(4)~Test: the truss at $30^\circ$ through both limit points, against~\eqref{eq:ld-truss-principal}.
+Box~3.3: Riks--Crisfield arc-length step.}
+
+%======================================================================
+\section{Detecting and classifying critical points}\label{sec:nc-detect}
+\index{critical point!detection}\index{inertia of a matrix}%
+\draftnote{Planned content:
+(1)~Monitors along the path: sign of $\det\mat{K}$, smallest eigenvalues of $\mat{K}$
+(SLEPc, shift-invert), and the inertia: the number of negative pivots of
+$\mat{K} = \mat{L}\mat{D}\mat{L}\T$ counts the negative eigenvalues (Sylvester), at no extra cost
+in a direct solver.
+(2)~Locating the point: bisection on the step, or the extended system
+$\mat{r} = \mat{0}$, $\mat{K}{}^1\mat{u} = \mat{0}$, $\norm{{}^1\mat{u}} = 1$ solved by Newton.
+(3)~Classification by the test~\eqref{eq:ld-limit-test}: ${}^1\mat{u}\T\mat{p} \neq 0$ limit point,
+$= 0$ bifurcation; the sign of the load component of the tangent.
+(4)~Truss at $65^\circ$: one negative pivot appears at $0.2434$ with $\eta$ still increasing:
+a bifurcation, mode $(1,0)$.}
+
+%======================================================================
+\section{Branch switching}\label{sec:nc-switch}
+\index{branch switching}%
+\draftnote{Planned content:
+(1)~Directions of the branches from the second-order (bifurcation) equation, as in
+Section~\ref{sec:st-continuation}; Koiter's $\eta_1$, $\eta_2$ (Box~2.2) give
+the start of the new branch.
+(2)~Practice in FE codes: predictor $\mat{u}_c + \epsilon\,{}^1\mat{u}$ followed by the corrector,
+or an imperfection in the shape of the mode (load or geometry) and continuation of the
+imperfect structure.
+(3)~Truss at $65^\circ$: the bifurcated branch is the circle~\eqref{eq:ld-truss-branch}; with a
+sideways load the maximum loads reproduce the two-thirds law of Section~\ref{sec:ld-powerlaws}.
+gbox: an imperfection in the shape of the first mode is the safe way to switch, and it also
+measures the imperfection sensitivity.}
+
+%======================================================================
+\section{Two finite element codes}\label{sec:nc-tools}
+\index{FEniCS}\index{Cast3M}%
+\draftnote{Planned content (short, a map rather than a manual):
+FEniCS: the energy written in UFL, residual and tangent by \texttt{derivative}, Newton by PETSc
+SNES, the eigenproblem by SLEPc (generalised Hermitian, shift-and-invert), arc-length written on
+top of the Newton solver by bordering.
+Cast3M: bar and beam elements, \texttt{KSIG} for the initial-stress matrix and \texttt{VIBR} for the
+eigenproblem, \texttt{PASAPAS} for the nonlinear path with its arc-length option.
+The same checks for both: closed form first, then mesh refinement.}
+
+%======================================================================
 \framepart{Summary}
 \begin{gbox*}
 \begin{itemize}
-  \item \textbf{To be written.} \draftnote{take-home messages.}
+  \item \textbf{To be written.} \draftnote{take-home messages, one per section.}
 \end{itemize}
 \end{gbox*}
 
+%======================================================================
 \framepart{Exercises}\label{sec:nc-exo}
 \framesub{Short questions}
-\draftnote{To be written.}
+\draftnote{Planned: Rayleigh quotient of the column with a trial function; which is larger,
+the Ritz or the exact load, and why; linear buckling of the truss by hand at $30^\circ$;
+counting negative pivots; which root of Crisfield's quadratic; limit point or bifurcation from
+a computed tangent; why linear buckling fails for a snap-through.}
+
+\framesub{Problems}
+\draftnote{Planned: Ritz and finite elements for the column (convergence from above);
+the truss as two bar elements, tangent stiffness assembled by hand, $\mat{K}_0$, $\mat{K}_\sigma$
+and the linear buckling loads at $30^\circ$ and $65^\circ$; the extended system for a critical
+point and its Jacobian.}
+
+\framesub{Computer exercises}
+\draftnote{Planned, all on the two-bar truss of the Chapter~2 session, with known answers
+($EA = L = 1$): $\varphi = 30^\circ$, limit load $0.0481$, linear buckling $0.250$;
+$\varphi = 65^\circ$, bifurcation $0.2434$, $\eta_2 = -0.524$, limit $0.2865$, linear buckling $0.324$.
+(a)~Python: Riks--Crisfield from scratch on the two-element model, reusing the code of
+Chapter~\ref{ch:st}. (b)~FEniCS: first steps, the truss as two interval elements in the plane,
+energy in UFL, Newton, linear buckling with SLEPc, arc-length on top. (c)~Cast3M: the same truss,
+\texttt{KSIG} + \texttt{VIBR}, then \texttt{PASAPAS} with arc-length; branch switching with a
+sideways load.}
 
 \begin{chapterbib}{99}
 \bibitem{nc-keller1977} H.~B.~Keller, Numerical solution of bifurcation and nonlinear eigenvalue problems, in P.~H.~Rabinowitz (ed.), \emph{Applications of Bifurcation Theory}, Academic Press, New York, 1977, 359--384.
