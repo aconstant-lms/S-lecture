@@ -10,32 +10,48 @@ and it behaves calmly. At special values of $r$ the number of steady states
 changes. These are the bifurcation points. The chapter finds them and explains
 why they occur exactly there: the slope $f_y = \partial f/\partial y$ at a steady
 state decides both its stability and its uniqueness, and a bifurcation is the
-moment the control parameter pushes this slope through zero. We start from the
-linear equation $\dot y = ay$, which we solve completely, and we reach the
-buckling of a rigid bar on a spring, the first mechanical example of the book.
+moment the control parameter pushes this slope through zero. With several
+unknowns the slope becomes the Jacobian matrix, and its eigenvalues play the same
+two roles. We start from the linear equation $\dot y = ay$, which we solve
+completely. We reach the buckling of a rigid bar on a spring, the first mechanical
+example of the book, the galloping of a prism in the wind, and the computer
+methods that follow a branch of solutions through its turning points.
 
 \paragraph{By the end of this chapter you should be able to:}
 \begin{itemize}
   \item find the steady states of $\dot y = f(y,r)$ and decide their stability
-        from the sign of $f_y$;
+        from the sign of $f_y$, or from the eigenvalues of the Jacobian;
+  \item prove stability with a Lyapunov function when the linear test is silent;
   \item locate the bifurcation points with the two conditions $f = 0$ and $f_y = 0$;
-  \item recognise the saddle-node, transcritical and pitchfork bifurcations
-        and draw their bifurcation diagrams;
+  \item recognise the fold (saddle-node), transcritical, pitchfork and Hopf
+        bifurcations, draw their diagrams, and reduce a given equation to its
+        normal form from a few Taylor coefficients;
   \item explain critical slowing down, imperfection sensitivity and hysteresis;
-  \item compute the post-buckling path of a rigid bar from its potential energy.
+  \item compute the post-buckling path of a rigid bar from its potential energy;
+  \item explain why Newton's method fails at a fold, and follow a branch through
+        it by pseudo-arclength continuation.
 \end{itemize}
 
 \paragraph{Plan of the chapter.}
 Section~\ref{sec:st-linear} solves the linear equation and shows what it cannot
-do. Section~\ref{sec:st-slope} gives the one stability test we need.
+do. Section~\ref{sec:st-slope} gives the slope test, and
+Section~\ref{sec:st-lyapunov} makes stability precise with Lyapunov's two methods:
+a function that decreases along the motion, and the eigenvalues of the Jacobian.
 Section~\ref{sec:st-pitchfork} follows the simplest nonlinear equation in which
 one solution becomes three. Section~\ref{sec:st-why} explains why this happens,
-and where. Section~\ref{sec:st-normal} presents the three basic bifurcations,
-and Section~\ref{sec:st-energy} returns to mechanics: potential energy, the
-buckling bar, imperfections and hysteresis. A summary, exercises with solutions
+and where. Section~\ref{sec:st-normal} presents the fold, the transcritical and
+the pitchfork, and shows how to reduce an equation to one of them.
+Section~\ref{sec:st-hopf} adds the fourth generic bifurcation, the Hopf
+bifurcation, where an oscillation is born. Section~\ref{sec:st-energy} returns to
+mechanics: potential energy, the buckling bar, imperfections and hysteresis.
+Section~\ref{sec:st-continuation} computes branches by continuation, and finds
+that the eigenvalue problem $\mat{J}\mat{v} = \mat{0}$ decides where Newton's method
+breaks down. A summary, exercises with solutions
 (page~\pageref{sec:st-exo}) and the references close the chapter. The presentation follows the spirit
 of~\cite{st-strang2014}: small examples solved by hand before general statements.
-Many more examples are in~\cite{st-strogatz2015}.
+Many more examples are in~\cite{st-strogatz2015}; the theory is
+in~\cite{st-guckenheimer1983,st-kuznetsov2004}, and the numerical side
+in~\cite{st-seydel2010}.
 
 %======================================================================
 \section{Growth and decay: \texorpdfstring{$\dot y = ay$}{y' = ay}}\label{sec:st-linear}
@@ -70,7 +86,8 @@ nothing moves.
 A \emph{steady state} (or equilibrium) of $\dot y = f(y)$ is a value $y^*$ with
 $f(y^*) = 0$: if we start there, we stay there. It is \emph{stable} if every
 solution that starts close to $y^*$ returns to $y^*$, and \emph{unstable} if
-some solutions starting arbitrarily close move away. For $\dot y = ay$ the only
+some solutions starting arbitrarily close move away
+(Section~\ref{sec:st-lyapunov} makes both words precise). For $\dot y = ay$ the only
 steady state is $y^* = 0$. It is stable for $a < 0$ and unstable for $a > 0$.
 The crossing $a = 0$ is where the behaviour changes.
 
@@ -158,6 +175,184 @@ $y^* = 0$ with $\lambda = 0$. The first is stable, the second unstable, and the
 third attracts from the left and repels to the right. When $\lambda = 0$ the
 linear approximation has thrown away exactly the information we need. This is
 not an accident: $\lambda = 0$ is where bifurcations happen.
+
+%======================================================================
+\section{Lyapunov stability}\label{sec:st-lyapunov}
+\index{stability!Lyapunov}%
+
+The slope test looks at a steady state through a magnifying glass. Two questions
+remain. What exactly does ``stable'' mean? And what do we do when the glass shows
+nothing ($\lambda = 0$), or when there are several unknowns? Lyapunov answered both
+in 1892~\cite{st-lyapunov1992}, with two methods. The first uses a function that
+decreases along the motion. The second uses the eigenvalues of a matrix.
+
+\paragraph{Two definitions.}
+Let $y^*$ be a steady state of $\dot y = f(y)$, where $y$ may now be a column of
+$n$ unknowns and $\abs{\cdot}$ its length.
+\begin{itemize}
+  \item $y^*$ is \emph{stable} (in the sense of Lyapunov) if solutions that start
+        close stay close: for every distance $\varepsilon > 0$ there is a
+        $\delta > 0$ such that $\abs{y(0) - y^*} < \delta$ implies
+        $\abs{y(t) - y^*} < \varepsilon$ for all $t \ge 0$.
+  \item $y^*$ is \emph{asymptotically stable} if it is stable and, in addition,
+        $y(t) \to y^*$ for every start close enough.
+\end{itemize}
+A frictionless pendulum hanging down is stable but not asymptotically stable: a
+small push gives a small swing that never dies. Add friction and the swing dies
+out. In Section~\ref{sec:st-slope}, $\lambda < 0$ gave asymptotic stability. For
+the equilibria of conservative structures, Lyapunov's first definition is the
+natural one (Chapter~\ref{ch:ld}).
+
+\begin{gbox}{A function that decreases along every motion proves stability}\label{sec:st-lyapdirect}
+\index{Lyapunov function}%
+Let $W(y)$ have a strict minimum at $y^*$: $W(y^*) = 0$ and $W(y) > 0$ for
+$y \neq y^*$ near $y^*$. Along a solution of $\dot y = f(y)$, $W$ changes at the rate
+$\dot W = \nabla W \cdot f(y)$.
+\begin{itemize}
+  \item If $\dot W \le 0$ near $y^*$, then $y^*$ is stable.
+  \item If $\dot W < 0$ near $y^*$, except at $y^*$ itself, then $y^*$ is
+        asymptotically stable.
+\end{itemize}
+Such a $W$ is a \emph{Lyapunov function}. No solution of the equation is needed.
+\end{gbox}
+
+\paragraph{Why it works.}
+Picture the level curves $W = \text{const}$ around $y^*$ as nested bowls
+(Figure~\ref{fig:st-lyapunov}). Since $W$ never increases, a solution can never
+climb from one level to a higher one. Start inside a small level curve and you stay
+inside it: that is stability. If $W$ strictly decreases, the solution keeps going
+down until it reaches the bottom $W = 0$, which is $y^*$.
+
+\paragraph{When the slope test is silent.}
+Take $\dot y = -y^3$ and $W = \tfrac12 y^2$. Then
+$\dot W = y\,\dot y = -y^4 < 0$ for $y \neq 0$: the origin is asymptotically
+stable. For $\dot y = y^3$ the same $W$ gives $\dot W = +y^4$, and the origin is
+unstable. One well-chosen function settles what the linear approximation could not.
+
+\paragraph{The damped oscillator.}
+\index{oscillator!damped}%
+A mass $m$ on a spring $k$ with a dashpot $c$ obeys $m\ddot x + c\dot x + kx = 0$.
+There are two unknowns, the position $x$ and the velocity $\dot x$, and the rest
+state is $(x,\dot x) = (0,0)$. Take for $W$ the mechanical energy
+\begin{equation}\label{eq:st-energy-osc}
+  E = \frac12\,m\,\dot x^2 + \frac12\,k\,x^2 .
+\end{equation}
+Along a motion,
+\begin{equation}\label{eq:st-energy-rate}
+  \dot E = m\,\dot x\,\ddot x + k\,x\,\dot x
+  = \dot x\,(m\ddot x + kx) = -c\,\dot x^2 \le 0 .
+\end{equation}
+The dashpot only takes energy away, so the rest state is stable. Here $\dot E = 0$
+on the whole line $\dot x = 0$, not only at the origin, and the second bullet does
+not apply as stated. But a motion cannot stay on that line unless $x = 0$: away from
+the origin the spring pushes the mass off it. So the energy keeps decreasing and the
+rest state is asymptotically stable (this refinement is due to LaSalle). With
+$c = 0$ the energy is constant: stable, not asymptotically stable, as for the
+frictionless pendulum.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch01_bifurcation/figures/st_lyapunov.pdf}
+  \caption{A motion of the damped oscillator ($m = k = 1$, $c = 0.3$) crosses the
+    level curves of the energy $E$ inward, and never outward. The energy is a
+    Lyapunov function.}
+  \label{fig:st-lyapunov}
+\end{figure}
+
+\paragraph{Energy is the Lyapunov function of mechanics.}
+For a conservative structure the total energy, kinetic plus potential, is constant.
+If the potential energy has a strict minimum at an equilibrium, the total energy is a
+Lyapunov function, and the equilibrium is stable. This is the theorem of
+Lagrange and Dirichlet. It is the basis of the energy criterion of
+Chapter~\ref{ch:ld}, and it is why buckling problems can be solved without ever
+writing the equations of motion.
+\index{Lagrange--Dirichlet theorem}%
+
+\paragraph{Several unknowns: the Jacobian.}
+\index{Jacobian matrix}%
+For $n$ unknowns we write the state as a column $\mat{y}$ and the equation as
+$\dot{\mat{y}} = \mat{f}(\mat{y})$. Near a steady state $\mat{y}^*$, a small
+disturbance $\boldsymbol{\varepsilon}$ obeys $\dot{\boldsymbol{\varepsilon}} = \mat{J}\boldsymbol{\varepsilon}$,
+where the \emph{Jacobian} $\mat{J}$ is the $n\times n$ matrix of the slopes
+$J_{ij} = \partial f_i/\partial y_j$ at $\mat{y}^*$. When $\mat{J}$ has $n$
+independent eigenvectors $\mat{x}_i$ with eigenvalues $\lambda_i$,
+\begin{equation}\label{eq:st-modes}
+  \boldsymbol{\varepsilon}(t) = c_1\,e^{\lambda_1 t}\,\mat{x}_1 + \dots
+  + c_n\,e^{\lambda_n t}\,\mat{x}_n .
+\end{equation}
+Each eigenvalue is a growth rate, as $f'(y^*)$ was. A complex pair
+$\lambda = \alpha \pm i\omega$ gives
+$e^{\lambda t} = e^{\alpha t}(\cos\omega t \pm i\sin\omega t)$: an oscillation of
+frequency $\omega$ whose amplitude grows or decays at the rate $\alpha$.
+
+\begin{gbox}{The eigenvalues of the Jacobian are the growth rates of disturbances}\label{sec:st-eigen}
+\index{stability!eigenvalues}%
+Let $\lambda_1,\dots,\lambda_n$ be the eigenvalues of $\mat{J}$ at the steady state
+$\mat{y}^*$.
+\begin{itemize}
+  \item All real parts negative: $\mat{y}^*$ is asymptotically stable.
+  \item One real part positive: $\mat{y}^*$ is unstable.
+  \item Some real parts zero, none positive: the test is silent.
+\end{itemize}
+\end{gbox}
+
+\paragraph{Why it works.}
+Close to $\mat{y}^*$ the neglected terms are of order $\abs{\boldsymbol{\varepsilon}}^2$,
+too small to compete with an exponential. Lyapunov's own proof is a bridge between
+his two methods: from $\mat{J}$ he builds a quadratic Lyapunov function
+$W = \boldsymbol{\varepsilon}\T\mat{P}\boldsymbol{\varepsilon}$
+(details in~\cite{st-guckenheimer1983}). The slope test of
+Section~\ref{sec:st-slopetest} is the case $n = 1$.
+
+\begin{example}[Eigenvalues of the damped oscillator]\label{ex:st-osc-eig}
+With $m = 1$, $c = 3$, $k = 2$ the oscillator becomes, for $\mat{y} = (x,\dot x)$,
+\[
+  \frac{d}{dt}\begin{bmatrix} x\\ \dot x\end{bmatrix}
+  = \begin{bmatrix} 0 & 1\\ -2 & -3\end{bmatrix}
+    \begin{bmatrix} x\\ \dot x\end{bmatrix},
+  \qquad
+  \det(\mat{J} - \lambda\mat{I}) = \lambda^2 + 3\lambda + 2 = (\lambda+1)(\lambda+2).
+\]
+The eigenvalues $-1$ and $-2$ are negative: the rest state is stable and the mass
+creeps back without oscillating. With $c = 1$ instead, $\lambda^2 + \lambda + 2 = 0$
+gives $\lambda = -\tfrac12 \pm i\,\tfrac{\sqrt7}{2}$: a decaying oscillation.
+In general $\lambda^2 + (c/m)\lambda + k/m = 0$.
+\end{example}
+
+\paragraph{Two ways to lose stability.}
+\index{divergence}\index{flutter}%
+For two unknowns the eigenvalues solve
+$\lambda^2 - (\tr\mat{J})\,\lambda + \det\mat{J} = 0$, so
+$\lambda_1 + \lambda_2 = \tr\mat{J}$ and $\lambda_1\lambda_2 = \det\mat{J}$. Both
+real parts are negative exactly when $\tr\mat{J} < 0$ and $\det\mat{J} > 0$
+(Figure~\ref{fig:st-tracedet}). A parameter that drives the system out of this
+quarter plane must cross one of its two edges.
+\begin{itemize}
+  \item $\det\mat{J}$ reaches zero: one real eigenvalue passes through $0$. The
+        structure moves away without oscillating. This is \emph{divergence}, the
+        static loss of stability, and buckling is the example. Put a mass $m$ on top
+        of the bar of Section~\ref{sec:st-energy}:
+        $mL^2\ddot\theta + c\dot\theta + k\theta - PL\sin\theta = 0$. At $\theta = 0$,
+        $\det\mat{J} = (k - PL)/(mL^2)$, which vanishes at the critical load
+        $P_c = k/L$, while $\tr\mat{J} = -c/(mL^2)$ does not change.
+  \item $\tr\mat{J}$ reaches zero while $\det\mat{J} > 0$: a pair $\pm i\omega$
+        crosses the imaginary axis. The structure oscillates with a growing
+        amplitude: the damping has become negative. This is \emph{flutter} or
+        \emph{galloping}, the dynamic loss of stability (Section~\ref{sec:st-hopf}).
+\end{itemize}
+Both happen in practice, and they need different analyses: the first only the
+stiffness, the second also the mass and the damping.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch01_bifurcation/figures/st_tracedet.pdf}
+  \caption{Stability of a $2\times2$ Jacobian. The shaded quarter plane is stable.
+    Crossing $\det\mat{J} = 0$ is divergence (buckling); crossing
+    $\tr\mat{J} = 0$ with $\det\mat{J} > 0$ is a Hopf bifurcation (galloping,
+    flutter). Above the dotted parabola $(\tr\mat{J})^2 = 4\det\mat{J}$ the
+    eigenvalues are complex.}
+  \label{fig:st-tracedet}
+\end{figure}
 
 %======================================================================
 \section{The pitchfork: one solution becomes three}\label{sec:st-pitchfork}
@@ -302,24 +497,76 @@ $\displaystyle\frac{dy^*}{dr} = -\frac{\sqrt r}{-2r} = \frac{1}{2\sqrt r}$, the
 derivative of $\sqrt r$, as it should. It blows up as $r \to 0$: the branch leaves
 the bifurcation point vertically, because $f_y \to 0$ there.
 
+\paragraph{Several unknowns.}
+For $\dot{\mat{y}} = \mat{f}(\mat{y},r)$ with $n$ unknowns the first-order
+equation~\eqref{eq:st-ift} becomes
+\begin{equation}\label{eq:st-iftn}
+  \mat{J}\,\Delta\mat{y} + \mat{f}_r\,\Delta r = \mat{0},
+\end{equation}
+where $\mat{f}_r$ is the column $\partial\mat{f}/\partial r$. If $\mat{J}$ is
+invertible, $\Delta\mat{y} = -\mat{J}^{-1}\mat{f}_r\,\Delta r$ and the steady state
+moves along a single smooth branch. Division by $f_y$ has become multiplication by
+$\mat{J}^{-1}$, and the condition $f_y = 0$ becomes $\det\mat{J} = 0$: the Jacobian
+has a zero eigenvalue,
+\begin{equation}\label{eq:st-zeroeig}
+  \mat{J}\,\mat{v} = \mat{0}, \qquad \mat{w}\T\mat{J} = \mat{0}\T .
+\end{equation}
+The right eigenvector $\mat{v}$ and the left eigenvector $\mat{w}$ (an eigenvector
+of $\mat{J}\T$) decide what happens next.
+
+\begin{gbox}{Branches meet only where the Jacobian has a zero eigenvalue}\label{sec:st-zero}
+\index{bifurcation!point}\index{Jacobian matrix!zero eigenvalue}%
+At a steady state where $\mat{J}\mat{v} = \mat{0}$ and $\mat{w}\T\mat{J} = \mat{0}\T$
+for a simple zero eigenvalue:
+\begin{itemize}
+  \item if $\mat{w}\T\mat{f}_r \neq 0$, the branch turns back in the direction
+        $\mat{v}$: a \emph{fold};
+  \item if $\mat{w}\T\mat{f}_r = 0$, a second branch can cross: a \emph{branch point}
+        (transcritical or pitchfork).
+\end{itemize}
+In both cases $\mat{v}$ is the shape of the change. In buckling it is the
+\emph{buckling mode}.
+\end{gbox}
+
+\paragraph{Why it works.}
+Multiply~\eqref{eq:st-iftn} on the left by $\mat{w}\T$. Since
+$\mat{w}\T\mat{J} = \mat{0}\T$, what remains is $(\mat{w}\T\mat{f}_r)\,\Delta r = 0$.
+If $\mat{w}\T\mat{f}_r \neq 0$, then $\Delta r = 0$ to first order and
+$\mat{J}\Delta\mat{y} = \mat{0}$, so $\Delta\mat{y} = a\,\mat{v}$: the branch has a
+``vertical'' tangent, the parameter stops increasing, and the branch turns back.
+If $\mat{w}\T\mat{f}_r = 0$, every $\Delta r$ is allowed and
+$\Delta\mat{y} = \Delta\mat{y}_0\,\Delta r + a\,\mat{v}$ contains a free amplitude
+$a$: the first order no longer picks one branch, and the second-order terms decide
+how many pass through the point. In one dimension $\mat{w} = \mat{v} = 1$ and the
+test reads: fold if $f_r \neq 0$, branch point if $f_r = 0$, as in
+Section~\ref{sec:st-normal}.
+
+\paragraph{The other way to lose stability.}
+A complex pair $\pm i\omega$ on the imaginary axis leaves $\mat{J}$ invertible
+(for $n = 2$, $\det\mat{J} = \omega^2 > 0$). The steady state goes on smoothly and
+no new steady state appears. What appears instead is a periodic motion:
+Section~\ref{sec:st-hopf}.
+
 \begin{gbox}{Box 1.1\quad Finding the bifurcation points of $\dot y = f(y,r)$}\label{sec:st-box-bif}
 \index{bifurcation!point}%
 \begin{enumerate}[label=\arabic*.]
   \item Solve $f(y,r) = 0$ for the branches of steady states $y^*(r)$.
   \item On each branch compute $\lambda = f_y(y^*,r)$. Its sign gives stability.
-  \item Find where $\lambda = 0$. These points are the only candidates.
+  \item Find where $\lambda = 0$ (with $n$ unknowns, where $\det\mat{J} = 0$).
+        These points are the only candidates.
   \item At each candidate, look at $f_r$ and at the next derivatives of $f$ to
         decide the type of bifurcation (Section~\ref{sec:st-normal}).
 \end{enumerate}
 \end{gbox}
 
 %======================================================================
-\section{Three basic bifurcations}\label{sec:st-normal}
+\section{Fold, transcritical and pitchfork: normal forms}\label{sec:st-normal}
 \index{bifurcation!normal form}%
 
 The two conditions $f = f_y = 0$ can be met in different ways. Each way has a
 simplest representative, its \emph{normal form}. Near a bifurcation point, a
-more complicated $f$ usually behaves like one of these three.
+more complicated $f$ behaves like one of these three, and a few of its derivatives
+tell which.
 
 \begin{center}
 \begin{tabular}{@{}llll@{}}
@@ -334,13 +581,15 @@ more complicated $f$ usually behaves like one of these three.
 \end{center}
 
 \paragraph{Saddle-node.}
-\index{bifurcation!saddle-node}%
+\index{bifurcation!saddle-node}\index{bifurcation!fold}%
 For $\dot y = r + y^2$ the steady states solve $y^2 = -r$. When $r < 0$ there are
 two, $y^* = \pm\sqrt{-r}$. The slope is $f_y = 2y$, so the lower one is stable
 and the upper one is unstable. As $r$ increases to $0$ they meet at $y = 0$ and
 disappear. For $r > 0$, $f > 0$ everywhere: there is no steady state, and $y$
 runs away. The count goes $2 \to 1 \to 0$. This is the most common way a real
-system fails suddenly.
+system fails suddenly. The point is also called a \emph{fold}, because the branch
+folds back on itself, and in structural mechanics a \emph{limit point}: the load
+reaches a maximum there.
 
 \paragraph{Transcritical.}
 \index{bifurcation!transcritical}%
@@ -364,6 +613,75 @@ roots together. In the transcritical and pitchfork cases, $f_r = y = 0$ at the
 point, because $y = 0$ is a steady state for every $r$. Such a persistent state
 is usually forced by the physics (no fish, a straight column) or by a symmetry.
 The pitchfork needs, in addition, the symmetry $y \to -y$ that kills the $y^2$ term.
+
+\paragraph{From any $f$ to its normal form.}
+\index{bifurcation!normal form}%
+Let $(y_0,r_0)$ be a bifurcation point, $f = f_y = 0$. Write $y = y_0 + u$,
+$r = r_0 + \mu$ and expand $f$ in a Taylor series, all derivatives taken at the
+point:
+\begin{equation}\label{eq:st-taylor}
+  \dot u = f_r\,\mu + \frac12 f_{yy}\,u^2 + f_{yr}\,u\,\mu
+  + \frac12 f_{rr}\,\mu^2 + \frac16 f_{yyy}\,u^3 + \dots
+\end{equation}
+Near the point only the largest terms matter. Which ones they are depends on which
+coefficients vanish.
+\begin{itemize}
+  \item \emph{Fold}: $f_r \neq 0$ and $f_{yy} \neq 0$. Then
+        $\dot u \approx f_r\mu + \tfrac12 f_{yy}u^2$, since $u$ is of order
+        $\sqrt{\abs\mu}$ and the other terms are smaller. Multiply by $\tfrac12 f_{yy}$
+        and set $Y = \tfrac12 f_{yy}\,u$, $R = \tfrac12 f_r f_{yy}\,\mu$:
+        $\dot Y = R + Y^2$.
+  \item \emph{Transcritical}: a branch $y = y_0$ exists for every $r$, so
+        $f_r = f_{rr} = 0$. With $f_{yr} \neq 0$ and $f_{yy} \neq 0$,
+        $\dot u \approx f_{yr}\,\mu\,u + \tfrac12 f_{yy}u^2$. Set
+        $Y = -\tfrac12 f_{yy}\,u$, $R = f_{yr}\,\mu$: $\dot Y = RY - Y^2$.
+  \item \emph{Pitchfork}: the symmetry $u \to -u$ makes $f$ odd in $u$, so
+        $f_r = f_{yy} = f_{rr} = 0$. With $f_{yr} \neq 0$ and $f_{yyy} \neq 0$,
+        $\dot u \approx f_{yr}\,\mu\,u + \tfrac16 f_{yyy}u^3$. Set
+        $Y = \sqrt{\abs{f_{yyy}}/6}\;u$, $R = f_{yr}\,\mu$:
+        $\dot Y = RY - Y^3$ if $f_{yyy} < 0$ (supercritical), and
+        $\dot Y = RY + Y^3$ if $f_{yyy} > 0$ (subcritical,
+        Exercise~\ref{exo:st-subcritical}).
+\end{itemize}
+
+\begin{gbox}{A few Taylor coefficients decide the type of the bifurcation}\label{sec:st-reduction}
+\index{bifurcation!normal form}%
+At a point where $f = f_y = 0$:
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+  \toprule
+  type & zero (by structure) & nonzero (generic) & normal form \\
+  \midrule
+  fold          & ---                         & $f_r$, $f_{yy}$    & $\dot Y = R + Y^2$ \\
+  transcritical & $f_r$ (persistent branch)   & $f_{yr}$, $f_{yy}$  & $\dot Y = RY - Y^2$ \\
+  pitchfork     & $f_r$, $f_{yy}$ (symmetry)  & $f_{yr}$, $f_{yyy}$ & $\dot Y = RY \mp Y^3$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+The fold needs nothing special and is the generic case. The transcritical needs a
+persistent solution, the pitchfork in addition a symmetry.
+\end{gbox}
+
+\paragraph{Why it works.}
+The rescaling turns the leading terms of~\eqref{eq:st-taylor} into the normal form
+exactly. The neglected terms are smaller by a factor that tends to zero at the point,
+and they do not change the number or the stability of the steady states nearby; the
+careful argument is in~\cite{st-guckenheimer1983,st-kuznetsov2004}. Two checks.
+For the saddle-node in disguise of Exercise~\ref{exo:st-disguise},
+$f = r - y - e^{-y}$ at $(0,1)$ gives $f_r = 1$ and $f_{yy} = -1$: a fold with
+$Y = -y/2$ and $R = -(r-1)/2$. For the bar of Example~\ref{ex:st-bar},
+$f = (-k\theta + PL\sin\theta)/c$ at $(0,P_c)$ gives $f_P = 0$, $f_{\theta\theta} = 0$,
+$f_{\theta P} = L/c$ and $f_{\theta\theta\theta} = -k/c < 0$: a supercritical
+pitchfork with $R = L(P - P_c)/c$, as in~\eqref{eq:st-bar-pitchfork}.
+Exercise~\ref{exo:st-computer-normal} lets Mathematica do these derivatives.
+
+\paragraph{Several unknowns.}
+With $n$ unknowns the same reduction is carried out along the single direction
+$\mat{v}$ of the zero eigenvalue: write $\mat{y} = \mat{y}_0 + a\,\mat{v} + \dots$
+and find the equation for the amplitude $a$. The other directions are stable and
+follow. This is the Lyapunov--Schmidt reduction (or, for the dynamics, the center
+manifold). Koiter's analysis of elastic structures in Chapter~\ref{ch:ld} is this
+reduction applied to the potential energy.
 
 \begin{example}[A fishery with a constant catch]\label{ex:st-fishery}
 \index{harvesting model}%
@@ -398,6 +716,129 @@ $\tau = 1/\sqrt{1 - 4h}$, which is $5$ time units at $h = 0.24$ and grows withou
 limit as $h \to \tfrac14$.
 \draftnote{Keep the fishery in a mechanics book, or replace it by a snap-through
 example (shallow arch) once Chapter 2 is written?}
+
+%======================================================================
+\section{The Hopf bifurcation: an oscillation is born}\label{sec:st-hopf}
+\index{bifurcation!Hopf}%
+
+The fold, the transcritical and the pitchfork are the three ways a real eigenvalue
+can pass through zero. The fourth generic bifurcation is the other edge of
+Figure~\ref{fig:st-tracedet}: a complex pair $\alpha(r) \pm i\omega$ crosses the
+imaginary axis. The Jacobian stays invertible, the steady state survives, and no
+new steady state appears. What appears is a periodic motion, a \emph{limit cycle}.
+\index{limit cycle}%
+
+\paragraph{The normal form.}
+Two unknowns $(x,y)$ are combined into one complex number $z = x + iy$. The
+normal form of the Hopf bifurcation is
+\begin{equation}\label{eq:st-hopf}
+  \dot z = (r + i\omega)\,z + \ell_1\,\abs{z}^2\,z ,
+\end{equation}
+with a real coefficient $\ell_1$. (An imaginary part of the cubic coefficient only
+changes the frequency with the amplitude, and we leave it out.) The linear part has
+the eigenvalues $r \pm i\omega$, which cross the imaginary axis at $r = 0$. Write
+$z = \rho\,e^{i\varphi}$. Then $\dot z = (\dot\rho + i\rho\dot\varphi)\,e^{i\varphi}$,
+and the real and imaginary parts of~\eqref{eq:st-hopf} separate:
+\begin{equation}\label{eq:st-hopfpolar}
+  \dot\rho = r\,\rho + \ell_1\,\rho^3 , \qquad \dot\varphi = \omega .
+\end{equation}
+The angle turns at the constant rate $\omega$. The amplitude $\rho \ge 0$ obeys a
+pitchfork. If $\ell_1 < 0$, then for $r > 0$ the origin is unstable and every
+motion spirals onto the circle $\rho = \sqrt{-r/\ell_1}$, traveled with the period
+$2\pi/\omega$ (Figure~\ref{fig:st-hopf}). The bifurcation is
+\emph{supercritical}: a small stable oscillation grows like the square root of
+$r$. If $\ell_1 > 0$, an unstable cycle exists for $r < 0$ and shrinks onto the
+origin at $r = 0$. After that nothing small and stable is left, and the motion jumps
+to a large oscillation: the \emph{subcritical} case
+(Exercise~\ref{exo:st-subhopf}).
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch01_bifurcation/figures/st_hopf.pdf}
+  \caption{The supercritical Hopf bifurcation~\eqref{eq:st-hopf} with $\omega = 1$,
+    $\ell_1 = -1$. Left: for $r < 0$ motions spiral into the origin. Middle: for
+    $r > 0$ they spiral out of the origin, or in from outside, onto the limit cycle
+    (orange). Right: amplitude of the cycle against $r$.}
+  \label{fig:st-hopf}
+\end{figure}
+
+\begin{gbox}{When a complex pair crosses the imaginary axis, an oscillation is born}\label{sec:st-hopfthm}
+\index{bifurcation!Hopf}\index{first Lyapunov coefficient}%
+Suppose that at $r = r_0$ the Jacobian has one pair of eigenvalues
+$\pm i\omega$, $\omega \neq 0$, all other eigenvalues having negative real parts,
+that the pair crosses with nonzero speed ($d\,\mathrm{Re}\,\lambda/dr \neq 0$), and
+that the \emph{first Lyapunov coefficient} $\ell_1$ is not zero. Then near
+$r_0$ the system behaves like~\eqref{eq:st-hopf}: a periodic motion of period close
+to $2\pi/\omega$ and amplitude proportional to $\sqrt{\abs{r - r_0}}$ is born. It is
+stable when $\ell_1 < 0$.
+\end{gbox}
+
+\paragraph{Why it works.}
+Look at the phase plane. Before the crossing, motions spiral inward; after, they
+spiral outward. The cubic term brakes the outward spiral, and the cycle sits at the
+amplitude where the linear growth $r\rho$ balances the cubic loss $\ell_1\rho^3$.
+To compute $\ell_1$, bring the system at $r = r_0$ to the form
+$\dot x = -\omega y + F(x,y)$, $\dot y = \omega x + G(x,y)$, where $F$ and $G$ start
+with quadratic terms. Then~\cite[Section~3.4]{st-guckenheimer1983}
+\begin{equation}\label{eq:st-l1}
+\begin{aligned}
+  16\,\ell_1 = {}& F_{xxx} + F_{xyy} + G_{xxy} + G_{yyy} \\
+  &+ \frac{1}{\omega}\bigl[F_{xy}(F_{xx} + F_{yy}) - G_{xy}(G_{xx} + G_{yy})
+     - F_{xx}G_{xx} + F_{yy}G_{yy}\bigr],
+\end{aligned}
+\end{equation}
+all derivatives at the origin. The formula is long but mechanical: Mathematica
+evaluates it in one line (Exercise~\ref{exo:st-computer-normal}). The theorem goes
+back to Poincaré and Andronov in the plane, and to Hopf~\cite{st-hopf1942} in any
+dimension.
+
+\begin{example}[Galloping of a square prism in the wind]\label{ex:st-galloping}
+\index{galloping}%
+Iced power lines, bridge hangers and slender members of square section can oscillate
+across the wind with large amplitudes. Den Hartog~\cite{st-denhartog1932} explained
+the phenomenon for iced conductors. In a quasi-steady model, a prism of side $d$,
+mass $m$ per unit length, natural frequency $\omega$ and damping ratio $\zeta$ moves
+across a wind of speed $U$ with the velocity $\dot x$. It sees the wind under the
+angle $\alpha \approx \dot x/U$, and the air pushes it across the wind with the force
+$\tfrac12\rho_a U^2 d\,C_y(\alpha)$ per unit length, where $\rho_a$ is the air
+density and $C_y = a_1\alpha - a_3\alpha^3$. For a square section
+$a_1 = 2.69$ and $a_3 = 168$~\cite{st-parkinson1964}. Dividing by $m$,
+\begin{equation}\label{eq:st-galloping}
+  \ddot x + \omega^2 x = \gamma\,\dot x - \beta\,\dot x^3,
+  \qquad
+  \gamma = \frac{\rho_a d\,a_1 U}{2m} - 2\zeta\omega,
+  \quad
+  \beta = \frac{\rho_a d\,a_3}{2mU}.
+\end{equation}
+For the state $(x,\dot x)$ the Jacobian at rest is
+$\begin{bmatrix} 0 & 1\\ -\omega^2 & \gamma\end{bmatrix}$, with $\det\mat{J} = \omega^2$
+and $\tr\mat{J} = \gamma$. The air acts as a negative damping (this is Den Hartog's
+criterion $a_1 > 0$), and it wins over the structural damping when $\gamma > 0$,
+that is above the critical wind speed
+\begin{equation}\label{eq:st-galloping-uc}
+  U_c = \frac{4m\zeta\omega}{\rho_a\,d\,a_1}.
+\end{equation}
+With $y = -\dot x/\omega$, the system at $U = U_c$ has $F = 0$ and
+$G = -\beta\omega^2 y^3$, so~\eqref{eq:st-l1} gives
+$\ell_1 = -\tfrac38\beta\omega^2 < 0$: the Hopf bifurcation is supercritical. The
+real part of the eigenvalues is $\gamma/2$, and the amplitude equation
+$\dot\rho = \tfrac12\gamma\rho - \tfrac38\beta\omega^2\rho^3$ gives the amplitude
+of the galloping motion,
+\begin{equation}\label{eq:st-galloping-amp}
+  A = \sqrt{\frac{4\gamma}{3\beta\omega^2}} .
+\end{equation}
+With $\rho_a = 1.25$~kg/m$^3$, $d = 0.1$~m, $m = 10$~kg/m, a frequency of
+$2$~Hz ($\omega = 12.6$~rad/s) and $\zeta = 0.005$, the critical speed is
+$U_c = 7.5$~m/s. At $U = 1.5\,U_c$ the amplitude is $A = 0.075$~m, three quarters
+of the side; a direct integration of~\eqref{eq:st-galloping} gives the same value
+(Exercise~\ref{exo:st-galloping}). Below $U_c$ nothing happens; above, the
+amplitude grows like $\sqrt{U - U_c}$. Since $U_c$ is proportional to $\zeta$,
+added damping is the usual cure.
+\end{example}
+
+Flutter of aircraft wings and of bridge decks is the same loss of stability with two
+coupled degrees of freedom. Ziegler's column, loaded by a follower force, shows it in
+a structure (Chapter~\ref{ch:ld}).
 
 %======================================================================
 \section{Potential energy, buckling and imperfections}\label{sec:st-energy}
@@ -552,9 +993,150 @@ makes $f$ odd in $y$. A small $h$ destroys the symmetry. Only the two conditions
 $f = f_y = 0$ of Section~\ref{sec:st-ift} remain, and their generic solutions are
 folds: the two points~\eqref{eq:st-cusp}. The bar of Figure~\ref{fig:st-bar}
 shows the mechanical consequence, studied in depth for elastic structures
-in~\cite{st-thompson1973}.
-\draftnote{Chapter 2 (two degrees of freedom, inertia): the eigenvalues of the
-Jacobian replace $f_y$, and the Hopf bifurcation appears.}
+in~\cite{st-thompson1973}. Chapter~\ref{ch:ld} measures it: how much an
+imperfection lowers the largest load a structure can carry.
+
+%======================================================================
+\section{Following branches: the ideas of continuation}\label{sec:st-continuation}
+\index{continuation}%
+
+Closed forms are rare. To draw the bifurcation diagram of a real structure we
+compute its branches point by point, each point starting from the previous one.
+This is \emph{continuation}. The ideas are clearest on one equation $f(y,r) = 0$
+for the steady states; Chapter~\ref{ch:nc} applies them to finite element models
+with thousands of unknowns; the mathematics is in~\cite{st-allgower2003}.
+There are two lessons. Newton's method fails at a fold,
+because it divides by $f_y = 0$. Treating $r$ as an unknown repairs it.
+
+\paragraph{Natural parameter continuation.}
+\index{continuation!natural parameter}%
+Suppose $(y_k,r_k)$ is a steady state. Choose the next value $r_{k+1} = r_k + \Delta r$.
+The slope~\eqref{eq:st-ift} predicts $y^0 = y_k - (f_r/f_y)\,\Delta r$, and Newton's
+method corrects it:
+\begin{equation}\label{eq:st-newton}
+  y \leftarrow y - \frac{f(y,r_{k+1})}{f_y(y,r_{k+1})}
+\end{equation}
+until $f = 0$. Every step divides by $f_y$, and near a fold $f_y \to 0$.
+Figure~\ref{fig:st-continuation} shows the result on the S-curve
+$f = h + y - y^3$ of Section~\ref{sec:st-energy}, with $h$ as the parameter. Steps
+of $\Delta h = 0.08$ follow the lower branch up to the fold at $h_c = 0.385$. Past
+the fold there is no solution nearby: Newton's method fails twice, and then lands
+on the upper branch. The computation jumps, like the physical system, and never
+sees the unstable middle branch. Two things went wrong: we divided by $f_y = 0$,
+and we insisted on marching forward in $h$ while the branch turns back.
+
+\paragraph{Pseudo-arclength continuation.}
+\index{continuation!pseudo-arclength}%
+Keller's idea~\cite{st-keller1977} is to make $r$ an unknown too. Write
+$\mat{u} = (y,r)$. One equation $f(\mat{u}) = 0$ for two unknowns has a curve of
+solutions, and we measure along it the arclength $s$. Its unit tangent
+$\mat{t} = (y',r')$, with $' = d/ds$, satisfies $f_y y' + f_r r' = 0$ and
+$y'^2 + r'^2 = 1$:
+\begin{equation}\label{eq:st-tangent}
+  \mat{t} = \frac{(-f_r,\; f_y)}{\sqrt{f_y^2 + f_r^2}} .
+\end{equation}
+It is the gradient $(f_y,f_r)$ turned by a right angle. At a fold, $r' = 0$ and the
+tangent is vertical, but nothing else happens to it. A step goes as follows. The
+predictor moves along the tangent, $\mat{u}^0 = \mat{u}_k + \Delta s\,\mat{t}_k$. The
+corrector solves two equations, the second one fixing the distance travelled along
+the old tangent:
+\begin{equation}\label{eq:st-augmented}
+  f(y,r) = 0, \qquad \mat{t}_k \cdot (\mat{u} - \mat{u}_k) - \Delta s = 0 .
+\end{equation}
+Newton's method for this system uses the \emph{augmented Jacobian}
+\index{augmented Jacobian}%
+\begin{equation}\label{eq:st-jhat}
+  \widehat{\mat{J}} = \begin{bmatrix} f_y & f_r \\ y'_k & r'_k \end{bmatrix}.
+\end{equation}
+
+\begin{gbox}{The augmented Jacobian stays invertible at a fold; it is singular at a branch point}\label{sec:st-augmented}
+\index{augmented Jacobian}%
+On the curve, with the tangent~\eqref{eq:st-tangent},
+\begin{equation}\label{eq:st-detjhat}
+  \det\widehat{\mat{J}} = f_y\,r' - f_r\,y'
+  = \frac{f_y^2 + f_r^2}{\sqrt{f_y^2 + f_r^2}} = \sqrt{f_y^2 + f_r^2} .
+\end{equation}
+At a fold $f_y = 0$ but $f_r \neq 0$: $\widehat{\mat{J}}$ is invertible and Newton's
+method converges. At a transcritical or pitchfork point $f_y = f_r = 0$:
+$\widehat{\mat{J}}$ is singular.
+\end{gbox}
+
+\paragraph{Why it works.}
+Newton's method with $r$ fixed looks for the crossing of the curve with a vertical
+line, and at a fold that line is tangent to the curve. The augmented system looks
+for the crossing with a line perpendicular to the old tangent, and such a line cuts
+the curve cleanly, unless the curve has no single tangent: that happens only where
+two branches cross. With $n$ unknowns,
+$\widehat{\mat{J}} = \begin{bmatrix} \mat{J} & \mat{f}_r \\ \mat{t}_y\T & t_r\end{bmatrix}$
+is $(n+1)\times(n+1)$, and it is singular exactly when the $n\times(n+1)$ matrix
+$\begin{bmatrix}\mat{J} & \mat{f}_r\end{bmatrix}$ loses rank. At a fold the zero
+eigenvalue of $\mat{J}$ comes with $\mat{w}\T\mat{f}_r \neq 0$
+(Section~\ref{sec:st-zero}), the column $\mat{f}_r$ makes up for the lost rank, and
+$\widehat{\mat{J}}$ is invertible. At a branch point $\mat{w}\T\mat{f}_r = 0$ and it is
+not. The eigenvalue problem $\mat{J}\mat{v} = \mat{0}$, with its left eigenvector
+$\mat{w}$, tells everything: where the plain Newton method breaks down, in which
+direction $\mat{v}$ the branch turns or splits, and whether the augmented method
+goes through.
+
+\begin{gbox}{Box 1.2\quad Pseudo-arclength continuation of $\mat{f}(\mat{y},r) = \mat{0}$}\label{sec:st-box-arc}
+\index{continuation!pseudo-arclength}%
+Unknowns $\mat{u} = (\mat{y},r)$. Given a solution $\mat{u}_0$, a step $\Delta s$, and a
+rough direction $\mat{t}_{\mathrm{old}}$.
+\begin{enumerate}[label=\arabic*.]
+  \item Tangent: solve
+        $\begin{bmatrix}\mat{J} & \mat{f}_r\\ \mat{t}_{\mathrm{old}}\T\end{bmatrix}\mat{t}
+        = \begin{bmatrix}\mat{0}\\ 1\end{bmatrix}$ at $\mat{u}_k$, and normalize
+        $\mat{t}_k = \mat{t}/\abs{\mat{t}}$. The last row keeps the direction of travel.
+  \item Predictor: $\mat{u} = \mat{u}_k + \Delta s\,\mat{t}_k$.
+  \item Corrector: repeat
+        $\widehat{\mat{J}}\,\delta\mat{u} = -\begin{bmatrix}\mat{f}(\mat{u})\\
+        \mat{t}_k\cdot(\mat{u} - \mat{u}_k) - \Delta s\end{bmatrix}$,
+        $\mat{u} \leftarrow \mat{u} + \delta\mat{u}$, until $\abs{\delta\mat{u}}$ is
+        small. If it does not converge, halve $\Delta s$ and return to step~2.
+  \item Monitor, between $\mat{u}_k$ and $\mat{u}_{k+1}$, the signs of $r'$ (folds),
+        of $\det\mat{J}$ (an eigenvalue through zero: folds and branch points) and of
+        $\det\widehat{\mat{J}}$ (branch points).
+  \item Set $\mat{t}_{\mathrm{old}} = \mat{t}_k$, $k \leftarrow k+1$, and return to
+        step~1.
+\end{enumerate}
+\end{gbox}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch01_bifurcation/figures/st_continuation.pdf}
+  \caption{The S-curve $h + y - y^3 = 0$. Left: steps in $h$ (natural parameter) jump
+    at the fold; pseudo-arclength steps ($\Delta s = 0.12$) go round both folds.
+    Right: along the pseudo-arclength path, $\det\mat{J} = f_y$ changes sign at each
+    fold, while $\det\widehat{\mat{J}}$ never vanishes.}
+  \label{fig:st-continuation}
+\end{figure}
+
+\paragraph{Detecting and switching.}
+\index{branch switching}%
+The monitors of step~4 change sign between two points, and a linear interpolation
+locates the zero (Figure~\ref{fig:st-continuation}, right). On the S-curve,
+$\det\mat{J}$ changes sign at both folds and $\det\widehat{\mat{J}}$ keeps its sign. On
+the straight state $\theta = 0$ of the perfect bar, written $\theta - p\sin\theta = 0$
+with $p = P/P_c$, the tangent is $(0,1)$ and $\det\widehat{\mat{J}} = f_\theta = 1 - p$
+changes sign at $p = 1$: a branch point. To leave it on the new branch we need the
+directions $(a,b)$ of the branches through the point. The second-order terms
+of~\eqref{eq:st-taylor} give them:
+$f_{yy}a^2 + 2f_{yr}\,ab + f_{rr}b^2 = 0$. At a pitchfork this reduces to $ab = 0$:
+the old branch $(0,1)$ and the new one $(1,0)$, at a right angle. A small step in
+the new direction, followed by the corrector, puts the computation on the buckled
+branch.
+
+\paragraph{What the code finds.}
+Exercise~\ref{exo:st-computer-arclength} writes Box~1.2 in about fifty lines of Python.
+With $\Delta s = 0.05$ it locates the folds of the S-curve at $h = \pm0.384$
+(exact: $\pm0.3849$). For the bar with a tilt $\theta_0 = 0.1$ it finds the fold
+of the complementary branch at $\theta = -0.632$, $P/P_c = 1.239$. On the perfect
+bar it detects the branch point at $P = P_c$ and follows the buckled branch,
+$P/P_c = \theta/\sin\theta$, to machine precision. In Chapter~\ref{ch:nc} the scalar
+$f_y$ becomes the tangent stiffness matrix of a finite element model, $\mat{f}_r$ the
+load vector, and Box~1.2 becomes the arc-length methods of Riks and Crisfield. A
+zero eigenvalue of the tangent stiffness, $\mat{J}\mat{v} = \mat{0}$, is a buckling
+load, and linear buckling analysis is this eigenvalue problem.
 
 %======================================================================
 \framepart{Summary}
@@ -563,6 +1145,13 @@ Jacobian replace $f_y$, and the Hopf bifurcation appears.}
   \item \textbf{Steady states and stability.} A steady state solves $f(y^*,r) = 0$.
         It is stable when $\lambda = f_y(y^*,r) < 0$, and disturbances then die out
         in a time of about $1/\abs\lambda$.
+  \item \textbf{Lyapunov.} A function with a minimum at $y^*$ that never increases
+        along the motion proves stability, even where the slope test is silent.
+        In mechanics the energy is that function.
+  \item \textbf{Several unknowns.} The eigenvalues of the Jacobian $\mat{J}$ are the
+        growth rates. Stability is lost when a real eigenvalue crosses zero
+        (divergence, buckling) or a complex pair crosses the imaginary axis
+        (flutter, galloping).
   \item \textbf{Linear is not enough.} $\dot y = ay$ has a single steady state.
         Several steady states need a nonlinear $f$ whose graph bends.
   \item \textbf{Where bifurcations happen.} While $f_y \neq 0$ the steady state is
@@ -571,12 +1160,22 @@ Jacobian replace $f_y$, and the Hopf bifurcation appears.}
   \item \textbf{One number, two jobs.} $f_y$ controls stability and uniqueness.
         When the control parameter drives $\lambda$ through zero, stability is lost
         and new solutions can appear.
-  \item \textbf{Three normal forms.} Saddle-node $r + y^2$, transcritical $ry - y^2$,
-        pitchfork $ry - y^3$.
+  \item \textbf{Four generic bifurcations.} Fold (saddle-node) $r + y^2$,
+        transcritical $ry - y^2$, pitchfork $ry \mp y^3$, and Hopf
+        $\dot z = (r + i\omega)z + \ell_1\abs{z}^2z$. The Taylor coefficients $f_r$,
+        $f_{yy}$, $f_{yr}$, $f_{yyy}$ (and $\ell_1$ for Hopf) tell which, and whether
+        it is super- or subcritical.
+  \item \textbf{Zero eigenvalue.} New branches appear only where
+        $\mat{J}\mat{v} = \mat{0}$. With the left eigenvector $\mat{w}$:
+        fold if $\mat{w}\T\mat{f}_r \neq 0$, branch point if $\mat{w}\T\mat{f}_r = 0$.
   \item \textbf{Buckling.} The rigid bar on a spring buckles at $P_c = k/L$ through
         a pitchfork, with $\theta \approx \pm\sqrt{6(P - P_c)/P_c}$.
   \item \textbf{Warning signs.} Slow recovery from disturbances (critical slowing
         down), and with imperfections, jumps at folds and hysteresis.
+  \item \textbf{Continuation.} Stepping in the parameter fails at a fold, where
+        $f_y = 0$. Pseudo-arclength continuation makes the parameter an unknown; its
+        augmented Jacobian stays invertible at folds and becomes singular only at
+        branch points, where the branch is switched.
 \end{itemize}
 \end{gbox*}
 
@@ -634,6 +1233,59 @@ Figure~\ref{fig:st-normalforms}.
 Steady states $\pm\sqrt r$ for $r > 0$, none for $r < 0$. With $f_y = -2y$,
 $+\sqrt r$ is stable and $-\sqrt r$ unstable. The parabola opens to the right,
 the mirror image of $r + y^2$.
+\end{solution}
+
+\exercise{A Lyapunov function where the eigenvalues are silent}\label{exo:st-lyap}
+\index{Lyapunov function}%
+Consider $\ddot x + \dot x + x^3 = 0$. (a)~Write it for $(x,\dot x)$ and find the
+eigenvalues of the Jacobian at the origin. (b)~Show that
+$W = \tfrac12\dot x^2 + \tfrac14 x^4$ is a Lyapunov function and conclude.
+\begin{solution}
+(a)~$\dot x = \dot x$, $\ddot x = -\dot x - x^3$, so
+$\mat{J} = \begin{bmatrix} 0 & 1\\ 0 & -1\end{bmatrix}$, with eigenvalues $0$ and $-1$:
+the test of Section~\ref{sec:st-eigen} is silent (the spring has no linear part).
+(b)~$\dot W = \dot x\ddot x + x^3\dot x = \dot x(-\dot x - x^3) + x^3\dot x = -\dot x^2 \le 0$,
+and $W > 0$ away from the origin: stable. As for the damped oscillator, a motion
+cannot stay on $\dot x = 0$ unless $x = 0$, so the origin is asymptotically stable.
+The return is slow, like that of $\dot y = -y^3$.
+\end{solution}
+
+\exercise{Measuring a buckling load by vibration}\label{exo:st-tracedet}
+\index{divergence}%
+The bar of Section~\ref{sec:st-lyapunov} has $mL^2 = 1$~kg\,m$^2$, $L = 1$~m,
+$k = 100$~N\,m/rad and $c = 2$~N\,m\,s. Find the eigenvalues at $\theta = 0$ for
+$P = 0$, $75$ and $120$~N. How does the frequency depend on $P$?
+\begin{solution}
+$\lambda^2 + 2\lambda + (100 - P) = 0$. $P = 0$: $\lambda = -1 \pm 9.95\,i$.
+$P = 75$: $\lambda = -1 \pm 4.90\,i$. $P = 120$: $\lambda = -1 \pm \sqrt{21}$, that is
+$3.58$ and $-5.58$: a positive real eigenvalue, the bar diverges (buckles). In the
+undamped limit $\omega^2 = (k - PL)/(mL^2)$ decreases linearly with $P$ and vanishes at
+$P_c = 100$~N. Measuring the frequency at a few safe loads and extrapolating to
+$\omega = 0$ gives the buckling load without reaching it. This is the idea of the
+vibration correlation technique used on shells (Chapter~\ref{ch:cy}).
+\end{solution}
+
+\exercise{A limit cycle by hand}\label{exo:st-hopfshort}
+\index{limit cycle}%
+For $\dot\rho = r\rho - \rho^3$, $\dot\varphi = 2\pi$ with $r = 0.04$, find the
+amplitude, the period and the stability of the cycle.
+\begin{solution}
+$\rho^2 = r$ gives $\rho = 0.2$. The period is $2\pi/\omega = 1$. The slope of
+$r\rho - \rho^3$ at $\rho = 0.2$ is $r - 3\rho^2 = -2r = -0.08 < 0$: stable, with a
+relaxation time of $12.5$ periods. Near the bifurcation, cycles are small and slow
+to settle.
+\end{solution}
+
+\exercise{Why Newton's method stops at a fold}\label{exo:st-newton}
+\index{augmented Jacobian}%
+At the fold $(y,h) = (-1/\sqrt3,\, 2/(3\sqrt3))$ of $f = h + y - y^3$, compute $f_y$,
+$f_h$, the tangent~\eqref{eq:st-tangent} and $\det\widehat{\mat{J}}$.
+\begin{solution}
+$f_y = 1 - 3y^2 = 0$ and $f_h = 1$. The tangent is $(-1, 0)$: vertical in the
+$(h,y)$ plane, pure change of $y$. Newton's method in $y$ at fixed $h$ divides by
+$f_y = 0$. The augmented Jacobian
+$\begin{bmatrix} 0 & 1\\ -1 & 0\end{bmatrix}$ has determinant $1$: the augmented
+Newton method has no difficulty.
 \end{solution}
 
 \framesub{Problems}
@@ -698,6 +1350,67 @@ $0.6^\circ$ gives a rotation of $22^\circ$ at the critical load: the cube root
 amplifies small imperfections.
 \end{solution}
 
+\exercise{The imperfect transcritical bifurcation}\label{exo:st-imptrans}
+\index{bifurcation!transcritical}\index{imperfection}%
+Study $\dot y = h + ry - y^2$ for small $h > 0$ and $h < 0$: steady states,
+stability, folds. How far does the critical value of $r$ move?
+\begin{solution}
+$y_\pm = \tfrac12\bigl(r \pm \sqrt{r^2 + 4h}\bigr)$, with $f_y = r - 2y = \mp\sqrt{r^2+4h}$:
+$y_+$ is stable, $y_-$ unstable. For $h > 0$ the square root is always real: two
+separate branches, a hyperbola, and the exchange of stability is replaced by a smooth
+passage on $y_+$. For $h < 0$ there are no steady states for $\abs r < 2\sqrt{-h}$,
+and folds at $r = \pm2\sqrt{-h}$, $y = r/2$. The critical value moves by an amount
+proportional to $\sqrt{\abs h}$, much more than $h$ itself. In structures this is the
+one-half power law of asymmetric bifurcation (Chapter~\ref{ch:ld}).
+\end{solution}
+
+\exercise{The van der Pol oscillator}\label{exo:st-vdp}
+\index{bifurcation!Hopf}%
+For $\ddot x - (\mu - x^2)\dot x + x = 0$: (a)~find the eigenvalues at the origin and
+the Hopf point; (b)~with $y = -\dot x$, compute $\ell_1$ by~\eqref{eq:st-l1};
+(c)~deduce the amplitude of the cycle for small $\mu > 0$.
+\begin{solution}
+(a)~$\lambda^2 - \mu\lambda + 1 = 0$: $\lambda = \tfrac\mu2 \pm i\sqrt{1 - \mu^2/4}$.
+The real part $\mu/2$ crosses zero at $\mu = 0$ with $\omega = 1$.
+(b)~$\dot x = -y$, $\dot y = x + (\mu - x^2)y$. At $\mu = 0$: $F = 0$,
+$G = -x^2y$, so $16\ell_1 = G_{xxy} = -2$ and $\ell_1 = -\tfrac18$: supercritical.
+(c)~$\dot\rho = \tfrac\mu2\rho - \tfrac18\rho^3$ gives $\rho = 2\sqrt\mu$, the classical
+amplitude of the van der Pol cycle.
+\end{solution}
+
+\exercise{The subcritical Hopf bifurcation and its hysteresis}\label{exo:st-subhopf}
+\index{bifurcation!Hopf}\index{hysteresis}%
+Study the cycles of $\dot\rho = r\rho + \rho^3 - \rho^5$ as $r$ increases from $-1$ to
+$1$ and back.
+\begin{solution}
+Cycles solve $r + \rho^2 - \rho^4 = 0$: $\rho^2 = \tfrac12\bigl(1 \pm \sqrt{1 + 4r}\bigr)$,
+real for $r \ge -\tfrac14$. The slope of $g(\rho) = r\rho + \rho^3 - \rho^5$ at a cycle is
+$2\rho^2(1 - 2\rho^2)$: the outer cycle ($\rho^2 > \tfrac12$) is stable, the inner one
+unstable. For $-\tfrac14 < r < 0$ the stable rest state, an unstable cycle and a large
+stable cycle coexist. Increasing $r$: the system rests until $r = 0$, then jumps to the
+cycle $\rho = 1$. Decreasing $r$: it stays on the large cycle until the fold of cycles
+at $r = -\tfrac14$, $\rho = 1/\sqrt2$, then falls back to rest. Oscillations start
+abruptly and stop at a lower parameter value.
+\end{solution}
+
+\exercise{Galloping}\label{exo:st-galloping}
+\index{galloping}%
+(a)~Derive~\eqref{eq:st-galloping-uc} and~\eqref{eq:st-galloping-amp}, the amplitude
+also by an energy balance over one cycle $x = A\cos\omega t$. (b)~Evaluate $U_c$ and
+$A$ at $U = 1.1$, $1.5$ and $2\,U_c$ for the data of Example~\ref{ex:st-galloping}, and
+check by integrating~\eqref{eq:st-galloping}. (c)~What does doubling $\zeta$ do?
+\begin{solution}
+(a)~Example~\ref{ex:st-galloping}. Energy balance: the work of
+$\gamma\dot x - \beta\dot x^3$ over a cycle vanishes, $\gamma\langle\dot x^2\rangle
+= \beta\langle\dot x^4\rangle$, with $\langle\dot x^2\rangle = \tfrac12A^2\omega^2$ and
+$\langle\dot x^4\rangle = \tfrac38A^4\omega^4$, so $A^2 = 4\gamma/(3\beta\omega^2)$.
+(b)~$U_c = 7.47$~m/s. Theory and integration agree: $A = 0.0288$, $0.0753$,
+$0.1229$~m. Close to $U_c$ the integration needs a long time to settle (critical
+slowing down: the growth rate is $\gamma/2$).
+(c)~$U_c$ doubles. At a fixed wind speed above both thresholds the amplitude drops.
+\lstinputlisting[firstline=4]{ch01_bifurcation/code/python/ex_galloping.py}
+\end{solution}
+
 \exercise{Computer: settling and slowing down}\label{exo:st-computer-pitchfork}
 \index{critical slowing down}%
 Integrate~\eqref{eq:st-pitchfork} for $r = -0.5$, $-0.1$, $0.1$, $0.5$, $1$, from
@@ -725,15 +1438,71 @@ $y^3 - y \pm h_c = (y \mp 1/\sqrt3)^2(y \pm 2/\sqrt3)$.
 \lstinputlisting[firstline=4]{ch01_bifurcation/code/python/ex_hysteresis.py}
 \end{solution}
 
+\exercise{Computer: pseudo-arclength continuation from scratch}\label{exo:st-computer-arclength}
+\index{continuation!pseudo-arclength}%
+Program Box~1.2 for $\mat{f}(\mat{u}) = \mat{0}$, $\mat{u} = (\mat{y},r)$, with the
+Jacobian by finite differences. (a)~Follow the S-curve $h + y - y^3 = 0$ from
+$y = -1.3$ and locate its folds. (b)~Follow the complementary branch of the bar with
+tilt $\theta_0 = 0.1$, $(\theta - \theta_0) - p\sin\theta = 0$, from $\theta = -2.5$,
+and locate its fold. (c)~Follow the straight state of the perfect bar, detect the
+branch point, switch, and compare the buckled branch with $p = \theta/\sin\theta$.
+\begin{solution}
+(a)~Folds at $(y,h) = (-0.577, 0.385)$ and $(0.577,-0.384)$ (exact
+$\mp1/\sqrt3$, $\pm2/(3\sqrt3)$); $\det\mat{J}$ changes sign twice, $\det\widehat{\mat{J}}$
+never. (b)~$\theta = -0.632$, $p = 1.239$ (exact $-0.6317$, $1.2391$, from
+$\sin\theta = (\theta - \theta_0)\cos\theta$). On this branch the bar leans against its
+tilt, and it is reached only by a large disturbance. (c)~$\det\widehat{\mat{J}}$ changes
+sign at $p = 1.000$; the switched branch satisfies $p = \theta/\sin\theta$ to
+$10^{-16}$. The orientation row in the tangent system is what makes the sign of
+$\det\widehat{\mat{J}}$ meaningful from one step to the next.
+\lstinputlisting[firstline=4]{ch01_bifurcation/code/python/arclength.py}
+\end{solution}
+
+\exercise{Computer: normal forms in Mathematica}\label{exo:st-computer-normal}
+\index{bifurcation!normal form}%
+Write a function that takes $f(y,r)$ and a point, computes the Taylor coefficients
+of Section~\ref{sec:st-reduction}, and returns the type and the scalings $R$, $Y$.
+Apply it to $r - y - e^{-y}$ at $(0,1)$, to $y(1-y) - ry$ at $(0,1)$ and to the bar.
+Find the cusp~\eqref{eq:st-cusp} by eliminating $y$, and compute $\ell_1$
+by~\eqref{eq:st-l1} for the van der Pol and the galloping oscillators.
+\begin{solution}
+Fold with $R = -(r-1)/2$, $Y = -y/2$; transcritical with $R = -(r-1)$, $Y = y$;
+supercritical pitchfork with $R = L(P - k/L)/c$ and $f_{\theta\theta\theta} = -k/c$.
+The resultant of $f$ and $f_y$ in $y$ is $4r^3 - 27h^2$ (up to sign): the cusp
+$\abs h = 2r^{3/2}/(3\sqrt3)$. $\ell_1 = -\tfrac18$ (van der Pol) and
+$-\tfrac38\beta\omega^2$ (galloping). A SymPy version of the same steps gives the same
+results.
+\lstinputlisting[language=Mathematica,firstline=4]{ch01_bifurcation/code/mathematica/normal_forms.wl}
+\end{solution}
+
 %======================================================================
 \begin{chapterbib}{99}
 \bibitem{st-strang2014} G.~Strang, \emph{Differential Equations and Linear
   Algebra}, Wellesley--Cambridge Press, 2014.
 \bibitem{st-strogatz2015} S.~H.~Strogatz, \emph{Nonlinear Dynamics and Chaos},
-  2nd~ed., Westview Press, 2015. Chapters~2 and~3.
+  2nd~ed., Westview Press, 2015. Chapters~2, 3 and~5--8.
 \bibitem{st-guckenheimer1983} J.~Guckenheimer and P.~Holmes, \emph{Nonlinear
   Oscillations, Dynamical Systems, and Bifurcations of Vector Fields}, Springer,
   1983. Chapter~3.
+\bibitem{st-kuznetsov2004} Yu.~A.~Kuznetsov, \emph{Elements of Applied Bifurcation
+  Theory}, 3rd~ed., Springer, 2004.
+\bibitem{st-seydel2010} R.~Seydel, \emph{Practical Bifurcation and Stability
+  Analysis}, 3rd~ed., Springer, 2010.
+\bibitem{st-lyapunov1992} A.~M.~Lyapunov, \emph{The General Problem of the Stability
+  of Motion} (1892), translated by A.~T.~Fuller, Taylor \& Francis, 1992.
+\bibitem{st-hopf1942} E.~Hopf, Abzweigung einer periodischen L\"osung von einer
+  station\"aren L\"osung eines Differentialsystems, \emph{Berichte der
+  Math.-Phys.\ Klasse der S\"achs.\ Akad.\ Wiss.\ Leipzig} 94 (1942) 3--22.
+\bibitem{st-denhartog1932} J.~P.~Den~Hartog, Transmission line vibration due to
+  sleet, \emph{Transactions of the AIEE} 51 (1932) 1074--1076.
+\bibitem{st-parkinson1964} G.~V.~Parkinson and J.~D.~Smith, The square prism as an
+  aeroelastic non-linear oscillator, \emph{Quarterly Journal of Mechanics and Applied
+  Mathematics} 17 (1964) 225--239.
+\bibitem{st-keller1977} H.~B.~Keller, Numerical solution of bifurcation and
+  nonlinear eigenvalue problems, in P.~H.~Rabinowitz (ed.), \emph{Applications of
+  Bifurcation Theory}, Academic Press, 1977, 359--384.
+\bibitem{st-allgower2003} E.~L.~Allgower and K.~Georg, \emph{Introduction to
+  Numerical Continuation Methods}, SIAM, 2003.
 \bibitem{st-thompson1973} J.~M.~T.~Thompson and G.~W.~Hunt, \emph{A General
   Theory of Elastic Stability}, Wiley, 1973.
 \bibitem{st-scheffer2009} M.~Scheffer, J.~Bascompte, W.~A.~Brock, V.~Brovkin,

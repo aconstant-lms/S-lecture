@@ -147,6 +147,12 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
 - 2026-11-21: editorial line structural engineering + physical examples; sources recorded in `SOURCES.md`;
   elasticity notation from Constantinescu & Korsunsky, LSK notation from Triantafyllidis.
 - 2026-11-21: Hooke tensor ℂ (blackboard, `\bbC`); load parameter η from Chapter 2 on (notation list updated).
+- 2026-11-21 (Ch. 1 thread): Lyapunov stability, Jacobian eigenvalues and the Hopf bifurcation (galloping example)
+  are introduced in Chapter 1; Chapter 2 reuses them (Ziegler, flutter) instead of introducing Hopf.
+- 2026-11-21 (Ch. 1 thread): Chapter 1 gives the ideas of continuation on one equation (natural parameter vs
+  pseudo-arclength, augmented Jacobian, zero eigenvalue Jv = 0 with fold test wᵀf_r ≠ 0, Box 1.2) and a Python
+  code `ch01_bifurcation/code/python/arclength.py` for n unknowns; Chapter 3 builds on it (FE, Riks/Crisfield).
+  Matrix notation for ODE systems: `\mat{y}`, `\mat{J}`, `\mat{v}`, `\mat{w}`, `\mat{u}=(\mat{y},r)`, `\widehat{\mat{J}}`.
 
 ## Workflow
 - One conversation per chapter; touch other files only when needed (cross-references, notation).

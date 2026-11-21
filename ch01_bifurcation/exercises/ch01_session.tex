@@ -6,32 +6,236 @@
 \clearpage
 \renewcommand{\sessionchapter}{Chapter 1 -- Differential equations and bifurcation}
 \setcounter{spart}{0}
+\setcounter{algorithm}{0}\renewcommand{\thealgorithm}{1.\arabic{algorithm}}
 \ifanswers
-\sessiontitle{Chapter 1 -- Bifurcation: session sheet with answers}
-  {Notes: Chapter~\ref{B-ch:st}.}
+\sessiontitle{Chapter 1 -- Stability and bifurcation: session sheet with answers}
+  {Notes: Chapter~\ref{B-ch:st}. Codes: Python (NumPy, SciPy), Mathematica.}
 \else
-\sessiontitle{Chapter 1 -- Bifurcation: session sheet}
-  {Notes: Chapter~\ref{B-ch:st}. Codes: Python and Mathematica.}
+\sessiontitle{Chapter 1 -- Stability and bifurcation: session sheet}
+  {Notes: Chapter~\ref{B-ch:st}. Codes: Python (NumPy, SciPy), Mathematica.}
 \fi
 
+\noindent
+The session has three parts. Part~a is done by hand. In part~b you write a
+pseudo-arclength continuation code from scratch, in Python or in Mathematica. In
+part~c Mathematica (or SymPy) reduces equations to their normal forms. Bring the
+notes: Sections~\ref{B-sec:st-lyapunov}, \ref{B-sec:st-normal}, \ref{B-sec:st-hopf}
+and~\ref{B-sec:st-continuation}.
+
 \begin{instructor}
-\draftnote{Skeleton session. Timing: 40 min part a, 40 min part b, 40 min part c.}
+Timing: part~a 25~min, part~b 55~min, part~c 40~min. Part~b is the core of the
+session: give it the time, and let students who finish early do part~c at home.
+Students without Mathematica do part~c with
+\texttt{code/python/normal\_forms\_sympy.py}, which follows the same steps.
+\untested{The Mathematica files \texttt{normal\_forms.wl} and \texttt{arclength.wl}
+have not yet been run in Mathematica: the SymPy and Python versions were run and
+give the numbers quoted here. Run both .wl files once before the session.}
 \end{instructor}
 
-\spart{The pitchfork by hand}
-Consider $\dot y = ry - y^3$.
-\q Find the steady states as functions of $r$.
+%======================================================================
+\spart{Stability by hand}
+A mass on a hardening spring with a dashpot obeys
+$\ddot x + c\,\dot x + x + x^3 = 0$, $c \ge 0$.
+
+\q Write the equation as a first-order system for $(x,\dot x)$. Find the steady
+states and the eigenvalues of the Jacobian at the origin. For which $c$ is the
+origin a spiral?
 \begin{answer}
-$y=0$ for all $r$, and $y=\pm\sqrt r$ for $r>0$.
-\end{answer}
-\q Decide their stability from the slope $f_y$.
-\begin{answer}
-$f_y = r-3y^2$. At $y=0$, $f_y=r$: stable for $r<0$, unstable for $r>0$.
-At $y=\pm\sqrt r$, $f_y=-2r<0$: both are stable.
+$\dot x = \dot x$, $\ddot x = -x - x^3 - c\dot x$. The only steady state is
+$(0,0)$, since $x + x^3 = x(1 + x^2) = 0$ forces $x = 0$.
+$\mat{J} = \begin{bmatrix} 0 & 1\\ -1 & -c\end{bmatrix}$,
+$\lambda^2 + c\lambda + 1 = 0$, $\lambda = -\tfrac c2 \pm \sqrt{c^2/4 - 1}$. For
+$c > 0$ both real parts are negative: asymptotically stable. Spiral (complex
+eigenvalues) for $0 < c < 2$. For $c = 0$, $\lambda = \pm i$: the test is silent.
 \end{answer}
 
-\spart{Following the branches with a continuation code}
-\qc \draftnote{Pseudo-arclength continuation in Python, written from scratch.}
+\q Find a Lyapunov function and decide the case $c = 0$.
+\begin{answer}
+The energy $W = \tfrac12\dot x^2 + \tfrac12x^2 + \tfrac14x^4$ has a strict minimum at
+the origin, and $\dot W = \dot x(\ddot x + x + x^3) = -c\dot x^2$. For $c = 0$,
+$W$ is constant: stable, not asymptotically stable (the motions are closed orbits).
+For $c > 0$, $\dot W \le 0$ and the argument of Section~\ref{B-sec:st-lyapdirect}
+(a motion cannot stay on $\dot x = 0$) gives asymptotic stability.
+\end{answer}
 
+\q Replace the spring by a rigid bar with a mass at its top,
+$mL^2\ddot\theta + c\,\dot\theta + k\theta - PL\sin\theta = 0$. Compute
+$\tr\mat{J}$ and $\det\mat{J}$ at $\theta = 0$. Which edge of the stable region of
+Figure~\ref{B-fig:st-tracedet} does the load cross, and at which value? Solve
+$\mat{J}\mat{v} = \mat{0}$ there.
+\begin{answer}
+$\mat{J} = \begin{bmatrix} 0 & 1\\ -(k - PL)/(mL^2) & -c/(mL^2)\end{bmatrix}$:
+$\tr\mat{J} = -c/(mL^2)$ does not depend on $P$, $\det\mat{J} = (k - PL)/(mL^2)$
+vanishes at $P_c = k/L$. The load crosses $\det\mat{J} = 0$: divergence, a real
+eigenvalue through zero. At $P_c$, $\mat{J} = \begin{bmatrix} 0 & 1\\ 0 & -c/(mL^2)\end{bmatrix}$
+and $\mat{v} = (1,0)$: a rotation without velocity, the buckling mode.
+\end{answer}
+
+\q The galloping prism of Example~\ref{B-ex:st-galloping}: which edge is crossed when
+the wind speed $U$ increases? Give $U_c$ and the frequency of the motion that starts.
+\begin{answer}
+$\det\mat{J} = \omega^2 > 0$ stays fixed and $\tr\mat{J} = \gamma$ crosses zero: a Hopf
+bifurcation at $U_c = 4m\zeta\omega/(\rho_a d\,a_1)$, with the frequency $\omega$ of the
+prism. Static analysis (stiffness only) can never see it.
+\end{answer}
+
+\begin{instructor}
+Insist on the two edges of Figure~\ref{B-fig:st-tracedet}: buckling needs only the
+stiffness ($\det\mat{J}$), galloping needs the damping ($\tr\mat{J}$). The left
+eigenvector in a.3 is $\mat{w} \propto (c, mL^2)$, and $\mat{f}_P = (0, L\sin\theta/(mL^2))$
+vanishes on the straight state, so $\mat{w}\T\mat{f}_P = 0$: a branch point, not a fold
+(Section~\ref{B-sec:st-zero}).
+\end{instructor}
+
+%======================================================================
+\spart{Pseudo-arclength continuation from scratch}
+We follow the steady states of $f(\mat{u}) = 0$, $\mat{u} = (y,r)$, through folds and
+branch points. Write the code yourself, in Python (NumPy only for the linear algebra)
+or in Mathematica; do not use a continuation package.
+
+\q Natural parameter first. For $f = h + y - y^3$, start at $y = -1.3$,
+$h = y^3 - y$, and increase $h$ in steps of $0.08$, correcting $y$ by Newton's
+method~\eqref{B-eq:st-newton} at fixed $h$. What happens past $h = 0.385$, and why?
+\begin{answer}
+The lower branch is followed up to the fold. At $h = 0.46$ and $0.54$ Newton's method
+does not converge (residuals $0.08$ and $0.5$ after 30 iterations); at $h = 0.62$ it
+lands on the upper branch. At the fold $f_y = 1 - 3y^2 = 0$, Newton divides by zero,
+and past it there is no solution nearby. The middle (unstable) branch is never
+computed (Figure~\ref{B-fig:st-continuation}, left).
+\end{answer}
+
+\q Show that the augmented Jacobian~\eqref{B-eq:st-jhat} has
+$\det\widehat{\mat{J}} = \sqrt{f_y^2 + f_h^2}$ on the curve. Evaluate it at the fold.
+\begin{answer}
+With $\mat{t} = (-f_h, f_y)/\sqrt{f_y^2 + f_h^2}$,
+$\det\widehat{\mat{J}} = f_y t_h - f_h t_y = (f_y^2 + f_h^2)/\sqrt{f_y^2 + f_h^2}$. At the
+fold $f_y = 0$, $f_h = 1$: $\det\widehat{\mat{J}} = 1$. The augmented Newton method is
+not disturbed by the fold.
+\end{answer}
+
+\qc Program Algorithm~1.1 (Box~1.2 of the notes) as a function
+\texttt{continuation(F, u0, t\_guess, ds, nsteps)} returning the points, the tangents,
+and the monitors $\det\mat{J}$ and $\det\widehat{\mat{J}}$. Compute $[\mat{J}\ \mat{f}_r]$
+by central differences.
+
+\begin{algorithm}[ht]
+\caption{Pseudo-arclength continuation of $\mat{f}(\mat{u}) = \mat{0}$, $\mat{u} = (\mat{y},r) \in \R^{n+1}$}
+\begin{algorithmic}[1]
+\Require $\mat{u}_0$ with $\mat{f}(\mat{u}_0) = \mat{0}$; direction guess $\mat{t}_{\mathrm{old}}$; step $\Delta s$; tolerance $\epsilon$
+\State $\mat{t}_0 \gets \Call{Tangent}{\mat{u}_0, \mat{t}_{\mathrm{old}}}$
+\For{$k = 0, 1, \dots, N-1$}
+  \State $\mat{u} \gets \mat{u}_k + \Delta s\,\mat{t}_k$ \Comment{predictor}
+  \Repeat \Comment{corrector}
+    \State $\mat{R} \gets \bigl(\mat{f}(\mat{u}),\ \mat{t}_k\cdot(\mat{u} - \mat{u}_k) - \Delta s\bigr)$
+    \State solve $\begin{bmatrix}\mat{J}(\mat{u}) & \mat{f}_r(\mat{u})\\ \mat{t}_k\T\end{bmatrix}\delta\mat{u} = -\mat{R}$;\quad $\mat{u} \gets \mat{u} + \delta\mat{u}$
+  \Until{$\abs{\delta\mat{u}} < \epsilon$}
+  \State $\mat{u}_{k+1} \gets \mat{u}$;\quad $\mat{t}_{k+1} \gets \Call{Tangent}{\mat{u}_{k+1}, \mat{t}_k}$
+  \State store $\det\mat{J}(\mat{u}_{k+1})$ and $\det\widehat{\mat{J}}(\mat{u}_{k+1})$ \Comment{monitors}
+\EndFor
+\Function{Tangent}{$\mat{u}, \mat{t}_{\mathrm{old}}$}
+  \State solve $\begin{bmatrix}\mat{J}(\mat{u}) & \mat{f}_r(\mat{u})\\ \mat{t}_{\mathrm{old}}\T\end{bmatrix}\mat{t} = \begin{bmatrix}\mat{0}\\ 1\end{bmatrix}$
+  \State \Return $\mat{t}/\abs{\mat{t}}$ \Comment{$\mat{t}\cdot\mat{t}_{\mathrm{old}} > 0$: same direction of travel}
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+\begin{answer}
+The Python version (the Mathematica version follows) is printed below. Its
+\texttt{zeros} function locates sign changes of a monitor by linear interpolation.
+\lstinputlisting[firstline=4]{ch01_bifurcation/code/python/arclength.py}
+\lstinputlisting[language=Mathematica,firstline=4]{ch01_bifurcation/code/mathematica/arclength.wl}
+\end{answer}
+
+\qc Follow the S-curve from $y = -1.3$ with $\Delta s = 0.05$. Locate the folds from the
+sign changes of $t_h$, and compare with $h = \pm 2/(3\sqrt3)$. Plot $\det\mat{J}$ and
+$\det\widehat{\mat{J}}$ against the arclength.
+\begin{answer}
+Folds at $(y,h) = (-0.5773, 0.3847)$ and $(0.5769, -0.3839)$; exact
+$(\mp0.5774, \pm0.3849)$. $\det\mat{J}$ changes sign twice (the middle branch is
+unstable), $\det\widehat{\mat{J}}$ never (Figure~\ref{B-fig:st-continuation}, right).
+\end{answer}
+
+\qc The bar with tilt $\theta_0 = 0.1$: $(\theta - \theta_0) - p\sin\theta = 0$,
+$p = P/P_c$. (i)~Follow the natural path from $(\theta,p) = (\theta_0, 0)$. Does it have
+a fold? Is it stable? What is $\theta$ at $p = 1$? (ii)~Follow the complementary branch
+from $\theta = -2.5$ and locate its fold.
+\begin{answer}
+(i)~No fold: $p$ increases all the way (to $p = 1.68$ at $\theta = 1.75$ after 50 steps),
+and $\det\mat{J} = 1 - p\cos\theta$ stays positive (minimum $0.27$): stable. At $p = 1$,
+$\theta = 0.84$, close to $(6\theta_0)^{1/3} = 0.843$
+(Exercise~\ref{B-exo:st-imperfect-bar}). (ii)~Fold at $\theta = -0.632$, $p = 1.239$;
+exact: $\sin\theta = (\theta - \theta_0)\cos\theta$ gives $\theta = -0.6317$,
+$p = 1.2391$.
+\end{answer}
+
+\qc The perfect bar $\theta - p\sin\theta = 0$. Follow the straight state from $(0,0)$
+with $\Delta s = 0.1$. Which monitor detects the branch point? Switch branches by a
+small step in the direction $(1,0)$ and check the buckled branch against
+$p = \theta/\sin\theta$.
+\begin{answer}
+On $\theta = 0$, $\mat{t} = (0,1)$ and $\det\widehat{\mat{J}} = 1 - p$: it changes sign at
+$p = 1.000$, and so does $\det\mat{J} = 1 - p$. Since $t_p$ keeps its sign, the point is
+not a fold but a branch point. After the switch the computed points satisfy
+$p = \theta/\sin\theta$ to $10^{-16}$.
+\end{answer}
+
+\begin{instructor}
+Common difficulties. (1)~Forgetting the orientation row in the tangent system: the
+tangent then flips at random and the code walks back and forth on the branch.
+(2)~A finite-difference step much smaller than $10^{-8}$ ruins the Jacobian.
+(3)~Starting the predictor with the guessed direction instead of the computed tangent
+(the first point drifts off the curve). (4)~Expecting $\det\widehat{\mat{J}}$ to vanish at
+the folds: insist that it does not, this is the point of the method. Students who
+finish can add the step control of Box~1.2 (halve $\Delta s$ when Newton fails) and
+run the S-curve with $\Delta s = 0.3$.
+\end{instructor}
+
+%======================================================================
 \spart{Normal forms in Mathematica}
-\qc \draftnote{Reduction to the normal forms; imperfect pitchfork.}
+\qc Write \texttt{classify[f, \{y, y0\}, \{r, r0\}]}, which checks $f = f_y = 0$,
+computes $f_r$, $f_{yy}$, $f_{yr}$, $f_{yyy}$ at the point, and returns the type and the
+scalings $R$, $Y$ of Section~\ref{B-sec:st-reduction}. Apply it to $r - y - e^{-y}$ at
+$(0,1)$, to $y(1-y) - ry$ at $(0,1)$, and to the bar
+$(-k\theta + PL\sin\theta)/c$ at $(0, k/L)$.
+\begin{answer}
+Fold, $R = -(r-1)/2$, $Y = -y/2$. Transcritical, $R = -(r-1)$, $Y = y$ (the fish
+disappear when the catch rate reaches the growth rate). Supercritical pitchfork,
+$R = L(P - k/L)/c$, $f_{\theta\theta\theta} = -k/c$. For the bar, pass the assumptions
+$k, L, c > 0$, otherwise the sign of $f_{\theta\theta\theta}$ is undecided.
+\end{answer}
+
+\qc Expand the bar at $P = P_c + \mu$ to third order in $\theta$ with \texttt{Series}
+and read the normal form directly.
+\begin{answer}
+$c\,\dot\theta = L\mu\,\theta - \tfrac16(k + L\mu)\,\theta^3 + O(\theta^5)$: the linear
+coefficient changes sign with $\mu$, the cubic one is negative, the quadratic one is
+absent (symmetry). This is~\eqref{B-eq:st-bar-pitchfork}.
+\end{answer}
+
+\qc The cusp. Eliminate $y$ between $f = h + ry - y^3 = 0$ and $f_y = 0$ with
+\texttt{Resultant}, and solve for $h$.
+\begin{answer}
+$27h^2 - 4r^3 = 0$ (up to sign), so $h = \pm\tfrac{2}{3\sqrt3}r^{3/2}$:
+equation~\eqref{B-eq:st-cusp} without any hand computation.
+\end{answer}
+
+\qc Program the first Lyapunov coefficient~\eqref{B-eq:st-l1}. Check it on
+$F = -x(x^2+y^2)$, $G = -y(x^2+y^2)$, $\omega = 1$ (expected $\ell_1 = -1$). Apply it to
+the van der Pol oscillator and to the galloping prism, and give the amplitude of the
+galloping cycle. Compare with the integration of Exercise~\ref{B-exo:st-galloping}.
+\begin{answer}
+Check: $16\ell_1 = -6 - 2 - 2 - 6 = -16$. Van der Pol: $\ell_1 = -\tfrac18$, cycle
+$\rho = 2\sqrt\mu$. Galloping: $\ell_1 = -\tfrac38\beta\omega^2$, and
+$\tfrac12\gamma - \tfrac38\beta\omega^2A^2 = 0$ gives
+$A = \sqrt{4\gamma/(3\beta\omega^2)}$. With the data of the notes, $U_c = 7.47$~m/s
+and $A = 0.0753$~m at $1.5\,U_c$, which a direct integration confirms.
+\lstinputlisting[language=Mathematica,firstline=4]{ch01_bifurcation/code/mathematica/normal_forms.wl}
+\end{answer}
+
+\begin{instructor}
+The formula~\eqref{B-eq:st-l1} was checked numerically with the SymPy version, on a
+system with quadratic and cubic terms: the simulated cycle amplitude at $r = 0.01$
+($0.1680$) agrees with $\sqrt{-r/\ell_1} = 0.1690$. If time is short, do c.1 and c.4
+and leave c.2--c.3 as homework. Link to Chapter~2: the reduction of c.1 is the
+one-degree-of-freedom case of Koiter's analysis.
+\end{instructor}

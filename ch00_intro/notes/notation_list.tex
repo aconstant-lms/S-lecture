@@ -60,6 +60,12 @@ $f_y$, $f_r$ & partial derivatives $\partial f/\partial y$, $\partial f/\partial
 $\lambda=f_y(y^*,r)$ & growth rate of small disturbances; stable if $\lambda<0$\\
 $\tau=1/\abs{\lambda}$ & relaxation time of small disturbances\\
 $V(y)$ & potential, $\dot y=-dV/dy$\\
+$W$, $E$ & Lyapunov function; mechanical energy\\
+$\dot{\mat{y}}=\mat{f}(\mat{y},r)$, $\mat{J}$ & $n$ unknowns; Jacobian $J_{ij}=\partial f_i/\partial y_j$ at a steady state\\
+$\mat{J}\mat{v}=\mat{0}$, $\mat{w}\T\mat{J}=\mat{0}\T$ & zero eigenvalue: right (mode) and left eigenvectors; fold if $\mat{w}\T\mat{f}_r\neq0$\\
+$z=\rho e^{i\varphi}$, $\omega$, $\ell_1$ & Hopf normal form: amplitude, frequency, first Lyapunov coefficient\\
+$\mat{u}=(\mat{y},r)$, $s$, $\mat{t}$ & continuation: unknowns with the parameter, arclength, unit tangent\\
+$\widehat{\mat{J}}$ & augmented Jacobian of pseudo-arclength continuation\\
 $h$, $h_c$ & imperfection, its value at the folds\\
 $P$, $P_c$; \ $\theta$, $\theta_0$ & load, critical load; rotation and initial tilt of the rigid bar\\[6pt]
 \multicolumn{2}{@{}l}{\sffamily\bfseries Stability of elastic systems (from Chapter~2)}\\[2pt]
