@@ -4,7 +4,7 @@
 
 \framepart{Outline}
 A system is described by a differential equation $\dot y = f(y,r)$ with a
-control parameter $r$ that we turn by hand: a load, a catch rate, an
+control parameter $r$ that we turn by hand: a load, a stiffness, an
 imperfection. For most values of $r$ the system has a single steady state,
 and it behaves calmly. At special values of $r$ the number of steady states
 changes. These are the bifurcation points. The chapter finds them and explains
@@ -611,7 +611,7 @@ All three have $f = f_y = 0$ at the origin. Look at $f_r$. In the saddle-node,
 $f_r = 1 \neq 0$: changing $r$ moves the graph of $f$ up or down and pushes two
 roots together. In the transcritical and pitchfork cases, $f_r = y = 0$ at the
 point, because $y = 0$ is a steady state for every $r$. Such a persistent state
-is usually forced by the physics (no fish, a straight column) or by a symmetry.
+is usually forced by the physics (an unloaded state, a straight column) or by a symmetry.
 The pitchfork needs, in addition, the symmetry $y \to -y$ that kills the $y^2$ term.
 
 \paragraph{From any $f$ to its normal form.}
@@ -683,39 +683,64 @@ follow. This is the Lyapunov--Schmidt reduction (or, for the dynamics, the cente
 manifold). Koiter's analysis of elastic structures in Chapter~\ref{ch:ld} is this
 reduction applied to the potential energy.
 
-\begin{example}[A fishery with a constant catch]\label{ex:st-fishery}
-\index{harvesting model}%
-Let $N(t)$ be the fish population of a lake, scaled so that the lake supports at
-most $N = 1$. The fish reproduce logistically and are caught at the constant
-rate $h$:
-\begin{equation}\label{eq:st-fishery}
-  \dot N = N(1 - N) - h .
+\begin{example}[The von Mises truss]\label{ex:st-vonmises}
+\index{von Mises truss}\index{snap-through}%
+This is the simplest model of a shallow arch~\cite[Section~1.2]{st-thompson1973}.
+Two elastic bars of length $L$ and axial stiffness $EA$ are pinned to the ground and
+to each other at the apex, which stands at the height $L\sin\varphi$
+(Figure~\ref{fig:st-vonmises}). A vertical load $P$ pushes the apex down by $v$.
+Keep the deflection symmetric, measure it by $w = v/(L\sin\varphi)$, and use the
+Green--Lagrange strain $\tfrac12(\ell^2/L^2 - 1)$ in each bar. Chapter~\ref{ch:ld}
+shows that equilibrium requires
+\begin{equation}\label{eq:st-vonmises}
+  \frac{P}{EA\sin^3\varphi} = w\,(w - 1)\,(w - 2) .
 \end{equation}
-The steady states solve $N^2 - N + h = 0$, so
-$N_\pm = \tfrac12\bigl(1 \pm \sqrt{1 - 4h}\bigr)$. The slope $f_N = 1 - 2N$ equals
-$-\sqrt{1-4h}$ on $N_+$, the healthy stable stock, and $+\sqrt{1-4h}$ on $N_-$, an
-unstable threshold: a stock pushed below $N_-$ collapses. Raising $h$ lowers the
-parabola (Figure~\ref{fig:st-fishery}). At $h = \tfrac14$ the two roots meet at
-$N = \tfrac12$, where $f_N = 0$, and for $h > \tfrac14$ no steady state is left.
-This is a saddle-node.
+Add a dashpot under the apex. In scaled time the motion is $\dot w = p - g(w)$,
+with $p = P/(EA\sin^3\varphi)$ and $g(w) = w(w-1)(w-2)$. The slope is
+$f_w = -g'(w)$. The truss is stiff at first, then softens as the bars approach the
+horizontal. At $w_1 = 1 - 1/\sqrt3 \approx 0.42$ the slope vanishes, and the load
+has its maximum $p_{\max} = 2/(3\sqrt3) \approx 0.385$. There $f_p = 1 \neq 0$ and
+$f_{ww} = -g''(w_1) = 2\sqrt3 \neq 0$: a fold. For $p > p_{\max}$ no nearby steady
+state is left, and the apex jumps through the horizontal to the inverted branch,
+at $w = 1 + 2/\sqrt3 \approx 2.15$. This is \emph{snap-through}.
 \end{example}
 
 \begin{figure}[ht]
   \centering
-  \includegraphics{ch01_bifurcation/figures/st_fishery.pdf}
-  \caption{The fishery $\dot N = N(1-N) - h$. Increasing the catch $h$ lowers the
-    parabola. The stable root $N_+$ and the unstable root $N_-$ merge at
-    $h = \tfrac14$ and disappear.}
-  \label{fig:st-fishery}
+  \begin{minipage}[b]{0.34\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=1.0,>=Stealth]
+      \fill[pattern=north east lines] (-2.0,-0.2) rectangle (-1.6,0);
+      \fill[pattern=north east lines] (1.6,-0.2) rectangle (2.0,0);
+      \draw[thick] (-2.0,0) -- (-1.6,0); \draw[thick] (1.6,0) -- (2.0,0);
+      \draw[gray!60,dashed] (-1.8,0) -- (0,-0.55) -- (1.8,0);
+      \draw[line width=2pt,cu] (-1.8,0) -- (0,0.9) -- (1.8,0);
+      \fill (-1.8,0) circle (1.5pt); \fill (1.8,0) circle (1.5pt); \fill (0,0.9) circle (1.6pt);
+      \draw[->,line width=1.1pt,cphi] (0,1.8) -- (0,1.0);
+      \node[cphi,right] at (0.05,1.5) {$P$};
+      \draw (-1.2,0) arc (0:27:0.6); \node at (-0.95,0.15) {$\varphi$};
+      \node[above left] at (-0.9,0.45) {$L$};
+    \end{tikzpicture}
+  \end{minipage}\hfill
+  \begin{minipage}[b]{0.62\textwidth}
+    \centering
+    \includegraphics{ch01_bifurcation/figures/st_vonmises.pdf}
+  \end{minipage}
+  \caption{The von Mises truss. Left: two bars pinned at the apex under a vertical
+    load; dashed, the inverted position after snap-through. Right: load against the
+    symmetric deflection~\eqref{eq:st-vonmises}. The load reaches a maximum at a fold,
+    and the truss jumps to the inverted branch. Solid: stable. Dashed: unstable.}
+  \label{fig:st-vonmises}
 \end{figure}
 
-The largest sustainable catch, $h = \tfrac14$, is also the edge of a cliff, and
-the stock level gives little warning: at $h = 0.24$ the stock is still
-$N_+ = 0.6$. The warning is in the recovery time
-$\tau = 1/\sqrt{1 - 4h}$, which is $5$ time units at $h = 0.24$ and grows without
-limit as $h \to \tfrac14$.
-\draftnote{Keep the fishery in a mechanics book, or replace it by a snap-through
-example (shallow arch) once Chapter 2 is written?}
+The maximum load is also the edge of a cliff, and the deflection gives little
+warning: at $90\%$ of $p_{\max}$ the apex has moved by $w = 0.28$ only, two thirds
+of the way to the fold. The warning is in the recovery time $1/f'$, here
+$1/g'(w)$, which is $1.8$ at $90\%$ of $p_{\max}$, $6.0$ at $99\%$, and grows
+without limit at the fold. With $z = w - 1$ the right-hand side
+of~\eqref{eq:st-vonmises} is $z^3 - z$: the truss is the S-shaped curve of
+Figure~\ref{fig:st-hysteresis}, and Section~\ref{sec:st-energy} explains its
+hysteresis loop. Chapter~\ref{ch:ld} lets the apex move sideways as well.
 
 %======================================================================
 \section{The Hopf bifurcation: an oscillation is born}\label{sec:st-hopf}
@@ -1290,20 +1315,23 @@ Newton method has no difficulty.
 
 \framesub{Problems}
 
-\exercise{Maximum sustainable yield}\label{exo:st-fishery}
-\index{harvesting model}%
-For the fishery~\eqref{eq:st-fishery}:
-(a)~derive $N_\pm$ and the critical catch $h = \tfrac14$;
-(b)~a manager sets $h = 0.24$: find $N_+$ and $N_-$, and the largest sudden loss
-of fish the stock survives;
-(c)~explain why maximum sustainable yield is a dangerous target.
+\exercise{Snap-through of the von Mises truss}\label{exo:st-vonmises}
+\index{von Mises truss}\index{snap-through}%
+For the truss of Example~\ref{ex:st-vonmises}:
+(a)~find the steady states for $p = 0$ and their stability;
+(b)~derive the maximum and minimum loads $\pm p_{\max}$;
+(c)~describe what the apex does when $p$ is raised slowly to $0.5$ and then
+brought back to $-0.5$.
 \begin{solution}
-(a)~Example~\ref{ex:st-fishery}; $1 - 4h \ge 0$ requires $h \le \tfrac14$.
-(b)~$\sqrt{1 - 0.96} = 0.2$, so $N_+ = 0.6$ and $N_- = 0.4$. A stock knocked below
-$0.4$ collapses: the stock survives the loss of at most $0.2$, a third of it.
-(c)~At $h = \tfrac14$ the two states merge: any disturbance, however small, or any
-slight overestimate of $h_{\max}$, leads to collapse. The recovery time
-$1/\sqrt{1-4h}$ is infinite there.
+(a)~$w = 0$ (the built shape) and $w = 2$ (the inverted shape) are stable,
+since $g'(0) = g'(2) = 2 > 0$; $w = 1$ (bars horizontal) is unstable, $g'(1) = -1$.
+(b)~$g'(w) = 3w^2 - 6w + 2 = 0$ at $w = 1 \mp 1/\sqrt3$, where
+$g = \pm 2/(3\sqrt3)$.
+(c)~The apex follows the first branch up to $p_{\max} \approx 0.385$ at
+$w \approx 0.42$, jumps to $w \approx 2.15$ and continues on the inverted branch.
+On the way back it stays inverted until $p = -p_{\max}$ at $w \approx 1.58$ and
+jumps back to $w \approx -0.15$: a hysteresis loop, as in
+Figure~\ref{fig:st-hysteresis}.
 \end{solution}
 
 \exercise{The subcritical pitchfork}\label{exo:st-subcritical}

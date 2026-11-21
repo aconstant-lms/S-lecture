@@ -1,0 +1,122 @@
+%======================================================================
+%  Exercise session, Chapter 2 (2 h). Printed by exercise_sheets.tex
+%  (questions only) and instructor_manual.tex (answers, instructor notes).
+%  No \label here. Codes in ../code/{python,mathematica}.
+%======================================================================
+\clearpage
+\renewcommand{\sessionchapter}{Chapter 2 -- Discrete systems: energy and Lagrangian mechanics}
+\setcounter{spart}{0}
+\setcounter{algorithm}{0}\renewcommand{\thealgorithm}{2.\arabic{algorithm}}
+\ifanswers
+\sessiontitle{Chapter 2 -- Energy, Koiter and flutter: session sheet with answers}
+  {Notes: Chapter~\ref{B-ch:ld}. Codes: Python (NumPy, SciPy, SymPy), Mathematica.}
+\else
+\sessiontitle{Chapter 2 -- Energy, Koiter and flutter: session sheet}
+  {Notes: Chapter~\ref{B-ch:ld}. Codes: Python (NumPy, SciPy, SymPy), Mathematica.}
+\fi
+
+\noindent
+The session has three parts. Part~a is done by hand on the rigid T model. In part~b
+you program Koiter's coefficients (Box~2.2) in Mathematica or SymPy and use them on
+the steep two-bar truss. In part~c you compute imperfection-sensitivity curves and the
+flutter of Ziegler's column in Python. Bring the notes: Sections~\ref{B-sec:ld-hessian},
+\ref{B-sec:ld-koiter}, \ref{B-sec:ld-imperfect} and~\ref{B-sec:ld-flutter}.
+
+\begin{instructor}
+Timing: part~a 35~min, part~b 45~min, part~c 40~min. Part~a sets the vocabulary; do
+not let it run over. In part~b, students without Mathematica use
+\texttt{code/python/koiter\_sympy.py}, which follows the same steps. Part~c can be
+split: half the room does the imperfection curves, the other half Ziegler.
+\untested{The Mathematica file \texttt{koiter.wl} has not yet been run in Mathematica:
+the SymPy version was run and gives the numbers quoted here. Run it once before the
+session.}
+\end{instructor}
+
+%======================================================================
+\spart{The rigid T model by hand}
+The rigid T of Section~\ref{B-sec:ld-koiter} has the energy
+$\mathcal{E} = E(v^2 + \ell^2\theta^2) + \tfrac k2(L\theta)^2 + \tfrac m3(L\theta)^3
++ \tfrac n4(L\theta)^4 - \eta(v + L\theta^2/2)$.
+
+\q Find the principal branch, the Hessian on it, the critical load and the mode.
+Is the critical point a limit point or a bifurcation point?
+\begin{answer}
+$\mathcal{E}_{,v} = 2Ev - \eta = 0$, $\mathcal{E}_{,\theta} = 0$ at $\theta = 0$: $v = \eta/(2E)$,
+$\theta = 0$. $\mat{K} = \diag(2E,\ 2E\ell^2 + kL^2 - \eta L)$, singular at
+$\eta_c = (2E\ell^2 + kL^2)/L$ with ${}^1\mat{u} = (0,1)$.
+$\mathcal{E}_{,\mat{u}\eta} = (-1, -L\theta) = (-1,0)$ is orthogonal to the mode: bifurcation.
+\end{answer}
+
+\q Compute $\kappa'$, $\mathcal{E}_3$, $\mathcal{E}_4$ and ${}^2\mat{u}$, then $\eta_1$ and
+$\eta_2$. Check against the exact path $\mathcal{E}_{,\theta} = 0$.
+\begin{answer}
+$\kappa' = -L$, $\mathcal{E}_3 = 2mL^3$, $\mathcal{E}_4 = 6nL^4$; $\mathcal{E}_{,v\theta\theta} = 0$, so
+${}^2\mat{u} = \mat{0}$. $\eta_1 = mL^2$; if $m = 0$, $\eta_2 = 2nL^3$. Exact:
+$\eta = \eta_c + mL^2\theta + nL^3\theta^2$, the same (the expansion terminates).
+\end{answer}
+
+\q The stem leans by $\delta$, so the load term becomes $-\eta(v + L\theta^2/2 + L\theta\delta)$.
+For $m = 0$, $n < 0$, find the maximum load to leading order in $\delta$. Which law is it?
+\begin{answer}
+$\eta(\theta + \delta) = \eta_c\theta + nL^3\theta^3$; $d\eta/d\theta = 0$ to leading order gives
+$\theta_m^3 = -\eta_c\delta/(2nL^3)$, and $\eta_m - \eta_c = \tfrac32\eta_2\theta_m^2
+= -\tfrac32(-2n)^{1/3}L\,\eta_c^{2/3}\abs\delta^{2/3}$: the two-thirds
+law~\eqref{B-eq:ld-twothirds} with $\bar\xi = \delta$.
+\end{answer}
+
+%======================================================================
+\spart{Koiter's coefficients by computer algebra}
+
+\qc Program Box~2.2 for $n$ degrees of freedom: input $\mathcal{E}(\mat{u},\eta)$, the
+critical state, $d\,{}^0\mat{u}/d\eta$ and the mode; output $\eta_1$, or $\eta_2$. Test it on
+the T model and on the three bars on springs of Section~\ref{B-sec:ld-koiter}.
+\begin{answer}
+See \texttt{koiter\_sympy.py} / \texttt{koiter.wl}. T model: $mL^2$, $2nL^3$. Bars:
+$\eta_2 = k/(3L)$, $-kL$; inclined spring $\eta_1 = -3kL/8$. The only delicate step is
+${}^2\mat{u}$: $\mat{K}_c$ is singular, so solve the bordered system
+$\mat{K}_c\,{}^2\mat{u} - \mu\,{}^1\mat{u} = \mat{r}$, ${}^1\mat{u}\T{}^2\mat{u} = 0$.
+\end{answer}
+
+\qc Apply it to the two-bar truss~\eqref{B-eq:ld-truss-energy} at $\varphi = 65^\circ$, at the
+first sideways bifurcation. The principal branch is not trivial: compute
+$d\,{}^0v/d\eta$ from~\eqref{B-eq:ld-truss-principal}. Compare $\eta_2$ with the value
+obtained when ${}^2\mat{u}$ is set to zero, and with the exact
+branch~\eqref{B-eq:ld-truss-branch}.
+\begin{answer}
+$v_b = s - R$, $\eta_b = 2c^2R\,EA = 0.2434\,EA$; $d\,{}^0v/d\eta = 1/(3v^2 - 6vs + 2s^2)$ at
+$v_b$. Full: $\eta_2 = -0.524\,EA = -2c^2/R$, as the circle gives. Without ${}^2\mat{u}$:
+$+0.838\,EA$, the wrong sign. The sideways swing pulls the apex down
+(${}^2\mat{u} = (0, 2R/K_{vv})$), which softens the truss.
+\end{answer}
+
+\begin{instructor}
+This is the key message of the session: an analysis that keeps only the buckling mode
+can call an unstable point stable. Ask students to predict the sign before running the
+code.
+\end{instructor}
+
+%======================================================================
+\spart{Imperfections and flutter in Python}
+
+\qc For the bar with a horizontal spring, the bar with a $45^\circ$ spring and the
+Augusti column with equal springs, compute the exact maximum load for imperfections
+from $10^{-4}$ to $0.05$ and plot it against the power laws.
+\begin{answer}
+At $\bar\xi = 10^{-2}$: $0.9312$ (law $0.9304$), $0.8336$ ($0.8268$), $0.9404$ ($0.9392$).
+The laws are cautious and accurate to about $1\%$ up to $\bar\xi = 0.01$. Code:
+\texttt{ex\_imperfection.py}; figure: Figure~\ref{B-fig:ld-imperfection}.
+\end{answer}
+
+\qc Ziegler's column (masses $2m$, $m$; springs $k$; follower load $P$): compute the four
+growth rates as functions of $p = Pl/k$, find the flutter load, then add equal dampers
+$c$ in the hinges and let $c \to 0$.
+\begin{answer}
+$\det\mat{K} = k^2$: no divergence. $p_f = 2.0858 = 7/2 - \sqrt2$ where two frequencies
+merge. With dampers the flutter load tends to $1.4643$ as $c \to 0$: Ziegler's
+destabilisation paradox. Code: \texttt{ex\_ziegler.py}.
+\end{answer}
+
+\begin{instructor}
+If time is short, give the undamped result and ask only for the damped limit: the
+surprise is the point. Link back to the trace--determinant plane of Chapter~1.
+\end{instructor}

@@ -1,8 +1,7 @@
 %======================================================================
 \chapter{Discrete systems: energy and Lagrangian mechanics}\label{ch:ld}
 %======================================================================
-% Outline drafted (21 Nov 2026). Labels of this chapter: *:ld-*  (bibitem keys ld-*).
-% Sections carry their planned content as \draftnote's; see ch02_discrete/README.md.
+% Labels of this chapter: *:ld-*  (bibitem keys ld-*). Status: see ch02_discrete/README.md.
 
 \framepart{Outline}
 A structure with a few degrees of freedom is described by a column of
@@ -14,7 +13,7 @@ point is the load at which $\mat{K}$ first gets a zero eigenvalue, and the
 eigenvector is the buckling mode. Chapter~\ref{ch:st} found the same facts for a
 differential equation; here the Jacobian is replaced by a symmetric matrix and the
 Lyapunov function by the energy. Koiter's idea is to expand $\mathcal{E}$ along the
-mode. Two or three Taylor coefficients then decide whether the structure keeps its
+mode. Two Taylor coefficients then decide whether the structure keeps its
 load after buckling or loses it, and how much a small imperfection lowers its
 maximum load. We work with one and two degrees of freedom: rigid bars on springs,
 the von Mises truss that snaps through, the Augusti column in which two modes
@@ -29,13 +28,13 @@ potential energy, the static method fails, and the column is lost by flutter.
         from $\det\mat{K} = 0$;
   \item tell a limit point from a bifurcation point;
   \item compute Koiter's coefficients $\eta_1$, $\eta_2$ of a simple critical point,
-        by hand for one degree of freedom and in Mathematica for two;
+        by hand for one degree of freedom and with a computer algebra system for two;
   \item classify a critical point as asymmetric, stable symmetric or unstable
         symmetric, and draw its imperfection-sensitivity curve
         (one-half and two-thirds power laws);
   \item explain snap-through, mode interaction, and why designing for simultaneous
         critical loads is dangerous;
-  \item explain why a follower load needs the kinetic (dynamic) criterion, and
+  \item explain why a follower load needs the kinetic criterion, and
         compute the flutter load of Ziegler's column.
 \end{itemize}
 
@@ -44,160 +43,970 @@ Section~\ref{sec:ld-lagrange} sets up the energy and Lagrange's equations, and
 linearises the motion about an equilibrium. Section~\ref{sec:ld-hessian} gives the
 energy criterion: stability, critical points, modes, limit and bifurcation points.
 Section~\ref{sec:ld-koiter} expands the energy along the mode and finds the three
-simple critical points on rigid-bar models. Section~\ref{sec:ld-imperfect} measures
-imperfection sensitivity. Section~\ref{sec:ld-snap} treats snap-through on the
-von Mises truss. Section~\ref{sec:ld-interaction} lets two modes interact in the
-Augusti column. Section~\ref{sec:ld-flutter} leaves conservative loads for
-Ziegler's column. A summary, exercises (page~\pageref{sec:ld-exo}) and the
-references close the chapter. The models and the asymptotics follow
-\cite{ld-thompson1973,ld-triantafyllidis2011}; the source of the method
-is~\cite{ld-koiter1945}, and the engineering view is in~\cite{ld-bazant1991}.
+simple critical points. Section~\ref{sec:ld-imperfect} measures
+imperfection sensitivity. Section~\ref{sec:ld-snap} treats snap-through and
+bifurcation in the von Mises truss. Section~\ref{sec:ld-interaction} lets two modes
+interact in the Augusti column. Section~\ref{sec:ld-flutter} leaves conservative
+loads for Ziegler's column. A summary, exercises with solutions
+(page~\pageref{sec:ld-exo}) and the references close the chapter. The models and
+the asymptotics follow \cite{ld-thompson1973,ld-triantafyllidis2011}, with $\eta$
+for the load parameter; the source of the method is~\cite{ld-koiter1945}, and a
+short survey is~\cite{ld-hutchinson1970}.
 
 %======================================================================
 \section{Energy and Lagrange's equations}\label{sec:ld-lagrange}
-\draftnote{Planned (about 15 min of lecture).
-(i)~Worked example first: two rigid bars on two torsional springs under a dead load
-(the 2-dof chain); generalised coordinates $\mat{u} = (\theta_1,\theta_2)$.
-(ii)~Kinetic energy $T = \tfrac12\dot{\mat{u}}\T\mat{M}(\mat{u})\dot{\mat{u}}$, potential
-energy $\mathcal{E}(\mat{u},\eta)$ = strain energy $-$ work of the dead load;
-Lagrange's equations $\tfrac{d}{dt}\,\partial T/\partial\dot{\mat{u}} - \partial T/\partial\mat{u}
-+ \mathcal{E}_{,\mat{u}} = \mat{Q}$, with $\mat{Q}$ the non-conservative generalised forces
-(zero until Section~\ref{sec:ld-flutter}).
-(iii)~Equilibrium $\mathcal{E}_{,\mat{u}} = \mat{0}$; principal branch ${}^0\mat{u}(\eta)$.
-(iv)~Linearised motion $\mat{M}\ddot{\mat{v}} + \mat{K}\mat{v} = \mat{0}$,
-$\mat{K} = \mathcal{E}_{,\mat{u}\mat{u}}$; frequencies $\omega^2$ from
-$\mat{K}\mat{x} = \omega^2\mat{M}\mat{x}$; a frequency goes to zero at the critical
-load (vibration test, Exercise~\ref{exo:st-tracedet} of Chapter~\ref{ch:st}).}
+\index{Lagrange's equations}%
 
+\paragraph{A column of two bars.}
+Two rigid bars of length $l$ stand on top of each other
+(Figure~\ref{fig:ld-chain}). A torsional spring of stiffness $k$ ties the lower
+bar to the ground, another one ties the two bars together. A vertical dead load
+$P$ presses on the top. The angles of the bars from the vertical are $\theta_1$ and
+$\theta_2$, and we collect them in the column $\mat{u} = (\theta_1,\theta_2)$. The
+springs store $\tfrac12 k\theta_1^2 + \tfrac12 k(\theta_2 - \theta_1)^2$. The top
+descends by $l(1 - \cos\theta_1) + l(1 - \cos\theta_2)$, and the dead load loses the
+work $P$ times this descent. The potential energy is
+\begin{equation}\label{eq:ld-chain-energy}
+  \mathcal{E}(\mat{u},P) = \frac12\,k\,\theta_1^2 + \frac12\,k\,(\theta_2 - \theta_1)^2
+  - P\,l\,(2 - \cos\theta_1 - \cos\theta_2) .
+\end{equation}
+The straight column $\mat{u} = \mat{0}$ is an equilibrium for every $P$. Is it stable?
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[scale=0.9,>=Stealth]
+    \foreach \x/\lab/\follow in {0/dead load/0, 4.2/follower load/1}{
+      \begin{scope}[xshift=\x cm]
+        \fill[pattern=north east lines] (-0.8,-0.22) rectangle (0.8,0);
+        \draw[thick] (-0.8,0) -- (0.8,0);
+        \draw[gray!60,dashed] (0,0) -- (0,4.1);
+        \coordinate (B) at ({2*sin(12)},{2*cos(12)});
+        \coordinate (T) at ({2*sin(12)+2*sin(28)},{2*cos(12)+2*cos(28)});
+        \draw[line width=2.2pt,cu] (0,0) -- (B) -- (T);
+        \fill (0,0) circle (1.6pt); \fill (B) circle (1.6pt);
+        \fill[gray] (B) circle (2.8pt); \fill[gray] (T) circle (2.2pt);
+        \ifnum\follow=0
+          \draw[->,line width=1.1pt,cphi] ($(T)+(0,1.0)$) -- ($(T)+(0,0.12)$);
+        \else
+          \draw[->,line width=1.1pt,cphi] ($(T)+({sin(28)},{cos(28)})$) -- ($(T)+({0.12*sin(28)},{0.12*cos(28)})$);
+        \fi
+        \node[cphi,right] at ($(T)+(0.25,0.6)$) {$P$};
+        \node[left] at (-0.05,0.35) {$k$};
+        \node[left] at ($(B)+(-0.05,0.05)$) {$k$};
+        \node at (0.05,-0.55) {\small \lab};
+      \end{scope}}
+  \end{tikzpicture}
+  \caption{Ziegler's column: two rigid bars of length $l$ on two torsional springs
+    $k$, with masses $2m$ at the joint and $m$ at the top. Left: a dead load keeps
+    its direction. Right: a follower load stays aligned with the upper bar
+    (Section~\ref{sec:ld-flutter}).}
+  \label{fig:ld-chain}
+\end{figure}
+
+\paragraph{Equilibrium and the Hessian.}
+An equilibrium makes $\mathcal{E}$ stationary: its gradient vanishes,
+$\mathcal{E}_{,\mat{u}} = \mat{0}$. The second derivatives form the Hessian, which we
+call the stiffness matrix $\mat{K} = \mathcal{E}_{,\mat{u}\mat{u}}$. At the straight column,
+with $\cos\theta \approx 1 - \theta^2/2$,
+\begin{equation}\label{eq:ld-chain-K}
+  \mat{K}(P) = \begin{bmatrix} 2k - Pl & -k \\ -k & k - Pl \end{bmatrix} .
+\end{equation}
+The springs give the constant part. The load subtracts $Pl$ on the diagonal: a
+compressive load softens the structure.
+
+\paragraph{Motion: Lagrange's equations.}
+Give the joint a mass $2m$ and the top a mass $m$. The joint moves sideways by
+$l\theta_1$ and the top by $l(\theta_1 + \theta_2)$, so for small motions the
+kinetic energy is
+\begin{equation}\label{eq:ld-kinetic}
+  T = \frac12\,\dot{\mat{u}}\T\mat{M}\,\dot{\mat{u}}, \qquad
+  \mat{M} = m\,l^2\begin{bmatrix} 3 & 1 \\ 1 & 1 \end{bmatrix} .
+\end{equation}
+Lagrange's equations of motion are
+\begin{equation}\label{eq:ld-lagrange}
+  \frac{d}{dt}\frac{\partial T}{\partial\dot{\mat{u}}} - \frac{\partial T}{\partial\mat{u}}
+  + \mathcal{E}_{,\mat{u}} = \mat{Q},
+\end{equation}
+where $\mat{Q}$ collects the generalised forces that have no potential: dampers,
+and the follower load of Section~\ref{sec:ld-flutter}. Here $\mat{Q} = \mat{0}$.
+Linearise about the equilibrium: $\mat{u} = \mat{u}^* + \mat{w}$ with a small
+disturbance $\mat{w}$. The mass matrix is taken at $\mat{u}^*$ and the gradient becomes
+$\mat{K}\mat{w}$:
+\begin{equation}\label{eq:ld-linear-motion}
+  \mat{M}\,\ddot{\mat{w}} + \mat{K}\,\mat{w} = \mat{0} .
+\end{equation}
+Try $\mat{w} = \mat{x}\,e^{i\omega t}$: $\mat{K}\mat{x} = \omega^2\mat{M}\mat{x}$.
+The squared frequencies are the generalised eigenvalues of $\mat{K}$ with respect
+to $\mat{M}$. Both matrices are symmetric and $\mat{M}$ is positive definite, so
+the $\omega^2$ are real. If they are all positive, the disturbance oscillates and
+stays small. If one is negative, $\omega = \pm i\abs{\omega}$ and one solution grows
+like $e^{\abs\omega t}$.
+\index{frequency!and stability}%
+
+\begin{example}[Frequencies of the loaded column]\label{ex:ld-chain-freq}
+In units $k = l = m = 1$, $\det(\mat{K} - \omega^2\mat{M}) = 0$ reads
+$2\omega^4 - (7 - 4P)\,\omega^2 + P^2 - 3P + 1 = 0$. Unloaded, $\omega^2 = 0.149$ and
+$3.351$. The product of the two roots is $(P^2 - 3P + 1)/2$: the lower frequency goes
+to zero when $P^2 - 3P + 1 = 0$, at $P = (3 - \sqrt5)/2 \approx 0.382$. Near this load
+$\omega^2$ falls linearly with $P$. Measuring the lowest frequency at two loads
+and extrapolating to $\omega^2 = 0$ is a classical, non-destructive way to estimate a
+buckling load (Exercise~\ref{exo:st-tracedet}).
+\end{example}
+
+%======================================================================
 \section{The energy criterion and the Hessian}\label{sec:ld-hessian}
-\draftnote{Planned (15 min).
-(i)~Lagrange--Dirichlet (stated in Chapter~\ref{ch:st}): a strict minimum of
-$\mathcal{E}$ is stable. Key box: stable while $\mat{K}$ is positive definite.
-(ii)~Critical point: $\det\mat{K}(\eta_c) = 0$, mode ${}^1\mat{u}$ with
-$\mat{K}_c\,{}^1\mat{u} = \mat{0}$; Rayleigh quotient; the chain example by hand
-(two critical loads, two modes).
-(iii)~Limit point if ${}^1\mat{u}\T\mathcal{E}_{,\mat{u}\eta} \neq 0$, bifurcation point if
-it vanishes: the fold test $\mat{w}\T\mat{f}_r$ of Chapter~\ref{ch:st}, with
-$\mat{w} = \mat{v}$ because $\mat{K}$ is symmetric.
-(iv)~Box~2.1: finding and classifying the critical points of $\mathcal{E}(\mat{u},\eta)$.}
+\index{energy criterion}%
 
+The example shows the general rule. Chapter~\ref{ch:st} stated it as the theorem of
+Lagrange and Dirichlet: for a conservative system, a strict minimum of the potential
+energy is a stable equilibrium.
+
+\begin{gbox}{An equilibrium is stable while the stiffness matrix is positive definite}\label{sec:ld-energycrit}
+\index{stability!energy criterion}\index{stiffness matrix}%
+Let $\mat{u}^*$ be an equilibrium, $\mathcal{E}_{,\mat{u}}(\mat{u}^*,\eta) = \mat{0}$. If
+$\mat{K} = \mathcal{E}_{,\mat{u}\mat{u}}(\mat{u}^*,\eta)$ is positive definite, the
+equilibrium is stable. If $\mat{K}$ has a negative eigenvalue, it is unstable.
+\end{gbox}
+
+\paragraph{Why it works.}
+Near $\mat{u}^*$ the energy is a bowl,
+$\mathcal{E} \approx \mathcal{E}^* + \tfrac12\,\mat{w}\T\mat{K}\mat{w}$. Positive definite
+means the bowl curves upward in every direction: $\mat{w}\T\mat{K}\mat{w} > 0$ for every
+$\mat{w} \neq \mat{0}$. The total energy $T + \mathcal{E}$ is conserved, and $T \ge 0$,
+so a motion that starts near the bottom with little kinetic energy cannot climb the
+walls: the total energy is a Lyapunov function (Section~\ref{sec:st-lyapdirect}).
+The frequencies say the same: $\omega^2 = \mat{x}\T\mat{K}\mat{x}/\mat{x}\T\mat{M}\mat{x}$,
+the Rayleigh quotient, is positive for every mode exactly when $\mat{K}$ is positive
+definite. A negative eigenvalue of $\mat{K}$ is a direction going downhill, and a
+negative $\omega^2$ in it gives exponential growth.
+
+\paragraph{Critical points.}
+\index{critical point}\index{buckling mode}%
+Follow the \emph{principal branch} ${}^0\mat{u}(\eta)$: the equilibrium that starts
+unloaded and is followed as the load parameter $\eta$ grows. Stability is lost when
+the smallest eigenvalue of $\mat{K}$ reaches zero. This is the critical point
+$(\mat{u}_c,\eta_c)$. The eigenvector is the \emph{buckling mode}
+${}^1\mat{u}$, normalised to unit length:
+\begin{equation}\label{eq:ld-critical}
+  \mat{K}_c\,{}^1\mat{u} = \mat{0}, \qquad \mat{K}_c = \mat{K}({}^0\mat{u}(\eta_c),\eta_c),
+  \qquad \norm{{}^1\mat{u}} = 1 .
+\end{equation}
+For the column~\eqref{eq:ld-chain-K},
+$\det\mat{K} = (Pl)^2 - 3k\,Pl + k^2$ vanishes at
+\begin{equation}\label{eq:ld-chain-Pc}
+  P_c = \frac{3 - \sqrt5}{2}\,\frac kl \approx 0.382\,\frac kl, \qquad
+  {}^1\mat{u} \propto \begin{bmatrix} 1 \\ (1 + \sqrt5)/2 \end{bmatrix} .
+\end{equation}
+The second root, $2.618\,k/l$, is never reached on a stable path. In the first mode
+both bars lean the same way and the upper one leans more, by the golden ratio.
+
+\paragraph{Limit point or bifurcation point.}
+\index{limit point}\index{bifurcation point}%
+Chapter~\ref{ch:st} distinguished a fold from a branch point with the left null
+vector: $\mat{w}\T\mat{f}_r \neq 0$ or $= 0$. Here the equations are
+$\mathcal{E}_{,\mat{u}} = \mat{0}$, their Jacobian is the symmetric $\mat{K}$, so the
+left and right null vectors are the same, ${}^1\mat{u}$. The test becomes
+\begin{equation}\label{eq:ld-limit-test}
+  {}^1\mat{u}\T\,\mathcal{E}_{,\mat{u}\eta}(\mat{u}_c,\eta_c)
+  \;\begin{cases} \neq 0 & \text{limit point: the load passes a maximum,}\\
+                 = 0 & \text{bifurcation point: a new branch crosses the principal one.}
+  \end{cases}
+\end{equation}
+For the column, $\mathcal{E}_{,\mat{u}P} = -l\,(\sin\theta_1, \sin\theta_2)$ vanishes at
+$\mat{u} = \mat{0}$: a bifurcation, as expected from the symmetry
+$\mat{u} \to -\mat{u}$. The von Mises truss of Section~\ref{sec:ld-snap} has a limit point.
+
+\begin{gbox}{Box 2.1\quad Critical points of a conservative system}\label{sec:ld-box-crit}
+\index{critical point}%
+\begin{enumerate}
+  \item Write $\mathcal{E}(\mat{u},\eta)$: strain energy minus the work of the loads.
+  \item Find the principal branch ${}^0\mat{u}(\eta)$ from $\mathcal{E}_{,\mat{u}} = \mat{0}$.
+  \item Compute $\mat{K}(\eta) = \mathcal{E}_{,\mat{u}\mat{u}}$ on it; find the first $\eta_c$
+        with $\det\mat{K} = 0$, and the unit null vector ${}^1\mat{u}$.
+  \item Test ${}^1\mat{u}\T\mathcal{E}_{,\mat{u}\eta}$: limit point if nonzero, bifurcation
+        point if zero.
+  \item At a bifurcation point, go to Box~2.2 for the post-buckling path.
+\end{enumerate}
+\end{gbox}
+
+%======================================================================
 \section{Koiter's analysis of a simple critical point}\label{sec:ld-koiter}
-\draftnote{Planned (25 min).
-(i)~One degree of freedom: expand $\mathcal{E}(\xi,\eta)$ about $(0,\eta_c)$;
-the path $\eta = \eta_c + \eta_1\xi + \eta_2\xi^2 + \dots$ with $\eta_1$ from
-$\mathcal{E}_{,\xi\xi\xi}$ and $\eta_2$ from $\mathcal{E}_{,\xi\xi\xi\xi}$; stability on the path
-from the sign of the slope (Chapter~\ref{ch:st}, exchange of stability).
-(ii)~Three cases on three rigid-bar models (Thompson \& Hunt):
-stable symmetric (the bar of Example~\ref{ex:st-bar}, recalled, $P/P_c \approx 1 + \theta^2/6$);
-unstable symmetric (lateral spring that stays horizontal, $P = kL\cos\theta$);
-asymmetric (spring inclined at $45^\circ$, $P/P_c = 1 - \tfrac34\theta + O(\theta^2)$, $P_c = kL/2$;
-checked in SymPy).
-(iii)~Two degrees of freedom: $\mat{u} = {}^0\mat{u}(\eta) + \xi\,{}^1\mat{u} + \xi^2\,{}^2\mat{u} + \dots$,
-${}^2\mat{u}$ orthogonal to the mode; the passive coordinate always lowers $\eta_2$
-(Lyapunov--Schmidt--Koiter as announced in Section~\ref{sec:st-reduction}).
-Example: a 2-dof model where neglecting ${}^2\mat{u}$ gives the wrong sign
-(Triantafyllidis T model, or the 2-dof chain with a nonlinear spring; to choose).
-(iv)~Key box: two coefficients decide the post-buckling.}
+\index{Koiter's analysis}\index{post-buckling}%
 
+At a bifurcation point the linear analysis gives $\eta_c$ and the mode, and stops.
+It cannot say whether the buckled structure carries more load or less. That
+question decides whether a structure is safe or treacherous, and Koiter answered it
+by expanding the energy along the mode~\cite{ld-koiter1945}.
+
+\paragraph{The rigid T model.}
+\index{rigid T model}%
+Triantafyllidis~\cite{ld-triantafyllidis2011} uses a model with all three answers.
+A rigid T stands on two vertical springs $E$ at the ends of its bar $AB$, of length
+$2\ell$ (Figure~\ref{fig:ld-tmodel-sketch}). Its stem $OC$, of length $L$, carries a
+vertical load $\eta$ at $C$, and a horizontal nonlinear spring at $C$ resists with
+the force $k d + m d^2 + n d^3$ for a displacement $d$. The degrees of freedom are
+the sinking $v$ of $O$ and the rotation $\theta$. To the order needed,
+\begin{equation}\label{eq:ld-tmodel}
+  \mathcal{E}(v,\theta,\eta) = E\bigl(v^2 + \ell^2\theta^2\bigr) + \frac k2 (L\theta)^2
+  + \frac m3 (L\theta)^3 + \frac n4 (L\theta)^4 - \eta\Bigl(v + \frac{L\theta^2}2\Bigr).
+\end{equation}
+The principal branch is $v = \eta/(2E)$, $\theta = 0$. The Hessian there is diagonal,
+$\diag\bigl(2E,\ (\eta_c - \eta)L\bigr)$ with $\eta_c = (2E\ell^2 + kL^2)/L$. The mode is a
+pure rotation, ${}^1\mat{u} = (0,1)$, and $\mathcal{E}_{,\theta\eta} = -L\theta = 0$: a
+bifurcation. Off the straight branch, $\mathcal{E}_{,\theta} = 0$ gives
+\begin{equation}\label{eq:ld-tmodel-path}
+  \eta = \eta_c + m L^2\,\theta + n L^3\,\theta^2 .
+\end{equation}
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[scale=0.85,>=Stealth]
+    \draw[line width=2.2pt,cu] (-2,0) -- (2,0);
+    \draw[line width=2.2pt,cu] (0,0) -- (0,2.6);
+    \foreach \x in {-2,2}{\draw[decorate,decoration={zigzag,amplitude=2pt,segment length=4pt}] (\x,0) -- (\x,-0.9);
+      \fill[pattern=north east lines] (\x-0.3,-1.1) rectangle (\x+0.3,-0.9);}
+    \draw[decorate,decoration={zigzag,amplitude=2pt,segment length=4pt}] (0,2.6) -- (1.6,2.6);
+    \fill[pattern=north east lines] (1.6,2.3) rectangle (1.8,2.9);
+    \draw[->,line width=1.1pt,cphi] (0,3.6) -- (0,2.72); \node[cphi,left] at (-0.1,3.3) {$\eta$};
+    \node[below] at (-2,-1.1) {$E$}; \node[below] at (2,-1.1) {$E$};
+    \node[below] at (0.85,2.5) {$k,m,n$};
+    \node[left] at (0,1.3) {$L$}; \node[above] at (-1,0) {$\ell$}; \node[above] at (1,0) {$\ell$};
+    \node[below left] at (0,0) {$O$}; \node[left] at (-0.05,2.5) {$C$};
+  \end{tikzpicture}
+  \caption{The rigid T model of Triantafyllidis: two degrees of freedom, the sinking
+    $v$ of $O$ and the rotation $\theta$; the horizontal spring at $C$ is nonlinear.}
+  \label{fig:ld-tmodel-sketch}
+\end{figure}
+
+Three cases appear (Figure~\ref{fig:ld-tmodel}). If $m \neq 0$, the path crosses
+the principal branch at an angle: an \emph{asymmetric} (transcritical) point, where
+one side of the buckled path carries more load and the other less. If $m = 0$ and
+$n > 0$, the path rises on both sides: a \emph{stable symmetric} point. If $m = 0$ and
+$n < 0$, it falls on both sides: an \emph{unstable symmetric} point. The rotation
+$\theta$ is the amplitude of the mode, and the coefficients $mL^2$ and $nL^3$ are
+read directly from the energy.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch02_discrete/figures/ld_tmodel.pdf}
+  \caption{Equilibrium paths of the rigid T model ($\eta_c = L = 1$). Black: the
+    perfect model. Green and orange: imperfect models with $\delta = \pm0.02$
+    (Section~\ref{sec:ld-imperfect}). Solid: stable. Dashed: unstable. Only the
+    stable symmetric point keeps a stable path for every imperfection.}
+  \label{fig:ld-tmodel}
+\end{figure}
+
+\paragraph{The general expansion.}
+For any energy, write the equilibria near the critical point as the principal
+branch plus an amplitude $\xi$ of the mode plus a correction
+orthogonal to the mode,
+\begin{equation}\label{eq:ld-lsk}
+  \mat{u} = {}^0\mat{u}(\eta) + \xi\,{}^1\mat{u} + \frac12\,\xi^2\,{}^2\mat{u} + \dots,
+  \qquad
+  \eta = \eta_c + \eta_1\,\xi + \frac12\,\eta_2\,\xi^2 + \dots
+\end{equation}
+This is the Lyapunov--Schmidt reduction announced in Section~\ref{sec:st-reduction},
+applied to $\mathcal{E}_{,\mat{u}} = \mat{0}$~\cite{ld-triantafyllidis2011}. Three numbers
+carry the answer. With summation over repeated indices and all derivatives taken
+at the critical point, the first measures how fast the load removes stiffness in
+the mode, the other two are the cubic and quartic terms of the energy along it:
+\begin{equation}\label{eq:ld-kappa}
+  \kappa' = {}^1u_i\,\frac{dK_{ij}}{d\eta}\,{}^1u_j ,
+\end{equation}
+\begin{equation}\label{eq:ld-E34}
+  \mathcal{E}_3 = \mathcal{E}_{,ijk}\,{}^1u_i\,{}^1u_j\,{}^1u_k ,
+  \qquad
+  \mathcal{E}_4 = \mathcal{E}_{,ijkl}\,{}^1u_i\,{}^1u_j\,{}^1u_k\,{}^1u_l .
+\end{equation}
+The derivative $d\mat{K}/d\eta$ is taken along the principal branch; when that branch
+is trivial it is simply $\mathcal{E}_{,\mat{u}\mat{u}\eta}$. On a stable principal
+branch the smallest eigenvalue decreases through zero, so $\kappa' < 0$.
+
+\begin{gbox}{Two coefficients decide the post-buckling: $\eta_1$, and if it vanishes, $\eta_2$}\label{sec:ld-koitercoef}
+\index{Koiter's analysis!coefficients}%
+\begin{equation}\label{eq:ld-eta1}
+  \eta_1 = -\frac{\mathcal{E}_3}{2\kappa'} .
+\end{equation}
+If $\eta_1 \neq 0$ the point is \emph{asymmetric}. If $\eta_1 = 0$ (for instance by symmetry),
+\begin{equation}\label{eq:ld-eta2}
+  \eta_2 = -\frac{\mathcal{E}_4 + 3\,\mathcal{E}_{,ijk}\,{}^2u_i\,{}^1u_j\,{}^1u_k}{3\kappa'},
+  \qquad
+  \mat{K}_c\,{}^2\mat{u} = -\bigl(\mathcal{E}_{,ijk}\,{}^1u_j\,{}^1u_k\bigr)_i,
+  \quad {}^2\mat{u}\perp{}^1\mat{u} .
+\end{equation}
+$\eta_2 > 0$: \emph{stable symmetric}; $\eta_2 < 0$: \emph{unstable symmetric}.
+On the buckled path, the part where $\eta > \eta_c$ is stable and the part where
+$\eta < \eta_c$ is unstable.
+\end{gbox}
+
+\paragraph{Why it works.}
+Picture the energy along the mode at a load just above or below $\eta_c$. Projected
+on the mode, the equation $\mathcal{E}_{,\mat{u}} = \mat{0}$ becomes one equation for
+$\xi$. Its linear term is $\kappa'(\eta - \eta_c)\,\xi$: the stiffness in the mode,
+zero at $\eta_c$. Its next term is $\tfrac12\mathcal{E}_3\,\xi^2$. Off the principal
+branch we may divide by $\xi$:
+\begin{equation}\label{eq:ld-reduced}
+  \kappa'\,(\eta - \eta_c) + \frac12\,\mathcal{E}_3\,\xi
+  + \frac16\bigl(\mathcal{E}_4 + 3\,\mathcal{E}_{,ijk}\,{}^2u_i\,{}^1u_j\,{}^1u_k\bigr)\,\xi^2
+  + \dots = 0 .
+\end{equation}
+The first two terms balance when $\mathcal{E}_3 \neq 0$, which
+gives~\eqref{eq:ld-eta1}. If $\mathcal{E}_3 = 0$ the first and third terms balance,
+which gives~\eqref{eq:ld-eta2}. The correction ${}^2\mat{u}$ enters because the mode
+alone is not an equilibrium: the cubic term pushes the other coordinates, which
+answer through $\mat{K}_c$, positive definite away from the mode. The stability of
+the buckled path follows from the sign of the smallest eigenvalue on it, which is
+$-\kappa'\eta_1\xi$ (asymmetric) or $-\kappa'\eta_2\xi^2$ (symmetric) to leading
+order~\cite[pp.~57--62]{ld-triantafyllidis2011}: positive where the load is above
+$\eta_c$. On the T model, $\kappa' = -L$, $\mathcal{E}_3 = 2mL^3$,
+$\mathcal{E}_4 = 6nL^4$ and ${}^2\mat{u} = \mat{0}$, so $\eta_1 = mL^2$ and $\eta_2 = 2nL^3$,
+exactly the path~\eqref{eq:ld-tmodel-path}.
+
+\begin{gbox}{Box 2.2\quad Koiter's coefficients of a simple bifurcation point}\label{sec:ld-box-koiter}
+\index{Koiter's analysis!coefficients}%
+\begin{enumerate}
+  \item From Box~2.1: $\eta_c$, $\mat{K}_c$, the unit mode ${}^1\mat{u}$, and
+        $d\,{}^0\mat{u}/d\eta$ at $\eta_c$.
+  \item $\kappa' = {}^1\mat{u}\T\bigl(\mathcal{E}_{,\mat{u}\mat{u}\mat{u}}\,d\,{}^0\mat{u}/d\eta
+        + \mathcal{E}_{,\mat{u}\mat{u}\eta}\bigr){}^1\mat{u}$; check $\kappa' < 0$.
+  \item $\mathcal{E}_3$; if nonzero, $\eta_1 = -\mathcal{E}_3/(2\kappa')$. Stop.
+  \item Solve $\mat{K}_c\,{}^2\mat{u} = -\mathcal{E}_{,\mat{u}\mat{u}\mat{u}}[{}^1\mat{u},{}^1\mat{u}]$
+        with ${}^2\mat{u}\perp{}^1\mat{u}$ (a bordered system, since $\mat{K}_c$ is singular).
+  \item $\mathcal{E}_4$ and $\eta_2$ from~\eqref{eq:ld-eta2}.
+\end{enumerate}
+\end{gbox}
+
+\paragraph{Three bars on springs.}
+\index{buckling!rigid bar model}%
+Thompson and Hunt open their book with three one-degree-of-freedom links, one for each
+case~\cite[Section~1.2]{ld-thompson1973}: the hinged cantilever, the propped
+cantilever and the asymmetric model. The rigid bar of Example~\ref{ex:st-bar}, with $\mathcal{E} = \tfrac12 k\theta^2 - \eta L(1 - \cos\theta)$,
+has $\kappa' = -L$, $\mathcal{E}_3 = 0$, $\mathcal{E}_4 = \eta_c L = k$, so
+$\eta_2 = k/(3L) = \eta_c/3$: stable symmetric, $\eta \approx \eta_c(1 + \theta^2/6)$
+as found in Chapter~\ref{ch:st}. Replace the torsional spring by a horizontal spring
+of stiffness $k$ at the top, which stays horizontal (it slides on a far-away
+roller). Then $\mathcal{E} = \tfrac12 k L^2\sin^2\theta - \eta L(1 - \cos\theta)$, the
+equilibria are $\eta = kL\cos\theta$, and $\eta_2 = -kL = -\eta_c$: unstable
+symmetric. Finally tie the top to the ground by a spring inclined at $45^\circ$,
+anchored at the distance $L$ from the foot (Thompson and Hunt measure the sway by
+$\sin\theta$ instead of $\theta$, which changes nothing to first order). As the bar tilts
+away from the anchor the spring rotates and its effective lateral stiffness drops;
+tilting towards it the opposite happens. The symmetry is gone, and
+Box~2.2 gives $\eta_c = kL/2$ and
+\begin{equation}\label{eq:ld-inclined}
+  \eta_1 = -\frac{3}{8}\,kL = -\frac34\,\eta_c,
+  \qquad \frac{\eta}{\eta_c} \approx 1 - \frac34\,\theta .
+\end{equation}
+All three numbers are produced by the code of Exercise~\ref{exo:ld-computer-koiter}.
+
+\paragraph{The second-order field matters.}
+\index{Koiter's analysis!passive coordinates}%
+In the T model ${}^2\mat{u} = \mat{0}$ because the Hessian is diagonal and
+$\mathcal{E}_{,v\theta\theta} = 0$. In general the cubic terms couple the mode to the
+other coordinates, and dropping ${}^2\mat{u}$ is a classical error. Its effect has a sign.
+
+\begin{gbox}{The coordinates that do not buckle can only lower $\eta_2$}\label{sec:ld-passive}
+\index{Koiter's analysis!passive coordinates}%
+With ${}^2\mat{u}$ from~\eqref{eq:ld-eta2},
+$\mathcal{E}_{,ijk}\,{}^2u_i\,{}^1u_j\,{}^1u_k = -\,{}^2\mat{u}\T\mat{K}_c\,{}^2\mat{u} \le 0$.
+The numerator of $\eta_2$ is smaller than $\mathcal{E}_4$, and since $\kappa' < 0$,
+$\eta_2$ is smaller than the value computed from the mode alone.
+\end{gbox}
+
+\paragraph{Why it works.}
+Multiply the equation for ${}^2\mat{u}$ by ${}^2\mat{u}\T$. The other coordinates relax
+to lower the energy, so a quartic term computed with them frozen is an upper bound.
+Section~\ref{sec:ld-snap} shows a structure, the steep two-bar truss, in which the
+frozen estimate is stable and the true path is unstable.
+
+%======================================================================
 \section{Imperfection sensitivity}\label{sec:ld-imperfect}
-\draftnote{Planned (15 min).
-(i)~Imperfection of amplitude $\bar\xi$ in the shape of the mode; equilibrium
-$(1 - \eta/\eta_c)\,\xi + \dots \propto \bar\xi\,\eta/\eta_c$.
-(ii)~Maximum load $\eta_m$: asymmetric $1 - \eta_m/\eta_c \propto \abs{\bar\xi}^{1/2}$
-(one-half power law, imperfection of the bad sign only);
-unstable symmetric $1 - \eta_m/\eta_c \propto \abs{\bar\xi}^{2/3}$ (two-thirds law);
-stable symmetric: no maximum, the deflection at $\eta_c$ grows as $\bar\xi^{1/3}$
-(Exercise~\ref{exo:st-imperfect-bar}). Exact constants derived in the text.
-(iii)~Figure: the imperfection-sensitivity curves $\eta_m/\eta_c$ against $\bar\xi$,
-exact (Python) against asymptotic. Link with the cusp~\eqref{eq:st-cusp} and
-the imperfect transcritical bifurcation (Exercise~\ref{exo:st-imptrans}).
-(iv)~Key box: the shape of the curve near $\bar\xi = 0$ is set by the critical point.
-Preview: the axially compressed cylinder (Chapter~\ref{ch:cy}).}
+\index{imperfection sensitivity}\index{imperfection}%
 
+Real structures are never perfect, as Chapter~\ref{ch:st} showed on the rigid bar.
+Give the T model a stem that leans by a small angle $\delta$. The load then works
+on $L(\theta^2/2 + \theta\delta)$, and the equilibria become
+$\eta = (\eta_c\theta + mL^2\theta^2 + nL^3\theta^3)/(\theta + \delta)$
+(Figure~\ref{fig:ld-tmodel}). There is no bifurcation any more: one path starts at
+the origin and follows the perfect structure's buckled path from the side of the
+imperfection. In the asymmetric and unstable symmetric cases this path reaches a
+maximum load $\eta_m < \eta_c$ and the structure snaps.
+
+\paragraph{The general equation.}
+Let the imperfection have the shape of the mode and an amplitude $\bar\xi$, scaled
+so that it is the initial value of $\xi$ when the spring is relaxed (a tilt $\delta$
+for the T model, $\theta_0$ for the bars). To leading order the reduced
+equation~\eqref{eq:ld-reduced} acquires a constant term:
+\begin{equation}\label{eq:ld-imperfect-path}
+  (\eta - \eta_c)\,\xi = \eta_1\,\xi^2 - \eta_c\,\bar\xi
+  \quad\text{or}\quad
+  (\eta - \eta_c)\,\xi = \frac12\,\eta_2\,\xi^3 - \eta_c\,\bar\xi
+\end{equation}
+for an asymmetric and a symmetric point~\cite[pp.~65--70]{ld-triantafyllidis2011}.
+These are the imperfect transcritical and pitchfork bifurcations of
+Chapter~\ref{ch:st} (Exercise~\ref{exo:st-imptrans} and the cusp~\eqref{eq:st-cusp}).
+
+\paragraph{The maximum load.}
+Along a path, $\eta - \eta_c = \eta_1\xi - \eta_c\bar\xi/\xi$. The maximum is where
+$d\eta/d\xi = \eta_1 + \eta_c\bar\xi/\xi^2 = 0$, so $\xi_m^2 = -\eta_c\bar\xi/\eta_1$:
+it exists when $\eta_1\bar\xi < 0$, an imperfection on the falling side. Then
+$\eta_m - \eta_c = 2\eta_1\xi_m$. In the symmetric case,
+$d\eta/d\xi = \eta_2\xi + \eta_c\bar\xi/\xi^2 = 0$ gives $\xi_m^3 = -\eta_c\bar\xi/\eta_2$,
+real for either sign of $\bar\xi$, and $\eta_m - \eta_c = \tfrac32\eta_2\xi_m^2$.
+
+\begin{gbox}{A small imperfection costs a fractional power of itself}\label{sec:ld-powerlaws}
+\index{imperfection sensitivity!power laws}%
+\begin{align}
+  \text{asymmetric } (\eta_1\bar\xi < 0):\quad
+    & 1 - \frac{\eta_m}{\eta_c} = 2\,\sqrt{\frac{-\eta_1\,\bar\xi}{\eta_c}}\,, \label{eq:ld-half}\\
+  \text{unstable symmetric } (\eta_2 < 0):\quad
+    & 1 - \frac{\eta_m}{\eta_c} = \frac32\Bigl(\frac{-\eta_2}{\eta_c}\Bigr)^{1/3}\abs{\bar\xi}^{2/3}. \label{eq:ld-twothirds}
+\end{align}
+A stable symmetric point has no maximum; at $\eta = \eta_c$ the deflection is
+$\xi = (2\eta_c\bar\xi/\eta_2)^{1/3}$.
+\end{gbox}
+
+\paragraph{Why it works.}
+The derivative of a power law is infinite at zero. A tilt of $10^{-4}$ cannot change
+a load by much in a linear world, but $\sqrt{10^{-4}} = 10^{-2}$ and
+$(10^{-4})^{2/3} \approx 2\times10^{-3}$. For the inclined bar,
+$-\eta_1/\eta_c = 3/4$ and~\eqref{eq:ld-half} gives $\eta_m/\eta_c = 1 - \sqrt{3\bar\xi}$:
+a tilt of $0.01$ rad ($0.6^\circ$) costs $17\%$ of the critical load
+(Figure~\ref{fig:ld-imperfection}). For the bar with the horizontal spring,
+$-\eta_2/\eta_c = 1$ and the same tilt costs $7\%$. For the bar of
+Chapter~\ref{ch:st}, $\eta_2 = \eta_c/3$ gives $\xi = (6\theta_0)^{1/3}$, the answer of
+Exercise~\ref{exo:st-imperfect-bar}. The asymptotic laws are accurate to about $1\%$ of
+$\eta_c$ up to $\bar\xi = 0.01$, and they are cautious: the exact maximum loads lie above them.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch02_discrete/figures/ld_imperfection.pdf}
+  \caption{Imperfection-sensitivity curves: maximum load against the imperfection
+    amplitude. Solid: exact maxima of the imperfect models. Dotted: the asymptotic
+    laws~\eqref{eq:ld-half} and~\eqref{eq:ld-twothirds}. Blue: bar with an inclined
+    spring. Orange: bar with a horizontal spring. Green: Augusti column with equal
+    springs (Section~\ref{sec:ld-interaction}).}
+  \label{fig:ld-imperfection}
+\end{figure}
+
+The steep descent at $\bar\xi = 0$ is the mechanism behind the scatter of buckling
+tests on thin shells, whose critical points are strongly unstable: Koiter's thesis
+was written for them, and Chapter~\ref{ch:cy} applies these laws to the axially
+compressed cylinder.
+
+%======================================================================
 \section{Snap-through: the von Mises truss}\label{sec:ld-snap}
-\draftnote{Planned (15 min).
-(i)~Two elastic bars, apex load, one degree of freedom (symmetric deflection $w$):
-shallow-truss closed form $P(w)$ cubic, limit points, the jump and the
-unloading path (hysteresis, as in Figure~\ref{fig:st-hysteresis}).
-(ii)~Near a limit point $\eta - \eta_m \propto -\xi^2$ and an imperfection shifts
-$\eta_m$ linearly: limit points are not imperfection-sensitive in Koiter's sense.
-(iii)~Two degrees of freedom: can an asymmetric bifurcation precede the limit
-point?}
-\draftnote{Open: with elastic bars only (axial springs) and a free apex, a SymPy/NumPy
-check finds no asymmetric bifurcation before the limit point for rises $h/a = 0.2$
-and $0.5$, with or without a vertical apex spring: the horizontal stiffness stays
-positive. The asymmetric mode needs another ingredient (bars of unequal stiffness,
-rigid bars on rotational springs, or bars that buckle). Choose from Triantafyllidis's
-two-bar truss (notes pp.~41--45) or Pecknold, Ghaboussi \& Healey (1985) once the
-sources are uploaded. This section can also replace the fishery of
-Chapter~\ref{ch:st} as the example of a fold (draftnote there).}
+\index{von Mises truss}\index{snap-through}%
 
+Chapter~\ref{ch:st} met the von Mises truss with one degree of freedom
+(Example~\ref{ex:st-vonmises}): two elastic bars of length $L$ and stiffness $EA$,
+inclined at $\varphi$, loaded by $\eta$ at the apex. Now let the apex move sideways
+by $u$ as well as down by $v$ (Triantafyllidis's two-bar truss,
+\cite[pp.~41--45]{ld-triantafyllidis2011}). With the Green--Lagrange strains
+$\varepsilon_{1,2} = \tfrac12(\ell_{1,2}^2/L^2 - 1)$,
+$\ell_{1,2}^2 = (L\cos\varphi \pm u)^2 + (L\sin\varphi - v)^2$,
+\begin{equation}\label{eq:ld-truss-energy}
+  \mathcal{E}(u,v,\eta) = \frac12\,EA\,L\,\bigl(\varepsilon_1^2 + \varepsilon_2^2\bigr) - \eta\,v .
+\end{equation}
+Write $s = \sin\varphi$ and $c = \cos\varphi$ and measure lengths in $L$.
+
+\paragraph{The principal branch and its limit point.}
+\index{limit point}%
+$u = 0$ is an equilibrium for every load (the truss is symmetric), and on it
+\begin{equation}\label{eq:ld-truss-principal}
+  \frac{\eta}{EA} = v\,(v - 2s)\,(v - s),
+\end{equation}
+the cubic of Example~\ref{ex:st-vonmises} with $v = s\,w$. The Hessian on this
+branch is diagonal:
+\begin{equation}\label{eq:ld-truss-K}
+  \frac{\mat{K}}{EA} = \begin{bmatrix} v^2 - 2vs + 2c^2 & 0 \\
+                                        0 & 3v^2 - 6vs + 2s^2 \end{bmatrix} .
+\end{equation}
+The second entry vanishes at $v = s(1 \mp 1/\sqrt3)$, the limit points, with
+$\eta_{\max} = \tfrac{2}{3\sqrt3}\,EA\,s^3$. The mode is $(0,1)$ and
+$\mathcal{E}_{,v\eta} = -1 \neq 0$: test~\eqref{eq:ld-limit-test} confirms a limit point.
+
+\paragraph{A sideways bifurcation in steep trusses.}
+\index{bifurcation point}%
+The first entry vanishes where $(v - s)^2 = 3s^2 - 2$, which has real roots only if
+$\sin\varphi > \sqrt{2/3}$, that is $\varphi > 54.7^\circ$. With $R = \sqrt{3s^2 - 2}$,
+the bifurcation points are $v = s \mp R$, at the loads $\eta = \pm 2c^2R\,EA$. The
+bifurcated branch is exact:
+\begin{equation}\label{eq:ld-truss-branch}
+  u^2 + (v - s)^2 = R^2, \qquad \frac{\eta}{EA} = 2c^2\,(s - v),
+\end{equation}
+a circle in the $(u,v)$ plane and a falling straight line in the $(v,\eta)$ plane
+(Figure~\ref{fig:ld-truss}). On it $\det\mat{K}$ is proportional to $u^2(\sin^2\varphi - 1) < 0$: the whole branch
+is unstable~\cite[p.~45]{ld-triantafyllidis2011}. The bifurcation
+comes before the limit point when $2c^2R < \tfrac{2}{3\sqrt3}s^3$, which is
+$\sin^2\varphi > 3/4$, $\varphi > 60^\circ$.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch02_discrete/figures/ld_truss.pdf}
+  \caption{The two-bar truss. Left, $\varphi = 30^\circ$: the symmetric path has a
+    limit point (black dot) and the truss snaps through. Right, $\varphi = 65^\circ$:
+    the truss bifurcates sideways (orange points) before the limit point; the
+    bifurcated branch (orange) is unstable. Solid: stable. Dashed: unstable.}
+  \label{fig:ld-truss}
+\end{figure}
+
+\paragraph{Koiter at the sideways bifurcation.}
+The mode is $(1,0)$ and the symmetry $u \to -u$ gives $\mathcal{E}_3 = 0$. The quartic
+term alone, $\mathcal{E}_4 = 6EA$, is positive: frozen at $v = s - R$, the truss would
+look stable. But $\mathcal{E}_{,uuv} = 2EA\,(v - s) = -2R\,EA \neq 0$: swinging sideways
+pulls the apex down, ${}^2\mat{u} = (0, 2R/K_{vv})$, and the
+negative term of Section~\ref{sec:ld-passive} wins. Expanding the circle,
+$v \approx s - R + u^2/(2R)$ and $\eta \approx 2c^2R\,EA - (c^2/R)\,EA\,u^2$:
+\begin{equation}\label{eq:ld-truss-eta2}
+  \eta_2 = -\frac{2c^2}{R}\,EA .
+\end{equation}
+At $\varphi = 65^\circ$ Box~2.2 gives $\eta_2 = -0.524\,EA$, while the mode alone would give
+$+0.838\,EA$: the passive coordinate reverses the conclusion. As $\varphi \to 54.7^\circ$,
+$R \to 0$ and $\eta_2 \to -\infty$: the bifurcation and the limit point approach each
+other and the structure becomes extremely sensitive.
+
+\begin{gbox}{Shallow trusses snap through; only very steep ones buckle sideways}\label{sec:ld-steep}
+\index{von Mises truss}%
+In the symmetric two-bar truss with elastic bars, the sideways mode exists only for
+$\varphi > 54.7^\circ$ and precedes the limit point only for $\varphi > 60^\circ$. Below,
+failure is the snap-through of Example~\ref{ex:st-vonmises}, at a limit point.
+\end{gbox}
+
+\paragraph{Why it works.}
+Sideways motion is resisted by the horizontal projection of the bar stiffness,
+$EA\cos^2$ of the current angle, and softened by the compressive force. In a shallow
+truss the horizontal stiffness is large and the compressive force small (the bars
+are nearly horizontal and carry little vertical load): the vertical stiffness is lost
+first. A limit point is not imperfection-sensitive in Koiter's sense: a small
+imperfection changes $\eta_{\max}$ in proportion to its size, because the fold persists
+(Section~\ref{sec:st-imperfection}). At $\varphi = 65^\circ$, by contrast, a sideways load
+of $10^{-3}\eta$ lowers the maximum load from $0.2434\,EA$ to $0.2407\,EA$
+(Exercise~\ref{exo:ld-computer-imperfection}).
+
+\draftnote{Open (author, 21 Nov 2026): the symmetric two-bar truss bifurcates only for
+$\varphi > 54.7^\circ$, a geometry far from real shallow trusses and arches. To show the
+interplay of a limit point and a bifurcation on a realistic geometry, we will
+probably have to introduce an asymmetry: bars of unequal stiffness or length, or a load
+off the apex. Then the bifurcation becomes an asymmetric point or disappears into a
+fold. To be decided.}
+
+%======================================================================
 \section{Mode interaction: the Augusti column}\label{sec:ld-interaction}
-\draftnote{Planned (10 min).
-(i)~Rigid strut on a universal joint with two springs in perpendicular planes
-(Augusti 1964): two modes, critical loads $\eta_{c1} \le \eta_{c2}$.
-(ii)~Energy as a quartic in $(\xi_1,\xi_2)$: uncoupled and coupled
-post-buckling paths, their stability, imperfection sensitivity when
-$\eta_{c1} \approx \eta_{c2}$.
-(iii)~Thompson's warning on naive optimisation: designing every mode for the same
-load creates the interaction (Bushnell 1981, \S7; Chapters~\ref{ch:tw}
-and~\ref{ch:cy}).}
-\draftnote{Open: the result depends on the kinematics of the springs. A first check
-with rotational springs on the two projected angles, and on two successive
-rotations, gives coupled (diagonal) paths that are \emph{stiffer}, not weaker,
-than the single-plane path. The spring arrangement of Augusti's model must be
-taken from Thompson \& Hunt (1973) or Ba\v{z}ant \& Cedolin (1991) before the
-section is written.}
+\index{mode interaction}\index{Augusti model}%
 
+\paragraph{The model.}
+A rigid strut of length $L$ stands on a universal joint and carries a dead load $P$.
+Two rotational springs, of stiffnesses $c_1$ and $c_2$, resist rotation in two
+perpendicular planes~\cite[Section~10.4]{ld-thompson1973}. The springs measure the
+angles $u_1$, $u_2$ for which the tip moves sideways by $L\sin u_1$ and $L\sin u_2$,
+so that the tip descends by $L\bigl(1 - (1 - \sin^2u_1 - \sin^2u_2)^{1/2}\bigr)$. To
+fourth order,
+\begin{equation}\label{eq:ld-augusti}
+  \mathcal{E} = \frac12\,c_1u_1^2 + \frac12\,c_2u_2^2
+  + PL\Bigl(-\frac{u_1^2 + u_2^2}{2} + \frac{u_1^4 + u_2^4}{24} - \frac{u_1^2u_2^2}{4}\Bigr).
+\end{equation}
+The critical loads of the two planes are $c_1/L$ and $c_2/L$. In each plane alone
+the energy is that of the bar of Chapter~\ref{ch:st}, and the buckling is stable
+symmetric: $PL = c_1/(1 - u_1^2/6)$, $\eta_2 = c_1/(3L)$. The coupling term
+$-\tfrac14 u_1^2u_2^2$ is negative: buckling in both planes at once costs less energy
+than in either plane alone.
+
+\paragraph{Separate critical loads.}
+Let $c_1 < c_2$. The strut buckles in plane 1 on a stable rising path. On it the
+stiffness against $u_2$ is $\mathcal{E}_{,u_2u_2} = c_2 - PL - PLu_1^2/2$, which with
+$u_1^2 = 6(1 - c_1/PL)$ vanishes at
+\begin{equation}\label{eq:ld-augusti-secondary}
+  P^C = \frac{3c_1 + c_2}{4L} .
+\end{equation}
+This is a \emph{secondary bifurcation} on a nonlinear path. A coupled path, with both
+$u_1 \neq 0$ and $u_2 \neq 0$, leaves the primary path there and falls
+(Figure~\ref{fig:ld-augusti}, left): an unstable symmetric point, with the two-thirds
+law for imperfections~\cite[p.~249]{ld-thompson1973}. The real carrying capacity of the
+perfect strut is $P^C$, not $c_2/L$.
+
+\paragraph{Coincident critical loads.}
+Let $c_1 = c_2 = c$. In the $45^\circ$ plane, $u_1 = u_2 = u$,
+\begin{equation}\label{eq:ld-augusti-diag}
+  \mathcal{E} = c\,u^2 - PL\Bigl(u^2 + \frac{u^4}{6}\Bigr), \qquad
+  PL = \frac{c}{1 + u^2/3} \approx c\Bigl(1 - \frac{u^2}{3}\Bigr):
+\end{equation}
+two stable modes have combined into an unstable one (Figure~\ref{fig:ld-augusti},
+right). With equal imperfections $u_1^0 = u_2^0 = \epsilon$ (the springs are relaxed
+there, the most dangerous case), the equilibria in that plane are
+$PL\,(1 + u^2/3) = c\,(1 - \epsilon/u)$, and
+\begin{equation}\label{eq:ld-augusti-max}
+  \frac{P_m L}{c} \approx 1 - \Bigl(\frac{3\epsilon}{2}\Bigr)^{2/3},
+\end{equation}
+the law~\eqref{eq:ld-twothirds} with $\eta_2 = -2c/(3L)$ (Figure~\ref{fig:ld-imperfection}).
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch02_discrete/figures/ld_augusti.pdf}
+  \caption{The Augusti column. Left, $c_2 = 1.2\,c_1$: the stable primary path in
+    plane 1 (blue) meets the falling coupled path (orange) at the secondary
+    bifurcation $C$. Right, $c_1 = c_2$: each plane alone buckles stably (blue), the
+    $45^\circ$ path falls (orange), and imperfect columns ($\epsilon = 0.01, 0.03$,
+    green) reach a maximum load. Solid: stable. Dashed: unstable.}
+  \label{fig:ld-augusti}
+\end{figure}
+
+\begin{gbox}{Designing every mode for the same load creates an unstable compound point}\label{sec:ld-optimum}
+\index{mode interaction}\index{optimum design}%
+Share a fixed spring stiffness, $c_1 + c_2 = k$. The perfect strut carries
+$P^C = (3c_1 + c_2)/(4L)$, largest for $c_1 = c_2 = k/2$: the optimum asks for
+simultaneous buckling. At this optimum the imperfection sensitivity is greatest.
+\end{gbox}
+
+\paragraph{Why it works.}
+The optimum puts the two critical loads together. Nothing then stops the strut from
+choosing the combination of modes in which the nonlinear coupling is most
+destabilising. This is Shanley's principle of simultaneous mode design and its
+erosion, studied on this model by Thompson and Supple~\cite[Section~10.4]{ld-thompson1973}.
+It reappears whenever a structure is optimised: local and global buckling of stiffened
+panels (Chapter~\ref{ch:tw}) and of shells (Chapter~\ref{ch:cy}); Bushnell gives
+examples from design practice~\cite{ld-bushnell1981}.
+
+\draftnote{Open (author, 21 Nov 2026): the Augusti column shows the interaction of two
+symmetric modes, through a quartic coupling. Do we also need an asymmetry here (a cubic
+coupling term, unequal imperfections, or a model with an asymmetric secondary point),
+to show the one-half law born from mode interaction, as in stiffened panels? To be decided.}
+
+%======================================================================
 \section{Non-conservative loads and flutter: Ziegler's column}\label{sec:ld-flutter}
-\draftnote{Planned (15 min).
-(i)~Follower load: the work depends on the path, there is no $\mathcal{E}$; the
-linearised stiffness is non-symmetric.
-(ii)~Static (Euler) method: no adjacent equilibrium, hence ``no critical load''.
-Kinetic method: $\mat{M}\ddot{\mat{v}} + \mat{K}\mat{v} = \mat{0}$, eigenvalues as in
-Section~\ref{sec:st-eigen}.
-(iii)~Ziegler's double pendulum (masses $2m$ and $m$, springs $k$, bars $l$): two
-frequencies merge and become complex at $P_f = (7/2 - \sqrt2)\,k/l \approx 2.086\,k/l$
-(checked numerically).
-(iv)~Ziegler's destabilisation paradox: with equal small dampers the critical load
-tends to $\approx 1.464\,k/l$, not to the undamped value (checked numerically;
-reference value to be confirmed in Ziegler 1968 / Bolotin). Trace--determinant
-picture of Figure~\ref{fig:st-tracedet}; no new Hopf theory (decided in Chapter~\ref{ch:st}).
-(v)~Physical cases: Beck's column, pipes conveying fluid, brake squeal (one paragraph).}
+\index{follower load}\index{flutter}\index{Ziegler's column}%
+
+Return to the column of Figure~\ref{fig:ld-chain}, and let the load follow the
+upper bar: it stays aligned with it as the column bends. Such loads occur in
+rocket thrust, in fluid flowing through a pipe, and in friction.
+
+\paragraph{No potential, a non-symmetric stiffness.}
+The top is at $l(\sin\theta_1 + \sin\theta_2,\ \cos\theta_1 + \cos\theta_2)$ and the
+load is $-P(\sin\theta_2, \cos\theta_2)$. Its virtual work is
+\begin{equation}\label{eq:ld-follower-work}
+  \delta W = -P\,l\,\sin(\theta_2 - \theta_1)\,\delta\theta_1 + 0\cdot\delta\theta_2 .
+\end{equation}
+The generalised force $\mat{Q} = (-Pl\sin(\theta_2 - \theta_1),\ 0)$ is not the gradient of
+any function, since $\partial Q_1/\partial\theta_2 \neq \partial Q_2/\partial\theta_1$.
+The load has no potential energy and the energy criterion does not apply. Linearised,
+the equations of motion~\eqref{eq:ld-lagrange} read
+$\mat{M}\ddot{\mat{w}} + \mat{K}\mat{w} = \mat{0}$ with
+\begin{equation}\label{eq:ld-ziegler-K}
+  \mat{K} = \begin{bmatrix} 2k - Pl & -k + Pl \\ -k & k \end{bmatrix} ,
+  \qquad \det\mat{K} = k^2 .
+\end{equation}
+
+\paragraph{The static method fails.}
+The static (Euler) method looks for an adjacent equilibrium:
+$\mat{K}\mat{w} = \mat{0}$ with $\mat{w} \neq \mat{0}$. Since $\det\mat{K} = k^2$ never
+vanishes, there is none, at any load. One would conclude that the column never buckles.
+
+\paragraph{The kinetic method.}
+\index{stability!kinetic criterion}%
+Look at the motion instead. With $\mat{w} = \mat{x}e^{i\omega t}$, in units $k = l = m = 1$
+and $p = Pl/k$,
+\begin{equation}\label{eq:ld-ziegler-char}
+  \det(\mat{K} - \omega^2\mat{M}) = 2\,\omega^4 + (2p - 7)\,\omega^2 + 1 = 0 .
+\end{equation}
+The product of the roots in $\omega^2$ is $\tfrac12 > 0$, so no root ever passes through
+zero: no divergence. But the two roots approach as $p$ grows, and they meet when the
+discriminant $(2p - 7)^2 - 8$ vanishes:
+\begin{equation}\label{eq:ld-ziegler-pf}
+  P_f = \Bigl(\frac72 - \sqrt2\Bigr)\frac kl \approx 2.086\,\frac kl .
+\end{equation}
+Beyond $P_f$ the roots $\omega^2$ are complex, one $\omega$ has a negative imaginary
+part, and the motion grows like $e^{\abs{\Im\omega}\,t}$ while it oscillates
+(Figure~\ref{fig:ld-ziegler}, left). In the language of Section~\ref{sec:st-eigen},
+a pair of growth rates $\lambda = i\omega$ has crossed the imaginary axis: flutter,
+not divergence. Under a dead load the same column buckles at $0.382\,k/l$,
+by~\eqref{eq:ld-chain-Pc}.
+
+\begin{gbox}{A follower load needs the kinetic criterion: stability is lost by flutter}\label{sec:ld-kinetic}
+\index{stability!kinetic criterion}\index{flutter}%
+For non-conservative loads, decide stability from the growth rates of
+$\mat{M}\ddot{\mat{w}} + \mat{C}\dot{\mat{w}} + \mat{K}\mat{w} = \mat{0}$, not from
+$\det\mat{K} = 0$. Ziegler's column is stable up to $P_f = (7/2 - \sqrt2)\,k/l$ and
+flutters beyond.
+\end{gbox}
+
+\paragraph{Why it works.}
+For a symmetric $\mat{K}$, the Rayleigh quotient makes every $\omega^2$ real, and the
+only way out of stability is through $\omega^2 = 0$: divergence, which the static
+method finds. A non-symmetric $\mat{K}$ allows two real $\omega^2$ to collide and leave
+the real axis without passing through zero. The static method cannot see this
+event. The criterion of Chapter~\ref{ch:st} is the right one: all growth rates in
+the left half-plane.
+
+\paragraph{The destabilising effect of damping.}
+\index{destabilisation paradox}%
+Add small dampers $c$ in both hinges, $\mat{C} = c\,\bigl[\begin{smallmatrix} 2 & -1\\ -1 & 1\end{smallmatrix}\bigr]$.
+Common sense says that damping can only help. Computing the growth rates
+(Exercise~\ref{exo:ld-computer-ziegler}) gives the opposite: as $c \to 0$ the flutter
+load tends to $1.464\,k/l$ (numerically $41/28$ to five digits), $30\%$ below the
+undamped value (Figure~\ref{fig:ld-ziegler}, right). The limit of the damped system is
+not the undamped system. This is Ziegler's destabilisation
+paradox~\cite{ld-ziegler1968}: an analysis without damping is unsafe for
+non-conservative loads.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch02_discrete/figures/ld_ziegler.pdf}
+  \caption{Ziegler's column under a follower load. Left: the two squared frequencies
+    $\omega^2$ (blue) meet at $p_f = 7/2 - \sqrt2$ and become complex (orange, the real
+    part). Right: flutter load with equal hinge dampers $c$; it tends to
+    $1.464$, not to the undamped value $2.086$, as $c \to 0$.}
+  \label{fig:ld-ziegler}
+\end{figure}
+
+Beck's column, a cantilever under a follower load, is the continuous version; pipes
+conveying fluid and brake squeal are physical relatives~\cite{ld-bazant1991,ld-nguyen2000}.
 
 %======================================================================
 \framepart{Summary}
 \begin{gbox*}
 \begin{itemize}
-  \item \textbf{To be written.} \draftnote{Take-home messages, one per section.}
+  \item \textbf{One function.} For conservative loads the potential energy
+        $\mathcal{E}(\mat{u},\eta)$ gives the equilibria ($\mathcal{E}_{,\mat{u}} = \mat{0}$)
+        and their stability (the Hessian $\mat{K} = \mathcal{E}_{,\mat{u}\mat{u}}$). Lagrange's
+        equations add the kinetic energy: $\mat{M}\ddot{\mat{w}} + \mat{K}\mat{w} = \mat{0}$.
+  \item \textbf{Energy criterion.} Stable while $\mat{K}$ is positive definite. The
+        critical load is the first zero of $\det\mat{K}$ on the principal branch; the
+        null vector is the mode; a frequency goes to zero there.
+  \item \textbf{Limit or bifurcation.} ${}^1\mat{u}\T\mathcal{E}_{,\mat{u}\eta} \neq 0$: a limit
+        point (snap-through). $= 0$: a bifurcation.
+  \item \textbf{Koiter's coefficients.} $\eta = \eta_c + \eta_1\xi + \tfrac12\eta_2\xi^2$ with
+        $\eta_1 = -\mathcal{E}_3/(2\kappa')$ and, if $\eta_1 = 0$,
+        $\eta_2 = -(\mathcal{E}_4 + 3\mathcal{E}_{,ijk}{}^2u_i{}^1u_j{}^1u_k)/(3\kappa')$.
+        Asymmetric, stable symmetric, unstable symmetric.
+  \item \textbf{Passive coordinates.} The coordinates that do not buckle can only
+        lower $\eta_2$; ignoring them can turn an unstable point into a stable one.
+  \item \textbf{Imperfections.} $1 - \eta_m/\eta_c \propto \bar\xi^{1/2}$ at an asymmetric
+        point and $\propto \bar\xi^{2/3}$ at an unstable symmetric one. A stable symmetric
+        point has no maximum load.
+  \item \textbf{Snap-through.} The shallow von Mises truss fails at a limit point; only
+        a steep one ($\varphi > 60^\circ$) bifurcates sideways first, on an unstable path.
+  \item \textbf{Mode interaction.} Two stable modes with equal critical loads can
+        combine into an unstable one. Optimising for simultaneous buckling maximises
+        imperfection sensitivity.
+  \item \textbf{Follower loads.} No potential, a non-symmetric $\mat{K}$, no adjacent
+        equilibrium. The kinetic criterion finds flutter at $(7/2 - \sqrt2)k/l$ for
+        Ziegler's column, and small damping lowers it to about $1.46\,k/l$.
 \end{itemize}
 \end{gbox*}
 
+%======================================================================
 \framepart{Exercises}\label{sec:ld-exo}
 \framesub{Short questions}
-\draftnote{Planned (8--10): positive definiteness of a $2\times2$ Hessian; critical
-load of the 2-dof chain; limit or bifurcation?; sign of $\eta_1$ from a sketch;
-which power law?; vibration test of the critical load; why the passive coordinate
-lowers $\eta_2$; why the static method fails for a follower load.}
+
+\exercise{A $2\times2$ Hessian}\label{exo:ld-hessian}
+\index{stiffness matrix}%
+For which $p \ge 0$ is
+$\mat{K} = \bigl[\begin{smallmatrix} 3 - p & 1 \\ 1 & 1 - p\end{smallmatrix}\bigr]$ positive
+definite? Give the critical value and the mode.
+\begin{solution}
+Positive definite when $3 - p > 0$ and $\det\mat{K} = p^2 - 4p + 2 > 0$, so for
+$p < 2 - \sqrt2 \approx 0.586$. There $(3 - p)x + y = 0$ gives the mode
+$(1, -(1 + \sqrt2))$, normalised $(0.383, -0.924)$.
+\end{solution}
+
+\exercise{Limit or bifurcation?}\label{exo:ld-limitbif}
+\index{limit point}\index{bifurcation point}%
+Apply test~\eqref{eq:ld-limit-test} to the T model at $\eta_c$, and to the truss of
+Section~\ref{sec:ld-snap} with $\varphi = 30^\circ$ at its first critical point.
+\begin{solution}
+T model: mode $(0,1)$, $\mathcal{E}_{,\mat{u}\eta} = -(1, L\theta) = (-1, 0)$ at
+$\theta = 0$; the product is $0$: bifurcation. Truss at $30^\circ$: $K_{uu} > 0$ always
+(no sideways mode), $K_{vv} = 0$ at $v = s(1 - 1/\sqrt3)$, mode $(0,1)$,
+$\mathcal{E}_{,v\eta} = -1$: limit point.
+\end{solution}
+
+\exercise{Reading a test}\label{exo:ld-reading}
+\index{imperfection sensitivity!power laws}%
+A model column, slightly bent, gives $\eta/\eta_c \approx 1 - 0.2\,\xi$ after
+buckling. Which law governs its maximum load? Which imperfection $\bar\xi$ lowers it by $10\%$?
+\begin{solution}
+$\eta_1 = -0.2\,\eta_c \neq 0$: asymmetric, one-half law. $2\sqrt{0.2\,\bar\xi} = 0.1$
+gives $\bar\xi = 0.0125$, on the falling side.
+\end{solution}
+
+\exercise{Which power law?}\label{exo:ld-whichlaw}
+Give the type of critical point and the law for the maximum load: the bar of
+Example~\ref{ex:st-bar}; the bar with a horizontal spring; the bar with an inclined
+spring; the Augusti column with $c_1 = c_2$; the column of two bars under a dead load.
+\begin{solution}
+Stable symmetric, no maximum ($\eta_2 = \eta_c/3$). Unstable symmetric, two-thirds
+($\eta_2 = -\eta_c$). Asymmetric, one-half ($\eta_1 = -\tfrac34\eta_c$). Unstable
+symmetric through interaction, two-thirds ($\eta_2 = -2c/(3L)$ in the $45^\circ$ plane).
+Stable symmetric, $\eta_2 = 0.2\,\eta_c$ with the unit mode (Box~2.2).
+\end{solution}
+
+\exercise{Southwell by vibration}\label{exo:ld-vibration}
+\index{frequency!and stability}%
+For the column of two bars under a dead load, the lowest $\omega^2$ is measured at
+$P = 0.1$ and $P = 0.2$ ($k = l = m = 1$). Compute both values from
+Example~\ref{ex:ld-chain-freq}, extrapolate linearly to $\omega^2 = 0$ and compare with $P_c$.
+\begin{solution}
+$2\omega^4 - (7 - 4P)\omega^2 + P^2 - 3P + 1 = 0$: $\omega^2 = 0.1113$ at $P = 0.1$ and
+$0.0727$ at $P = 0.2$. The line through them reaches zero at $P \approx 0.388$, $1.6\%$
+above $P_c = 0.382$; a third measurement closer to $P_c$ improves it.
+\end{solution}
+
+\exercise{Why the passive coordinates lower $\eta_2$}\label{exo:ld-passive}
+\index{Koiter's analysis!passive coordinates}%
+Prove the statement of Section~\ref{sec:ld-passive} in two lines.
+\begin{solution}
+Multiply $\mat{K}_c\,{}^2\mat{u} = -\mathcal{E}_{,\mat{u}\mat{u}\mat{u}}[{}^1\mat{u},{}^1\mat{u}]$ by
+${}^2\mat{u}\T$: $\mathcal{E}_{,ijk}\,{}^2u_i{}^1u_j{}^1u_k = -{}^2\mat{u}\T\mat{K}_c\,{}^2\mat{u} \le 0$,
+since $\mat{K}_c$ is positive semi-definite. The numerator of $\eta_2$ decreases and
+$-1/(3\kappa') > 0$.
+\end{solution}
+
+\exercise{Why the static method fails}\label{exo:ld-static}
+\index{follower load}%
+Show that Ziegler's column under a follower load has no adjacent equilibrium at any
+load, but that the same column under a dead load has one at $0.382\,k/l$.
+\begin{solution}
+Follower: $\det\mat{K} = (2k - Pl)k + (k - Pl)k = k^2 \neq 0$. Dead load:
+$\det\mat{K} = (Pl)^2 - 3kPl + k^2 = 0$ at $Pl/k = (3 - \sqrt5)/2$.
+\end{solution}
+
+\exercise{Damping can destabilise}\label{exo:ld-paradox}
+\index{destabilisation paradox}%
+Why is an undamped flutter analysis unsafe, and what does it tell a designer?
+\begin{solution}
+The flutter load of the slightly damped column tends to $1.464\,k/l$ as $c \to 0$, not
+to $2.086\,k/l$: the undamped value overestimates the load by $42\%$. Non-conservative
+systems must be analysed with a realistic (and uncertain) damping, and the lower
+bound over admissible damping distributions taken.
+\end{solution}
 
 \framesub{Problems}
-\draftnote{Planned: the 2-dof chain with unequal springs (Triantafyllidis H1);
-two nonlinear springs in series (H2); the imperfect lateral-spring bar, exact and
-asymptotic two-thirds law; the inclined-spring bar and the one-half law; the shallow
-von Mises truss; the four masses linked by rods and springs (sample exam);
-Beck's column reduced to two degrees of freedom.}
+
+\exercise{The column of two bars}\label{exo:ld-chain}
+\index{buckling!rigid bar model}%
+For the energy~\eqref{eq:ld-chain-energy}:
+(a)~derive $\mat{K}$ and the two critical loads and modes;
+(b)~show that the second mode is never reached on a stable path;
+(c)~with Box~2.2 (or Exercise~\ref{exo:ld-computer-koiter}) show that the first
+bifurcation is stable symmetric with $\eta_2 = 0.2\,P_c$ for the unit mode.
+\begin{solution}
+(a)~Equation~\eqref{eq:ld-chain-K}; $Pl/k = (3 \mp \sqrt5)/2 = 0.382$, $2.618$, modes
+$(1, 1.618)$ and $(1, -0.618)$. (b)~Above $0.382\,k/l$ the straight column already has a
+negative eigenvalue. (c)~The principal branch is trivial and $\mathcal{E}_{,\mat{u}\mat{u}P} = -l\,\mat{I}$,
+so $\kappa' = -l$; $\mathcal{E}_3 = 0$ by symmetry; $\mathcal{E}_4 = P_c l\,(u_1^4 + u_2^4)$
+with the unit mode $(0.526, 0.851)$, and ${}^2\mat{u} = \mat{0}$. Then
+$\eta_2 = P_c\,(0.526^4 + 0.851^4)/3 = 0.200\,P_c$.
+\end{solution}
+
+\exercise{The imperfect bar with a horizontal spring}\label{exo:ld-lateral}
+\index{imperfection sensitivity}%
+The bar with a horizontal spring is tilted by $\theta_0$ when the spring is relaxed.
+(a)~Show that $P/P_c = (1 - \sin\theta_0/\sin\theta)\cos\theta$.
+(b)~Derive the two-thirds law from the expansion for small $\theta$, $\theta_0$.
+(c)~Compare with the exact maximum for $\theta_0 = 0.01$.
+\begin{solution}
+(a)~$\mathcal{E} = \tfrac12 kL^2(\sin\theta - \sin\theta_0)^2 - PL(\cos\theta_0 - \cos\theta)$,
+$\mathcal{E}_{,\theta} = 0$ gives $kL^2(\sin\theta - \sin\theta_0)\cos\theta = PL\sin\theta$, with $P_c = kL$.
+(b)~$P/P_c \approx 1 - \theta_0/\theta - \theta^2/2$; the maximum is at $\theta^3 = \theta_0$,
+where $P_m/P_c = 1 - \tfrac32\theta_0^{2/3}$, the law~\eqref{eq:ld-twothirds} with
+$\eta_2 = -\eta_c$, $\bar\xi = \theta_0$. (c)~Exact $0.9312$, law $0.9304$.
+\end{solution}
+
+\exercise{The bar with an inclined spring}\label{exo:ld-inclined}
+\index{imperfection sensitivity}%
+For the bar of~\eqref{eq:ld-inclined}: (a)~derive $P_c = kL/2$; (b)~compute $\eta_1$
+with Box~2.2; (c)~which tilt is dangerous, and how much does $\theta_0 = 0.01$ cost?
+\begin{solution}
+(a)~The spring of length $\ell(\theta)$, $\ell(0) = \sqrt2 L$, has
+$\ell'(0) = L/\sqrt2$: the lateral stiffness is $k\,\ell'(0)^2 = kL^2/2$ against $PL$.
+(b)~$\kappa' = -L$, $\mathcal{E}_3 = -\tfrac34kL^2$ (by the code), $\eta_1 = -\tfrac38kL$.
+(c)~$\eta_1 < 0$: tilts away from the anchor ($\theta_0 > 0$) are dangerous. The law gives
+$1 - \sqrt{3\times0.01} = 0.827$, the exact maximum is $0.834$.
+\end{solution}
+
+\exercise{The steep truss}\label{exo:ld-truss}
+\index{von Mises truss}%
+For the truss~\eqref{eq:ld-truss-energy}: (a)~derive the principal path and the
+Hessian~\eqref{eq:ld-truss-K}; (b)~derive the circle~\eqref{eq:ld-truss-branch};
+(c)~show that the bifurcation precedes the limit point for $\varphi > 60^\circ$;
+(d)~derive $\eta_2$ and explain the sign change.
+\begin{solution}
+(a)~With $u = 0$, $\varepsilon_1 = \varepsilon_2 = \tfrac12(v^2 - 2vs)$, and
+$\mathcal{E}_{,v} = 0$ gives~\eqref{eq:ld-truss-principal}; the second derivatives
+give~\eqref{eq:ld-truss-K}. (b)~The horizontal equation is $u(\varepsilon_1 + \varepsilon_2) + c(\varepsilon_1 - \varepsilon_2) = 0$
+with $\varepsilon_1 - \varepsilon_2 = 2uc$; for $u \neq 0$ it gives
+$\varepsilon_1 + \varepsilon_2 = u^2 + v^2 - 2vs = -2c^2$, the circle; the vertical
+equation then gives $\eta = 2c^2(s - v)$ (see~\cite[p.~43]{ld-triantafyllidis2011}).
+(c)~$2c^2R < \tfrac{2}{3\sqrt3}s^3$ reduces to $s^2 > 3/4$. (d)~Section~\ref{sec:ld-snap};
+the mode alone gives $+0.838$, the full formula $-0.524$ at $65^\circ$.
+\end{solution}
+
+\exercise{A rotating mechanism}\label{exo:ld-rotating}
+\index{Lagrange's equations}%
+(After the MEC553 sample exam.) Four masses $m$ sit at the corners $A,B,C,D$ of a
+square of half-diagonal $r$. Rods of axial stiffness $K$ join neighbours, linear
+springs $k$ join opposite corners. The masses slide on two perpendicular guides
+through the centre $O$: $B$ and $D$ move outwards by $u$, $A$ and $C$ by $v$. The
+mechanism spins at the constant rate $\omega$ about $O$.
+(a)~Write the Lagrangian. (b)~Find the principal solution $u = v = u_0(\omega)$.
+(c)~Linearise and decide its stability. (d)~What changes if the rods are rigid?
+\begin{solution}
+(a)~$T = m(\dot u^2 + \dot v^2) + m\omega^2[(r + u)^2 + (r + v)^2]$;
+$V = 2K(\ell - \sqrt2 r)^2 + 2k(u^2 + v^2)$ with $\ell = \sqrt{(r+u)^2 + (r+v)^2}$;
+$\mathcal{L} = T - V$. The centrifugal term acts as a potential
+$-m\omega^2[(r+u)^2 + (r+v)^2]$. (b)~$u_0 = m\omega^2r/(2K + 2k - m\omega^2)$.
+(c)~The Hessian of $V - m\omega^2[\dots]$ has eigenvalues $2(2K + 2k - m\omega^2)$ in the
+mode $u = v$ and $2k(2K + 2k - m\omega^2)/(K + k)$ in the mode $u = -v$: both vanish at
+$m\omega^2 = 2(K + k)$, where $u_0 \to \infty$. The principal solution is stable for
+$m\omega^2 < 2(K + k)$. (d)~Rigid rods impose $(r + u)^2 + (r + v)^2 = 2r^2$: one degree
+of freedom, the centrifugal term is constant, the springs keep the square, and the
+square is stable at every speed.
+\end{solution}
 
 \framesub{Computer exercises}
-\draftnote{Planned:
-(a)~Mathematica: symbolic post-buckling. A routine that takes $\mathcal{E}(\mat{u},\eta)$,
-finds $\eta_c$ and ${}^1\mat{u}$, solves for ${}^2\mat{u}$, and returns $\eta_1$,
-$\eta_2$; applied to the three rigid-bar models and a 2-dof model
-(\texttt{code/mathematica/koiter.wl}, with a SymPy twin \texttt{code/python/koiter\_sympy.py}).
-(b)~Python: imperfection-sensitivity curves. Exact maximum load by continuation
-(reusing \texttt{ch01\_bifurcation/code/python/arclength.py}) against the
-asymptotic power laws (\texttt{code/python/ex\_imperfection.py}).
-(c)~Python: eigenvalue loci of Ziegler's column with and without damping
-(\texttt{code/python/ex\_ziegler.py}).}
+
+\exercise{Computer: Koiter's coefficients}\label{exo:ld-computer-koiter}
+\index{Koiter's analysis!coefficients}%
+Program Box~2.2 in a computer algebra system, for $n$ degrees of freedom. Test it on
+the T model, the three bars on springs, the steep truss and the Augusti column.
+\begin{solution}
+The SymPy code below (and a Mathematica version with the same steps) returns
+$\eta_1 = mL^2$ and $\eta_2 = 2nL^3$ for the T model; $\eta_2 = k/(3L)$, $-kL$ and
+$\eta_1 = -3kL/8$ for the three bars; $\eta_2 = -0.524\,EA$ for the truss at $65^\circ$
+($+0.838\,EA$ without ${}^2\mat{u}$); $\eta_2 = c_1/(3L)$ for the Augusti column in one
+plane and $-2c/(3L)$ in the $45^\circ$ plane. The second-order field is found from the
+bordered system $\mat{K}_c\,{}^2\mat{u} - \mu\,{}^1\mat{u} = \mat{r}$,
+${}^1\mat{u}\T{}^2\mat{u} = 0$.
+\lstinputlisting[firstline=4]{ch02_discrete/code/python/koiter_sympy.py}
+\end{solution}
+
+\exercise{Computer: imperfection-sensitivity curves}\label{exo:ld-computer-imperfection}
+\index{imperfection sensitivity}%
+(a)~For the bars with a horizontal and an inclined spring and for the Augusti column,
+compute the exact maximum load for imperfections from $10^{-4}$ to $0.05$ and compare
+with the power laws (Figure~\ref{fig:ld-imperfection}). (b)~Follow the steep truss
+($\varphi = 65^\circ$) with a small sideways load $e\,\eta$ by the pseudo-arclength
+code of Chapter~\ref{ch:st} and find its maximum load.
+\begin{solution}
+(a)~At $\bar\xi = 10^{-3}$: $0.9459$ (law $0.9452$), $0.9850$ ($0.9850$), $0.9870$ ($0.9869$);
+at $10^{-2}$: $0.8336$ ($0.8268$), $0.9312$ ($0.9304$), $0.9404$ ($0.9392$).
+(b)~The bifurcation load is $0.2434\,EA$; the maximum loads are $0.2428$, $0.2407$ and
+$0.2315\,EA$ for $e = 10^{-4}$, $10^{-3}$, $10^{-2}$: the drop grows by a factor of about
+$4.5$ per decade of $e$, close to $10^{2/3} = 4.6$, the two-thirds law of an unstable
+symmetric point. The fold is detected as a sign change of the load component of
+the tangent.
+\lstinputlisting[firstline=4]{ch02_discrete/code/python/ex_imperfection.py}
+\end{solution}
+
+\exercise{Computer: Ziegler's column}\label{exo:ld-computer-ziegler}
+\index{Ziegler's column}%
+Compute the growth rates of Ziegler's column as functions of $p$, without damping and
+with equal dampers $c$ in the hinges, and the flutter load as $c \to 0$.
+\begin{solution}
+Undamped: $p_f = 2.08579 = 7/2 - \sqrt2$. Damped: $1.46929$ ($c = 0.1$), $1.46434$
+($0.01$), $1.46429$ ($10^{-3}$ and $10^{-4}$). The limit is $1.4643$, below the undamped value.
+\lstinputlisting[firstline=4]{ch02_discrete/code/python/ex_ziegler.py}
+\end{solution}
 
 \begin{chapterbib}{99}
 \bibitem{ld-thompson1973} J.~M.~T.~Thompson and G.~W.~Hunt, \emph{A General Theory of Elastic Stability}, Wiley, London, 1973.
@@ -207,4 +1016,5 @@ asymptotic power laws (\texttt{code/python/ex\_imperfection.py}).
 \bibitem{ld-nguyen2000} Q.~S.~Nguyen, \emph{Stability and Nonlinear Solid Mechanics}, Wiley, Chichester, 2000.
 \bibitem{ld-bazant1991} Z.~P.~Ba\v{z}ant and L.~Cedolin, \emph{Stability of Structures}, Oxford University Press, 1991.
 \bibitem{ld-triantafyllidis2011} N.~Triantafyllidis, \emph{Stability of Solids: from Structures to Materials}, lecture notes MEC563, \'Ecole polytechnique, Palaiseau, 2011.
+\bibitem{ld-bushnell1981} D.~Bushnell, Buckling of shells---pitfall for designers, \emph{AIAA Journal} 19 (1981) 1183--1226.
 \end{chapterbib}

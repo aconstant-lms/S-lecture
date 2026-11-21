@@ -50,6 +50,14 @@ supply physical examples and illustrations.
   H8 atomic chain, discrete vs continuum (Ch. 9, optional); sample exam: four masses linked by rods and
   springs (Ch. 2).
 
+## 2b. J. M. T. Thompson & G. W. Hunt, *A General Theory of Elastic Stability* (Wiley, 1973), 322 p. (PDF 344 p.)
+**Role: spine of Chapter 2** (book page = PDF page − 18 in Ch. 1, − 17 in Ch. 10).
+- §1.2 simple link models, book pp. 3–21: simple arch (snap-through), hinged cantilever (stable symmetric),
+  propped cantilever (unstable symmetric), asymmetric model (spring at 45°), two-hinged strut.
+- §2.5 initial imperfections (book p. 65): limit point, asymmetric, stable- and unstable-symmetric points.
+- §10.4 erosion of an optimum design, book pp. 243–249 (PDF 260–266): the **Augusti model** (energy, paths,
+  secondary bifurcation P^C = (3c₁ + c₂)/4L, coincident case, imperfection sensitivity).
+
 ## 3. D. Bushnell, Buckling of shells — pitfall for designers, *AIAA Journal* 19 (1981) 1183–1226,
 and the slide version (88 slides, "6-1" to "6-88").
 **Role: design principles and the "rogue's gallery" of failures** (Chapters 0, 5, 7, 8).
@@ -81,7 +89,7 @@ and the slide version (88 slides, "6-1" to "6-88").
 |---|---|
 | 0 | Bushnell (failures), Triantafyllidis L1 (why stability) |
 | 1 | Strang, Strogatz, Guckenheimer & Holmes, Thompson & Hunt |
-| 2 | Thompson & Hunt, Koiter, Bažant & Cedolin, Triantafyllidis notes A (T model, square plate, two-bar truss, LSK), H1, H2, sample exam |
+| 2 | Thompson & Hunt (§1.2, §10.4), Koiter, Triantafyllidis notes A (T model pp. 24–31, two-bar truss pp. 41–45, LSK pp. 57–71), sample exam Problem 1; Ziegler (1968) |
 | 3 | Triantafyllidis L6 (FEM), Riks, Crisfield, Keller; Constantinescu & Korsunsky Ch. 7 (Rayleigh–Ritz) |
 | 4 | Triantafyllidis BA-1 (elastica), H3, H4; Timoshenko & Gere; Audoly & Pomeau (physical examples) |
 | 5 | Bažant & Cedolin, Trahair, Shanley, Hutchinson (plastic buckling), Bushnell §7 |

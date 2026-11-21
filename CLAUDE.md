@@ -153,6 +153,12 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
   pseudo-arclength, augmented Jacobian, zero eigenvalue Jv = 0 with fold test wᵀf_r ≠ 0, Box 1.2) and a Python
   code `ch01_bifurcation/code/python/arclength.py` for n unknowns; Chapter 3 builds on it (FE, Riks/Crisfield).
   Matrix notation for ODE systems: `\mat{y}`, `\mat{J}`, `\mat{v}`, `\mat{w}`, `\mat{u}=(\mat{y},r)`, `\widehat{\mat{J}}`.
+- 2026-11-21 (Ch. 2 thread): Chapter 2 notation accepted: generalised coordinates `\mat{u}`, stiffness
+  `\mat{K} = ℰ,uu`, mass `\mat{M}`, ⁰u(η), ¹u, ξ, ²u; η = η_c + η₁ξ + ½η₂ξ² (Taylor convention of Triantafyllidis);
+  κ', ℰ₃, ℰ₄; imperfection amplitude ξ̄; maximum load η_m; flutter load P_f. Box 2.2 (Koiter's coefficients) and
+  `ch02_discrete/code/python/koiter_sympy.py` (n dof) are reused for the elastica, plates and shells.
+- 2026-11-21 (Ch. 2 thread, author): the von Mises truss replaces the fishery in Chapter 1 (fold example);
+  the fishery moves to `ch01_bifurcation/extra/`.
 
 ## Workflow
 - One conversation per chapter; touch other files only when needed (cross-references, notation).

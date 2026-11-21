@@ -140,26 +140,27 @@ for ax in axs:
 fig.subplots_adjust(wspace=0.25)
 save(fig, "st_normalforms.pdf")
 
-# ----------------------------------------------- 5. fishery N' = N(1-N) - h
-fig, ax = plt.subplots(figsize=(W, 2.5))
-N = np.linspace(0, 1.05, 200)
-for h, col, ls, lab in [(0.0, (0.7, 0.7, 0.7), "-", r"$h=0$"),
-                        (0.15, CU, "-", r"$h=0.15$"),
-                        (0.25, ORANGE, "-", r"$h=\frac{1}{4}$ (critical)"),
-                        (0.32, (0.35, 0.35, 0.35), (0, (4, 3)), r"$h=0.32$")]:
-    ax.plot(N, N * (1 - N) - h, color=col, ls=ls, lw=1.5, label=lab)
-middle_axes(ax)
-Np, Nm = (1 + np.sqrt(0.4)) / 2, (1 - np.sqrt(0.4)) / 2
-ax.plot(Np, 0, "o", color=CU, ms=5, zorder=5)
-ax.plot(Nm, 0, "o", mfc="white", mec=CU, mew=1.4, ms=5, zorder=5)
-ax.plot(0.5, 0, "o", color=ORANGE, ms=4.5, zorder=5)
-ax.text(Np, 0.025, r"$N_+$", color=CU, ha="center")
-ax.text(Nm, 0.025, r"$N_-$", color=CU, ha="center")
-ax.set_xticks([1]); ax.set_yticks([])
-ax.set_xlim(-0.02, 1.12); ax.set_ylim(-0.42, 0.32)
-ax.text(1.12, 0.015, r"$N$", ha="right"); ax.text(0.02, 0.30, r"$\dot N$")
-ax.legend(loc="center left", bbox_to_anchor=(1.02, 0.5), frameon=False)
-save(fig, "st_fishery.pdf")
+# ------------------------------- 5. von Mises truss P/(EA sin^3 phi) = w(w-1)(w-2)
+fig, ax = plt.subplots(figsize=(3.4, 2.5))
+w = np.linspace(-0.25, 2.35, 600)
+g = w * (w - 1) * (w - 2)
+gp = 3 * w**2 - 6 * w + 2
+split_plot(ax, w, g, gp > 0)
+w1, w2 = 1 - 1 / np.sqrt(3), 1 + 2 / np.sqrt(3)
+pm = 2 / (3 * np.sqrt(3))
+ax.plot(w1, pm, "o", color=ORANGE, ms=4.5, zorder=5)
+ax.annotate("", xy=(w2, pm), xytext=(w1 + 0.04, pm),
+            arrowprops=dict(arrowstyle="->", color=ORANGE, lw=1.2))
+ax.text((w1 + w2) / 2, pm + 0.04, "snap-through", color=ORANGE, ha="center", fontsize=8)
+ax.axhline(0, color="k", lw=0.6)
+ax.set_xlabel(r"$w = v/(L\sin\varphi)$")
+ax.set_ylabel(r"$P/(EA\sin^3\varphi)$")
+ax.set_xticks([0, w1, 1, 2]); ax.set_xticklabels(["0", r"$1-\frac{1}{\sqrt{3}}$", "1", "2"])
+ax.set_yticks([-pm, 0, pm]); ax.set_yticklabels([r"$-\frac{2}{3\sqrt{3}}$", "0", r"$\frac{2}{3\sqrt{3}}$"])
+for sp_ in ("top", "right"):
+    ax.spines[sp_].set_visible(False)
+ax.set_ylim(-0.55, 0.62)
+save(fig, "st_vonmises.pdf")
 
 # ------------------------------------------- 6. potential V = -r y^2/2 + y^4/4
 fig, axs = plt.subplots(1, 3, figsize=(1.3 * W, 1.75))

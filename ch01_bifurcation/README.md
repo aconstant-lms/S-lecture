@@ -12,7 +12,8 @@ answers and instructor notes. Slides: still the skeleton deck. Template chapter 
 4. The pitchfork: symmetry breaking, critical slowing down.
 5. Why bifurcations happen: implicit function theorem; n unknowns, zero eigenvalue **Jv = 0**,
    left eigenvector **w**, fold (wᵀf_r ≠ 0) vs branch point (wᵀf_r = 0).
-6. Fold, transcritical, pitchfork: normal forms, reduction from Taylor coefficients (table), fishery.
+6. Fold, transcritical, pitchfork: normal forms, reduction from Taylor coefficients (table), von Mises truss
+   (snap-through at a fold; replaces the fishery, 21 Nov 2026).
 7. Hopf bifurcation: complex normal form, first Lyapunov coefficient ℓ₁ (Guckenheimer–Holmes 3.4.11),
    galloping of a square prism (Den Hartog, Parkinson–Smith).
 8. Potential energy, buckling and imperfections: rigid bar, cusp, hysteresis.
@@ -46,7 +47,9 @@ pseudo-arclength from scratch, normal forms in Mathematica).
 - Open: the Mathematica files have not been run in Mathematica yet (no Mathematica in the build
   environment); the SymPy/Python versions were run and give the numbers in the text. Marked with
   `\untested` in the instructor manual.
-- Open: keep the fishery example, or replace it by a snap-through example (draftnote in Section 6).
+- (author, 21 Nov 2026, Ch. 2 thread) The fishery is replaced by the von Mises truss (Example `ex:st-vonmises`,
+  Figure `fig:st-vonmises` made by block 5 of `fig_ch1.py`, Problem `exo:st-vonmises`). The fishery text, its
+  exercise, its figure and the old figure code are kept in `extra/fishery.tex` and `extra/st_fishery.pdf`.
 - Open: the deck `slides/c01_bifurcation.tex` still has to be written from the notes.
 
 ## Sources
