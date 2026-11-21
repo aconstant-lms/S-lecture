@@ -82,6 +82,8 @@ Engesser and Haringx); 4 computer exercises (arc-length from scratch, the bearin
   K_G, critical points (limit vs bifurcation), 3D buckling eigenproblem.
 - Audoly & Pomeau (2010) §2.5 (book pp. 47–48): small strain and finite rotations, second Piola–Kirchhoff
   stress, and the ambiguity of the stress under finite rotations (cited in §3.1 and in the bearing example).
+- Kielhöfer (2004): Theorem I.5.1 (Crandall–Rabinowitz) and §I.6–I.7, cited in §3.7; Theorem II.7.3 (change of
+  Morse index for potential operators) and §II.4 (odd crossing), cited in §3.6. Cited for precision only.
 - The author's Cast3M guide (repository `Castem_Introduction`, ch_eigen and ch_largestrain): ksigma 'FLAM',
   flambage, pasapas entries.
 - Checked references: Kelly (2003), Kelly & Takhirov (2007), Bažant (2003), Wriggers & Simo (1990).

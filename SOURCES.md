@@ -104,6 +104,21 @@ and the slide version (88 slides, "6-1" to "6-88").
   (p. 454); Ch. 14 spherical shell pushed by a wall (p. 490). → Ch. 7, 8.
 - Used in Ch. 3: §2.5 (finite rotations, choice of stress measure).
 
+## 4d. H. Kielhöfer, *Bifurcation Theory: An Introduction with Applications to PDEs* (Springer, Applied
+Mathematical Sciences 156, 2004), 355 p. **Role: precise statements behind the "Why it works" paragraphs**
+(author: very nice but too mathematical, few illustrations; cite, do not follow). PDF page = book page + 9.
+- Ch. I local theory: implicit function theorem (I.1), Lyapunov–Schmidt (I.2), for potential operators (I.3),
+  turning points (I.4), bifurcation from a simple eigenvalue, Crandall–Rabinowitz (I.5, Theorem I.5.1, p. 15),
+  bifurcation formulas λ̇(0), λ̈(0) = Koiter's η₁, η₂ (I.6, p. 18), exchange of stability (I.7, p. 20),
+  Hopf (I.8–I.9, p. 30), degenerate bifurcation and Newton polygon (I.15–I.16), high-dimensional kernels,
+  variational methods (I.19–I.21).
+- Ch. II global theory: degree, odd crossing numbers (II.4, p. 186), Rabinowitz global bifurcation (II.5),
+  change of Morse index for potential operators (II.7, Theorem II.7.3, p. 214).
+- Ch. III elliptic PDEs, free nonlinear vibrations, global branches.
+- Use: Ch. 1 (IFT, Hopf, exchange of stability), Ch. 2 (Lyapunov–Schmidt for potentials, bifurcation formulas),
+  Ch. 3 (Crandall–Rabinowitz for branch switching, Morse index for the pivot count), Ch. 4 and 6 (Euler column,
+  plates as elliptic problems).
+
 ## 5. Map: sources by chapter
 | Ch | Main sources |
 |---|---|

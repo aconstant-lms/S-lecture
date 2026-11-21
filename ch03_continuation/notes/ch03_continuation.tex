@@ -565,7 +565,10 @@ $\mat{L}$ is invertible, so the change of variables $\mat{y} = \mat{L}\T\mat{x}$
 energy $\tfrac12\mat{x}\T\mat{K}\mat{x}$ into $\tfrac12\mat{y}\T\mat{D}\mat{y}$: the number of
 downhill directions cannot change. Counting is safer than watching the sign of
 $\det\mat{K}$, which misses two eigenvalues crossing in the same step, and cheaper than
-computing eigenvalues~\cite[slides~3 and~6]{nc-triantafyllidis2018}.
+computing eigenvalues~\cite[slides~3 and~6]{nc-triantafyllidis2018}. For a conservative structure the count says
+even more. On a principal branch that continues through the point, any change of the number of
+negative eigenvalues, by one or by two, forces other equilibria to branch off nearby; without a
+potential energy, only an odd change is guaranteed to do so~\cite[Sections~II.4 and~II.7]{nc-kielhofer2004}.
 
 \paragraph{Locating and classifying.}
 Bisection between the two points pins the critical point down: correct the midpoint onto
@@ -596,7 +599,10 @@ ${}^1\mat{u}\T\mat{p} = 0$: the sideways bifurcation, at $v = s - R$ exactly.
 \index{branch switching}%
 
 At a simple bifurcation point the new branch leaves in the direction of the mode
-(Section~\ref{sec:st-continuation}); Koiter's coefficients of Box~2.2 give its curvature.
+(Section~\ref{sec:st-continuation}); Koiter's coefficients of Box~2.2 give its curvature. The
+precise statement is the theorem of Crandall and Rabinowitz: if the zero eigenvalue is simple and
+the load removes stiffness in the mode ($\kappa' \neq 0$), exactly one smooth branch crosses the
+principal one, tangent to the mode~\cite[Sections~I.5--I.7]{nc-kielhofer2004}.
 A finite element code uses this in two ways.
 
 \paragraph{Along the mode.}
@@ -914,6 +920,7 @@ measure used by \texttt{pasapas} for bars, with the maximum $0.0481$.
 \bibitem{nc-triantafyllidis2018} N.~Triantafyllidis, \emph{Stability of Solids: from Structures to Materials}, lecture slides MEC553, Lecture~6, \'Ecole polytechnique, Palaiseau, 2018.
 \bibitem{nc-constantinescu2007} A.~Constantinescu and A.~Korsunsky, \emph{Elasticity with Mathematica: An Introduction to Continuum Mechanics and Linear Elasticity}, Cambridge University Press, 2007.
 \bibitem{nc-audoly2010} B.~Audoly and Y.~Pomeau, \emph{Elasticity and Geometry: From Hair Curls to the Non-linear Response of Shells}, Oxford University Press, Oxford, 2010.
+\bibitem{nc-kielhofer2004} H.~Kielh\"ofer, \emph{Bifurcation Theory: An Introduction with Applications to PDEs}, Applied Mathematical Sciences 156, Springer, New York, 2004.
 \bibitem{nc-koiter1945} W.~T.~Koiter, \emph{On the Stability of Elastic Equilibrium}, PhD thesis, Delft, 1945; English translation NASA TT F-10833, 1967.
 \bibitem{nc-bushnell1981} D.~Bushnell, Buckling of shells---pitfall for designers, \emph{AIAA Journal} 19 (1981) 1183--1226.
 \bibitem{nc-riks1979} E.~Riks, An incremental approach to the solution of snapping and buckling problems, \emph{International Journal of Solids and Structures} 15 (1979) 529--551.
