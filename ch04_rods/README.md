@@ -1,7 +1,8 @@
 # Chapter 4: Rods: the elastica and beyond
 
 Label prefix `rd` (`sec:rd-*`, `eq:rd-*`, `fig:rd-*`, `exo:rd-*`, bibitem keys `rd-*`).
-Status: **outline drafted (23 Nov 2026)**, awaiting the author's decisions (below). No text yet.
+Status: **outline agreed (23 Nov 2026)**, decisions below. No text yet. Next: the 3D bifurcation section (Ch. 3),
+then §4.1–4.2.
 
 ## Spine of the chapter (from the author's slides C05 "Poutres", slide 11)
 One column, three energies, three bifurcation diagrams. The rotations, not the strains, decide the post-buckling:
@@ -100,15 +101,19 @@ foundation picks the wavelength and is unstable; a code is trusted after the ela
   comparison on P/P_c(θ₀).
 
 ## Decisions and open questions
-1. (open) Where the 3D bifurcation section goes: new section in Ch. 3 (proposal) or opening section of Ch. 4.
-2. (author, 23 Nov 2026) Energy written 𝒲. Ch. 2 and Ch. 3 use ℰ: switch the whole book (hub: notation.tex,
-   notation_list, Ch. 2–3) or only from Ch. 4 on? Proposal: whole book, with a macro, so 𝒲 means the same everywhere.
-   Ch. 1 keeps its plain W for the Lyapunov function.
-3. (open) §4.5 twist and natural curvature: keep short here, or move to Ch. 8 (tape springs) and use the time for the
-   design cases of §4.2.
-4. (open) FEniCS formulation: 1D geometrically exact (Reissner) beam, or a thin 2D plane-strain strip (closer to the
-   3D-to-rod story of §4.1)? Cast3M: POUT elements with `pasapas` 'GRANDS_DEPLACEMENTS'.
+1. (author, 23 Nov 2026) The 3D bifurcation section goes in Chapter 3; if it grows too long, it becomes a chapter
+   of its own between the present Chapters 3 and 4.
+2. (author, 23 Nov 2026) The energy is 𝒲 (`\mathcal{W}`) in the whole book. Ch. 2, Ch. 3 and the notation list
+   still write ℰ; the switch is for the hub (one macro in `preamble/notation.tex`). Ch. 1 keeps plain W (Lyapunov).
+3. (author, 23 Nov 2026) Twist and natural curvature: a remark at the end of this chapter; the full treatment
+   in Chapter 8 (tape springs). §4.5 becomes a short remark.
+4. (author, 23 Nov 2026) FEniCS and Cast3M: both a 1D rod model (geometrically exact beam; Cast3M POUT with
+   `pasapas` 'GRANDS_DEPLACEMENTS') and a thin 2D strip (plane strain), each against the elastica. The 2D strip
+   also illustrates §4.1: the rod is the thin limit of the 2D body.
 5. The slides use λ for the load; the book keeps η (decision of 21 Nov).
+6. Figures (CLAUDE.md, 23 Nov): TikZ sketches in `figures/tikz/` for the fibre kinematics, the four supports, the
+   elastica shapes, the beam on a foundation; plots from `code/figures/` for the three diagrams of slide 11,
+   P/P_c(θ₀) exact vs Koiter vs codes, and P(q) on a foundation.
 
 ## Sources
 - Author's slides C04 "Rappel, rôle des rotations, bifurcation en déformation finie" (29 Jan 2026, 28 p.): 𝒲, D_u𝒲,
@@ -119,8 +124,21 @@ foundation picks the wavelength and is unstable; a code is trusted after the ela
   (PDF page = book page + 25): §13.1 critical load (rigid bar + spring), §13.2 ideal pinned column and slenderness,
   §13.3 other supports and effective length, §13.4 secant formula, §13.5 inelastic buckling (Ch. 5), §13.6–13.7
   design for concentric and eccentric loading (steel, 2014-T6 aluminium, timber; Ch. 5). US units: convert to SI.
-- To upload in this thread: Audoly & Pomeau Ch. 3 (elastica, kinetic analogy) and Ch. 8 (Euler column, finite amplitude);
-  Triantafyllidis notes BA-1 (pp. 85–89) and MEC553 L3–L4 slides; homeworks H3, H4; Timoshenko & Gere Ch. 2.
+- Audoly & Pomeau (2010), uploaded 23 Nov (PDF page = book page + 11):
+  App. A "Calculus of variations: a worked example", book pp. 546–557: the elastica clamped at the base with a weight
+  on top. A.2 energy as a Riemann sum (the discrete rod of the computer exercise), A.3 Euler–Lagrange and the natural
+  condition θ'(L) = 0, A.4 a constraint by a Lagrange multiplier, A.5 linear stability (L_c² = π²EI/4Mg),
+  A.6 exact solution, expansion ψ²(L) ≈ 32(L − L_c)/(√2π) (supercritical), pendulum analogy, and the constrained
+  elastica as a cusp (links to Ch. 1). Source of §4.3 and of a problem. Ch. 3 rods: §3.3 bending energy from 3D
+  (p. 63, a physical companion to Ciarlet), §3.7 inextensibility and validity of Kirchhoff (p. 90), §3.8 kinetic
+  analogy (p. 92) with the planar elastica in §3.8.2, §3.9 localized helix (p. 96, the remark of §4.5).
+  Ch. 8: §8.5 Euler column as an exact solution (p. 265), §8.7 its stability (p. 282), for Ch. 6.
+- Triantafyllidis, MEC563 notes (2011), uploaded 23 Nov (PDF page = book page): BA-1 elastica pp. 85–89. Clamped
+  ends sliding without rotation (the λ_c = EI(π/L)² of θ(0) = θ(L) = 0), 𝒲(θ, λ) = ∫[½EIθ'² − λ(1 − cos θ)],
+  stability of the principal branch by Fourier series (BA-1.5–1.7), exact solution sin(θ/2) = k sn(μs),
+  μL = 2K(k), λ/λ_c = 1 + ½k² + … (BA-1.13); LSK: 𝒲,uλ¹u = 0 (bifurcation), 𝒲,uuu = 0 (λ₁ = 0), λ₂ from
+  AC-3.14, ξ = √2 k (BA-1.23). Section AC (continuum LSK, pp. 46–82) is the source of the 3D section in Ch. 3.
+- Still to upload: Triantafyllidis MEC553 L3–L4 slides and homeworks H3, H4; Timoshenko & Gere Ch. 2.
 - References to check before the chapterbib: Bermúdez & Viaño, RAIRO Anal. Numér. 18 (1984); Trabucho & Viaño (1996);
   Cimetière et al., J. Elasticity 19 (1988) 111–161; Mora & Müller, Calc. Var. PDE 18 (2003) 287–305;
   Mora & Müller, Ann. IHP Anal. Non Linéaire 21 (2004) 271–293; Ciarlet (1988); Potier-Ferry (1983);

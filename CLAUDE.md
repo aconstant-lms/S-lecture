@@ -189,6 +189,12 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
   forms a, b, Rayleigh quotient R; arc-length weight ψ. Box 3.2 (linear buckling), Box 3.3 (arc-length by bordering)
   and `ch03_continuation/code/python/truss_fe.py` (bar elements, Riks/Crisfield, negative pivots, branch switching)
   can be reused by later chapters. Large-strain theory beyond St Venant–Kirchhoff stays for Ch. 9.
+- 2026-11-23 (Ch. 4 thread, author): the energy is written 𝒲 (`\mathcal{W}`) in the whole book, as in the author's
+  slides; hub to switch Ch. 2, Ch. 3, `preamble/notation.tex` and the notation list from ℰ (Ch. 1 keeps plain W).
+- 2026-11-23 (Ch. 4 thread, author): a short section on the bifurcation of a 3D elastic body (principal branch,
+  critical point, limit vs bifurcation, 3D linear buckling, Koiter's η₁, η₂ by variations) goes in Ch. 3; if too
+  long, a chapter of its own between Ch. 3 and Ch. 4. Sources: author's C04 slides, Triantafyllidis notes AC.
+- 2026-11-23 (Ch. 4 thread, author): twist and natural curvature are a remark in Ch. 4 and treated in Ch. 8.
 
 ## Workflow
 - One conversation per chapter; touch other files only when needed (cross-references, notation).
