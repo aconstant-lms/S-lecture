@@ -10,7 +10,10 @@ answers and instructor notes. Slides: still the skeleton deck. Template chapter 
 3. Lyapunov stability: definitions, direct method (Lyapunov function), damped oscillator and energy,
    Lagrange–Dirichlet, Jacobian eigenvalues (first method), trace–determinant plane: divergence vs flutter.
 4. The pitchfork: symmetry breaking, critical slowing down.
-5. Why bifurcations happen: implicit function theorem; n unknowns, zero eigenvalue **Jv = 0**,
+5. Why bifurcations happen: implicit function theorem (one variable, then the precise statement for
+   n unknowns with box/graph, contraction argument, Rudin Thm 9.28, Krantz & Parks; inverse function
+   theorem as its twin; the circle: fold = wrong choice of variable, branch point = no variable works,
+   Figure `st_ift`); zero eigenvalue **Jv = 0**,
    left eigenvector **w**, fold (wᵀf_r ≠ 0) vs branch point (wᵀf_r = 0).
 6. Fold, transcritical, pitchfork: normal forms, reduction from Taylor coefficients (table), von Mises truss
    (snap-through at a fold; replaces the fishery, 21 Nov 2026).
@@ -18,14 +21,15 @@ answers and instructor notes. Slides: still the skeleton deck. Template chapter 
    galloping of a square prism (Den Hartog, Parkinson–Smith).
 8. Potential energy, buckling and imperfections: rigid bar, cusp, hysteresis.
 9. Continuation: natural parameter (fails at folds), pseudo-arclength (Keller), augmented Jacobian
-   invertible at folds and singular at branch points, Box 1.2, detection and branch switching.
+   invertible at folds and singular at branch points; each step is the implicit function theorem
+   with the arclength as parameter; Box 1.2, detection and branch switching.
 
 Exercises: 9 short questions, 9 problems, 4 computer exercises (pitchfork, hysteresis,
 pseudo-arclength from scratch, normal forms in Mathematica).
 
 ## Files
 - `notes/ch01_bifurcation.tex` chapter; `figures/st_*.pdf` made by `code/figures/fig_ch1.py`
-  (new: `st_lyapunov`, `st_tracedet`, `st_hopf`, `st_continuation`; the last one imports `code/python/arclength.py`)
+  (new: `st_lyapunov`, `st_tracedet`, `st_hopf`, `st_continuation`, `st_ift`; the last one imports `code/python/arclength.py`)
 - `code/python/`: `ex_pitchfork.py`, `ex_hysteresis.py`, `ex_galloping.py`, `arclength.py`
   (pseudo-arclength from scratch, Box 1.2), `normal_forms_sympy.py` (classification, cusp, ℓ₁)
 - `code/mathematica/`: `normal_forms.wl`, `arclength.wl` (same steps as the Python/SymPy versions)

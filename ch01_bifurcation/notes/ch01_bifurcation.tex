@@ -476,8 +476,8 @@ diagram. Where $f_y \neq 0$ the curve is the graph of a function $y^*(r)$, with
 the slope~\eqref{eq:st-ift}, and a vertical line $r = \text{const}$ meets it once
 nearby. Branches can meet, split or turn back only where this slope is
 infinite or undefined, that is where $f_y = 0$. This is the implicit function
-theorem in one variable. The careful proof, with the remainder of the Taylor
-expansion controlled, is in~\cite{st-guckenheimer1983}.
+theorem in one variable; Figure~\ref{fig:st-ift} draws it, and
+Section~\ref{sec:st-iftn} states it for several unknowns.
 
 \paragraph{One number, two jobs.}
 The number $f_y(y^*,r)$ was the growth rate $\lambda$ in
@@ -505,9 +505,86 @@ equation~\eqref{eq:st-ift} becomes
 \end{equation}
 where $\mat{f}_r$ is the column $\partial\mat{f}/\partial r$. If $\mat{J}$ is
 invertible, $\Delta\mat{y} = -\mat{J}^{-1}\mat{f}_r\,\Delta r$ and the steady state
-moves along a single smooth branch. Division by $f_y$ has become multiplication by
-$\mat{J}^{-1}$, and the condition $f_y = 0$ becomes $\det\mat{J} = 0$: the Jacobian
-has a zero eigenvalue,
+moves along a single smooth branch. The first-order argument is made exact by the
+implicit function theorem.
+
+\begin{gbox}{The implicit function theorem: an invertible Jacobian gives one smooth branch}\label{sec:st-iftn}
+\index{implicit function theorem}%
+Let $\mat{f}(\mat{y},r)$, with $n$ unknowns $\mat{y}$ and one parameter $r$, have
+continuous first derivatives. Suppose that at the point $(\mat{y}_0,r_0)$
+\begin{equation}\label{eq:st-iftcond}
+  \mat{f}(\mat{y}_0,r_0) = \mat{0}
+  \qquad\text{and}\qquad
+  \det\mat{J}(\mat{y}_0,r_0) \neq 0 .
+\end{equation}
+Then there is a box around the point, an interval $I$ around $r_0$ times a
+neighbourhood $V$ of $\mat{y}_0$, in which the solutions of $\mat{f} = \mat{0}$ are
+exactly the graph of one function $\mat{y}^*(r)$: for $r$ in $I$ and $\mat{y}$ in
+$V$,
+\begin{equation}\label{eq:st-iftgraph}
+  \mat{f}(\mat{y},r) = \mat{0}
+  \quad\Longleftrightarrow\quad
+  \mat{y} = \mat{y}^*(r).
+\end{equation}
+The function $\mat{y}^*$ has continuous derivatives, and
+$\displaystyle\frac{d\mat{y}^*}{dr} = -\mat{J}^{-1}\mat{f}_r$.
+\end{gbox}
+
+\paragraph{Why it works.}
+Look at the left panel of Figure~\ref{fig:st-ift}. Inside the small box, every
+vertical line $r = \text{const}$ meets the solution curve exactly once, so the
+curve is a graph over $r$. In formulas, freeze $r$ in $I$ and iterate the Newton
+step with the fixed matrix $\mat{J}_0 = \mat{J}(\mat{y}_0,r_0)$:
+\[
+  \mat{y} \leftarrow \mat{y} - \mat{J}_0^{-1}\mat{f}(\mat{y},r).
+\]
+Since $\mat{J}_0$ is invertible and the derivatives are continuous, the box can be
+made so small that each step shrinks distances by a factor less than one. The
+iteration then converges to exactly one $\mat{y}$ in $V$: this is $\mat{y}^*(r)$.
+Differentiating $\mat{f}(\mat{y}^*(r),r) = \mat{0}$ gives
+$\mat{J}\,d\mat{y}^*/dr + \mat{f}_r = \mat{0}$, the slope. The complete proof is in
+Rudin~\cite[Theorem~9.28]{st-rudin1976}; the many forms of the theorem, and its
+history from Newton and Lagrange to numerical homotopy methods, are
+in~\cite{st-krantz2002}.
+
+\paragraph{Its twin, the inverse function theorem.}
+\index{inverse function theorem}%
+A map $\mat{g}$ from $\R^n$ to $\R^n$ whose Jacobian is invertible at a point
+$\mat{a}$ has, near $\mat{a}$, a smooth inverse, and the Jacobian of the inverse is
+the inverse of the Jacobian~\cite[Theorem~9.24]{st-rudin1976}. The two theorems are
+one: apply the inverse function theorem to the map
+$(\mat{y},r) \mapsto (\mat{f}(\mat{y},r),\,r)$, whose Jacobian
+$\begin{bmatrix}\mat{J} & \mat{f}_r\\ \mat{0}\T & 1\end{bmatrix}$ is invertible
+exactly when $\mat{J}$ is.
+
+\paragraph{The circle: what the theorem does not say.}
+Take $f(y,r) = r^2 + y^2 - 1$, the unit circle (Figure~\ref{fig:st-ift}). Here
+$f_y = 2y$ and $f_r = 2r$. Wherever $y \neq 0$ the theorem gives a branch,
+$y^* = \sqrt{1 - r^2}$ or $-\sqrt{1 - r^2}$. At $(1,0)$, $f_y = 0$. The circle is
+still a perfectly smooth curve there, but its tangent is vertical: every vertical
+line near $r = 1$ meets it twice or not at all, and no box makes it a graph over
+$r$. This is a fold, and it fails the test only because we chose $r$ as the
+variable. Since $f_r = 2 \neq 0$, the theorem applies with the roles exchanged:
+near $(1,0)$, $r$ is a function of $y$, $r^* = \sqrt{1 - y^2}$. At a branch point
+(right panel) both $f_y$ and $f_r$ vanish: two curves cross, and no choice of
+variable makes the solution set a graph. Section~\ref{sec:st-continuation} turns
+this remark into a method: let the curve choose its own variable.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch01_bifurcation/figures/st_ift.pdf}
+  \caption{The implicit function theorem in pictures. Left: at a regular point of the
+    circle $r^2 + y^2 = 1$ ($f_y \neq 0$) the solutions inside a small box form the
+    graph of $y^*(r)$. Middle: at the fold $(1,0)$, $f_y = 0$ and no box gives a graph
+    over $r$, but $f_r \neq 0$ and the curve is the graph of $r^*(y)$; the tangent
+    $\mathbf{t}$ is vertical. Right: at the branch point of the pitchfork
+    $ry - y^3 = 0$, $f_y = f_r = 0$ and two curves cross: no graph in any direction.}
+  \label{fig:st-ift}
+\end{figure}
+
+\paragraph{The singular case.}
+The theorem can fail only where $\det\mat{J} = 0$, the form that $f_y = 0$
+takes with $n$ unknowns: the Jacobian has a zero eigenvalue,
 \begin{equation}\label{eq:st-zeroeig}
   \mat{J}\,\mat{v} = \mat{0}, \qquad \mat{w}\T\mat{J} = \mat{0}\T .
 \end{equation}
@@ -1103,6 +1180,24 @@ $\mat{w}$, tells everything: where the plain Newton method breaks down, in which
 direction $\mat{v}$ the branch turns or splits, and whether the augmented method
 goes through.
 
+\paragraph{The implicit function theorem behind each step.}
+\index{implicit function theorem}%
+The corrector solves $\mat{F}(\mat{u},s) = \mat{0}$, with
+\[
+  \mat{F}(\mat{u},s) = \begin{bmatrix} \mat{f}(\mat{u}) \\
+  \mat{t}_k\cdot(\mat{u} - \mat{u}_k) - s \end{bmatrix}.
+\]
+These are $n+1$ equations for the $n+1$ unknowns $\mat{u} = (\mat{y},r)$, and the
+arclength $s$ plays the part of the parameter. The Jacobian of $\mat{F}$ with respect to
+$\mat{u}$ is $\widehat{\mat{J}}$. So wherever $\widehat{\mat{J}}$ is invertible,
+Section~\ref{sec:st-iftn} applies with $\mat{u}$ in place of $\mat{y}$ and $s$ in place
+of $r$: near $\mat{u}_k$ there is exactly one smooth solution $\mat{u}^*(s)$, and for a
+small enough $\Delta s$ the Newton corrector converges to it. Natural parameter
+continuation applies the same theorem with $r$ as the parameter, and needs
+$\mat{J}$ invertible; it breaks down at the fold of Figure~\ref{fig:st-ift}. The
+arclength is a parameter that the curve chooses itself, along its own tangent, and
+it breaks down only at the branch point, where no parameter can work.
+
 \begin{gbox}{Box 1.2\quad Pseudo-arclength continuation of $\mat{f}(\mat{y},r) = \mat{0}$}\label{sec:st-box-arc}
 \index{continuation!pseudo-arclength}%
 Unknowns $\mat{u} = (\mat{y},r)$. Given a solution $\mat{u}_0$, a step $\Delta s$, and a
@@ -1179,8 +1274,9 @@ load, and linear buckling analysis is this eigenvalue problem.
         (flutter, galloping).
   \item \textbf{Linear is not enough.} $\dot y = ay$ has a single steady state.
         Several steady states need a nonlinear $f$ whose graph bends.
-  \item \textbf{Where bifurcations happen.} While $f_y \neq 0$ the steady state is
-        unique and moves smoothly with $r$. New states can appear only where
+  \item \textbf{Where bifurcations happen.} While $f_y \neq 0$ (with $n$ unknowns,
+        $\det\mat{J} \neq 0$) the steady state is unique and moves smoothly with $r$:
+        this is the implicit function theorem. New states can appear only where
         $f = 0$ and $f_y = 0$ together.
   \item \textbf{One number, two jobs.} $f_y$ controls stability and uniqueness.
         When the control parameter drives $\lambda$ through zero, stability is lost
@@ -1200,7 +1296,8 @@ load, and linear buckling analysis is this eigenvalue problem.
   \item \textbf{Continuation.} Stepping in the parameter fails at a fold, where
         $f_y = 0$. Pseudo-arclength continuation makes the parameter an unknown; its
         augmented Jacobian stays invertible at folds and becomes singular only at
-        branch points, where the branch is switched.
+        branch points, where the branch is switched. Each step is the implicit
+        function theorem with the arclength as the parameter.
 \end{itemize}
 \end{gbox*}
 
@@ -1311,6 +1408,21 @@ $(h,y)$ plane, pure change of $y$. Newton's method in $y$ at fixed $h$ divides b
 $f_y = 0$. The augmented Jacobian
 $\begin{bmatrix} 0 & 1\\ -1 & 0\end{bmatrix}$ has determinant $1$: the augmented
 Newton method has no difficulty.
+\end{solution}
+
+\exercise{The circle and the implicit function theorem}\label{exo:st-circle}
+\index{implicit function theorem}%
+For $f(y,r) = r^2 + y^2 - 1$: (a)~at which points does Section~\ref{sec:st-iftn} give
+$y$ as a function of $r$, and with which slope? (b)~Where does it give $r$ as a
+function of $y$? (c)~Compute $\det\widehat{\mat{J}}$ on the circle and conclude that
+pseudo-arclength continuation goes round the whole circle.
+\begin{solution}
+(a)~Wherever $f_y = 2y \neq 0$, that is everywhere except $(\pm1,0)$, with
+$dy^*/dr = -f_r/f_y = -r/y$. (b)~Wherever $f_r = 2r \neq 0$: everywhere except
+$(0,\pm1)$. The two charts together cover the circle. (c)~By~\eqref{eq:st-detjhat},
+$\det\widehat{\mat{J}} = \sqrt{f_y^2 + f_r^2} = 2\sqrt{r^2 + y^2} = 2$ on the circle:
+never zero. The circle has two folds in $r$ (at $r = \pm1$) and none is a problem for
+the arclength; there is no branch point.
 \end{solution}
 
 \framesub{Problems}
@@ -1512,6 +1624,10 @@ results.
 \bibitem{st-guckenheimer1983} J.~Guckenheimer and P.~Holmes, \emph{Nonlinear
   Oscillations, Dynamical Systems, and Bifurcations of Vector Fields}, Springer,
   1983. Chapter~3.
+\bibitem{st-rudin1976} W.~Rudin, \emph{Principles of Mathematical Analysis}, 3rd~ed.,
+  McGraw-Hill, 1976. Theorems~9.24 (inverse function) and~9.28 (implicit function).
+\bibitem{st-krantz2002} S.~G.~Krantz and H.~R.~Parks, \emph{The Implicit Function
+  Theorem: History, Theory, and Applications}, Birkh\"auser, 2002.
 \bibitem{st-kuznetsov2004} Yu.~A.~Kuznetsov, \emph{Elements of Applied Bifurcation
   Theory}, 3rd~ed., Springer, 2004.
 \bibitem{st-seydel2010} R.~Seydel, \emph{Practical Bifurcation and Stability

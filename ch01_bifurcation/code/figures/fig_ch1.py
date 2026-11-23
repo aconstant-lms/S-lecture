@@ -351,3 +351,67 @@ ax.text(s[np.argmin(np.abs(X[:, 0] + 0.577))], 0.6, " fold", fontsize=7.5, color
 ax.text(s[np.argmin(np.abs(X[:, 0] - 0.577))], 0.6, " fold", fontsize=7.5, color=GRAY)
 fig.subplots_adjust(wspace=0.3)
 save(fig, "st_continuation.pdf")
+
+# ------- 13. implicit function theorem: regular point, fold, branch point (boxes)
+from matplotlib.patches import Rectangle
+fig, axs = plt.subplots(1, 3, figsize=(1.38 * W, 2.25))
+c = np.linspace(0, 2 * np.pi, 400)
+
+def frame(ax, xl, yl):
+    middle_axes(ax)
+    ax.set_xticks([]); ax.set_yticks([])
+    ax.set_xlim(*xl); ax.set_ylim(*yl); ax.set_aspect("equal")
+    ax.text(xl[1], 0.07, r"$r$", ha="right"); ax.text(0.06, yl[1] - 0.12, r"$y$")
+
+def box(ax, x0, y0, hw, hh):
+    ax.add_patch(Rectangle((x0 - hw, y0 - hh), 2 * hw, 2 * hh, fill=True,
+                           fc=(*CU, 0.08), ec=CU, lw=0.9, ls=(0, (3, 2)), zorder=1))
+
+# (a) regular point of the circle: y is a function of r inside the box
+ax = axs[0]
+ax.plot(np.cos(c), np.sin(c), color=(0.75, 0.75, 0.75), lw=1.0)
+r0, y0 = 0.6, 0.8
+box(ax, r0, y0, 0.28, 0.2)
+rr = np.linspace(r0 - 0.28, r0 + 0.28, 50)
+ax.plot(rr, np.sqrt(1 - rr**2), color=CU, lw=2.0, zorder=3)
+for rv in (0.42, 0.75):
+    ax.plot([rv, rv], [y0 - 0.2, y0 + 0.2], color=GRAY, lw=0.7, ls=":")
+ax.plot(r0, y0, "o", color=CU, ms=4.5, zorder=4)
+ax.text(0.0, -1.52, r"$f_y\neq0$:" "\n" r"$y=y^*(r)$", ha="center", fontsize=8, color=CU,
+        bbox=dict(fc="white", ec="none", pad=1))
+ax.set_title("regular point", fontsize=9, pad=4)
+frame(ax, (-1.2, 1.5), (-1.85, 1.25))
+
+# (b) fold of the circle: no graph over r, but r is a function of y
+ax = axs[1]
+ax.plot(np.cos(c), np.sin(c), color=(0.75, 0.75, 0.75), lw=1.0)
+box(ax, 1.0, 0.0, 0.2, 0.32)
+yy = np.linspace(-0.32, 0.32, 50)
+ax.plot(np.sqrt(1 - yy**2), yy, color=ORANGE, lw=2.0, zorder=3)
+ax.plot([0.9, 0.9], [-0.32, 0.32], color=GRAY, lw=0.7, ls=":")
+ax.plot([0.8, 1.2], [0.18, 0.18], color=GRAY, lw=0.7, ls=":")
+ax.annotate("", xy=(1.0, 0.55), xytext=(1.0, 0.0),
+            arrowprops=dict(arrowstyle="-|>", color="k", lw=1.0, mutation_scale=9))
+ax.text(1.04, 0.5, r"$\mathbf{t}$", fontsize=8)
+ax.plot(1.0, 0.0, "o", color=ORANGE, ms=4.5, zorder=4)
+ax.text(0.0, -1.52, r"$f_y=0,\ f_r\neq0$:" "\n" r"$r=r^*(y)$", ha="center", fontsize=8,
+        color=ORANGE, bbox=dict(fc="white", ec="none", pad=1))
+ax.set_title("fold", fontsize=9, pad=4)
+frame(ax, (-1.2, 1.5), (-1.85, 1.25))
+
+# (c) branch point of the pitchfork r y - y^3 = 0: no graph in any direction
+ax = axs[2]
+s_ = np.linspace(-1.05, 1.05, 200)
+ax.plot([-1.2, 1.2], [0, 0], color=(0.75, 0.75, 0.75), lw=1.0)
+ax.plot(s_**2, s_, color=(0.75, 0.75, 0.75), lw=1.0)
+box(ax, 0.0, 0.0, 0.3, 0.3)
+ax.plot([-0.3, 0.3], [0, 0], color=GRAY, lw=2.0, zorder=3)
+s2 = np.linspace(-0.3, 0.3, 60)
+ax.plot(s2**2, s2, color=GRAY, lw=2.0, zorder=3)
+ax.plot(0, 0, "o", color="k", ms=4.5, zorder=4)
+ax.text(0.0, -1.52, r"$f_y=f_r=0$:" "\n" "no graph", ha="center", fontsize=8,
+        bbox=dict(fc="white", ec="none", pad=1))
+ax.set_title("branch point", fontsize=9, pad=4)
+frame(ax, (-1.2, 1.5), (-1.85, 1.25))
+fig.subplots_adjust(wspace=0.12)
+save(fig, "st_ift.pdf")
