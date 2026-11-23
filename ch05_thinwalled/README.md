@@ -1,8 +1,24 @@
 # Chapter 5: Thin-walled members and real materials
 
 Label prefix `tw` (`sec:tw-*`, `eq:tw-*`, `fig:tw-*`, `exo:tw-*`, bibitem keys `tw-*`).
-Status: **outline drafted (23 Nov 2026)**. `notes/ch05_thinwalled.tex` has the Outline frame part in prose
-(thread, objectives, plan) and one `\draftnote` per section with the planned content. No text, figures or codes yet.
+Status: **outline drafted; §5.4 written (23 Nov 2026)**. `notes/ch05_thinwalled.tex`: Outline in prose; §5.4
+`sec:tw-shanley` (inelastic buckling, Shanley's model, Hutchinson's asymptotics, the plastic buckling paradox) written
+from Hutchinson (1974) and Hibbeler §13.5, with `fig:tw-shanley` and `code/python/shanley.py`; the other sections are
+`\draftnote`s.
+
+## §5.4 as written
+- Tangent vs reduced modulus; Example `ex:tw-rod` (Hibbeler Ex. 13.5: 231 → 185 MPa, P_t = 131 kN; rectangle with E_r:
+  134 GPa, 206 MPa).
+- Shanley's model (Hutchinson's version, K = 0): flanges k_t (loading), k (unloading) at ±d, rigid bars of length L.
+  Derived here: P = P_b + (P_r − P_b) x/(c + x), x = Lθ/d, c = (k − k_t)/(k + k_t), for every P_t ≤ P_b ≤ P_r; initial
+  slope P_t at P_b = P_t (neutral loading). `shanley.py`: closed form = step-by-step solution to 1e-15.
+  gbox `sec:tw-shanley-box`: bifurcation at P_t under increasing load; uniqueness, not stability, is lost.
+- Imperfections: no maximum with constant E_t (P → P_r); with a destabilising geometry the drop ∝ θ̄^{1/2}·E/E_t
+  (Hutchinson Eq. 2.20); Duberg & Wilder: P_max ≈ P_t.
+- Real column (solid circular): P/P_t = 1 + 4ξ + a₂ξ^{4/3} (Hutchinson writes λ₂), P_max/P_t ≈ 1 + (E − E_t)/(3πE_t(1 + q)) (Eqs. 4.59, 4.61);
+  1.106 for E_t = E/3, q = 1 (checked). 3/2 power for the spring bed (Eq. 2.47).
+- Plastic buckling paradox on the cruciform (pp. 99–101): flow theory keeps G; deformation theory Ḡ (Eq. 3.52), = GE_s/E
+  for ν = ½; Gerard & Becker tests; corner (Batdorf, Sanders) or imperfections (Onat & Drucker); Cast3M is a flow theory.
 
 ## Thread
 Chapter 4 promised two things: columns that twist and columns that yield. The running structure is the Hartford
@@ -63,6 +79,12 @@ CLAUDE.md flagged Ch. 5 as at risk of too little physics).
 3. Cast3M syntax for initial fibre stresses in multifibre beams (`pasapas` table, 'CONTRAINTES' at time 0) is to be
    checked; the author's `Castem_Introduction` repository may hold a template. Fallback: shell model of the I-section.
 4. FEniCS: optional in this chapter (shells come in Ch. 7); the Python fibre column is the closed-form check.
+6. (23 Nov 2026) Sources: Bažant & Cedolin, Trahair, Shanley (1947) and the SSRC chapter are not available. Hutchinson
+   (1974) was uploaded and carries §5.4. Free substitutes to fetch: Hutchinson 1972 (JAM, Harvard page), Stowell NACA
+   Rep. 898 and Rep. 946 (cruciform), Fang & Winter 1965 (Scholars' Mine, torsional–flexural), Lehigh Fritz Lab reports
+   (Huber & Beedle 1954, Bjorhovde 1972). Shanley's paper is cited through Hutchinson's account.
+7. Notation added to the notation list: E_t, E_s, E_r, P_t, P_r, G, Ḡ, and Shanley's k, k_t, d, c (k also is the
+   foundation stiffness of Ch. 4 and k_t has no clash).
 5. From 3D (hub, 23 Nov 2026): Trabucho & Viaño (1996) and Viaño's later work justify Saint-Venant and Vlasov models;
    Freddi–Morassi–Paroni (2007) checked and added to the chapterbib.
 

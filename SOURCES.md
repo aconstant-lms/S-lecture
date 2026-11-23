@@ -119,7 +119,7 @@ Mathematical Sciences 156, 2004), 355 p. **Role: precise statements behind the "
   Ch. 3 (Crandall–Rabinowitz for branch switching, Morse index for the pivot count), Ch. 4 and 6 (Euler column,
   plates as elliptic problems).
 
-## 4e. Candidate (not yet uploaded): R. C. Hibbeler, *Mechanics of Materials* (Pearson; 10th ed. 2017, 11th ed. 2022)
+## 4e. R. C. Hibbeler, *Mechanics of Materials*, 9th ed. (Pearson, 2014); uploaded in the Ch. 4 and Ch. 5 threads, PDF page = book page + 25
 **Role: engineering practice, numbers and real sections** (author, 21 Nov 2026: "very engineering and technical";
 suggested by the Ch. 3 thread for later chapters). Chapter and page numbers to be checked on the uploaded edition.
 - Chapter "Buckling of columns": critical load, ideal pinned column, other supports and effective length,
@@ -134,6 +134,19 @@ suggested by the Ch. 3 thread for later chapters). Chapter and page numbers to b
 - Use as a source of numbers and engineering practice, not of theory: the theory stays with Thompson & Hunt,
   Bažant & Cedolin and Brush & Almroth. For the column curves, the SSRC guide (Ziemian, *Guide to Stability
   Design Criteria for Metal Structures*, 6th ed., Wiley 2010) and Trahair are the design references.
+
+## 4f. J. W. Hutchinson, Plastic buckling, *Advances in Applied Mechanics* 14 (1974) 67–144 (uploaded 23 Nov 2026, Ch. 5)
+Scanned, 78 p.; PDF page = book page − 66. **Role: theory of inelastic buckling in Ch. 5** (replaces Shanley 1947 and the
+SSRC chapter for the theory).
+- §I pp. 67–69: history (Engesser 1889, Considère 1891, von Kármán 1910, Shanley 1947, von Kármán 1947: P_t loses
+  uniqueness, not stability; Duberg & Wilder 1952: maximum load ≈ P_t); flow vs deformation theory; Hill.
+- §II.A pp. 70–75: discrete Shanley-type model (two springs, rigid bar), P_t, P_r, branches from P_t ≤ P_b ≤ P_r,
+  imperfection: drop ∝ θ̄^{1/2} magnified by E/E_t (Eq. 2.20). §II.B pp. 76–85: continuous spring bed, P/P_t = 1 + a₁θ + a₂θ^{3/2}.
+- §III.C pp. 97–105: flow vs deformation theory; **cruciform** pp. 99–101: σ = G(t/b)² (3.51), Ḡ = G/(1 + 3G(1/E_s − 1/E))
+  (3.52), tests of Gerard & Becker (1957) on 2024-T4 (Fig. 9), Cicala, Bijlaard, Onat & Drucker (1953); Tresca p. 105.
+- §IV.B pp. 119–123: solid circular column, P/P_t = 1 + 4ξ + λ₂ξ^{4/3} (4.59), P_max/P_t = 1 + (E − E_t)/(3πE_t(1 + q)) (4.61).
+- §V.A pp. 132–134: column with Ramberg–Osgood n = 10, imperfections (Figs. 16–17); Perry formula (Calladine 1973).
+- References pp. 141–144: used to check the Ch. 5 chapterbib.
 
 ## 6. From 3D to reduced models: physical assumptions and rigorous derivations (added 23 Nov 2026)
 **Role: layer 1 of Chapters 4-8** (see "Balance" in `CLAUDE.md`).
@@ -162,7 +175,7 @@ suggested by the Ch. 3 thread for later chapters). Chapter and page numbers to b
 | 2 | Thompson & Hunt (§1.2, §10.4), Koiter, Triantafyllidis notes A (T model pp. 24–31, two-bar truss pp. 41–45, LSK pp. 57–71), sample exam Problem 1; Ziegler (1968) |
 | 3 | Triantafyllidis L6 (FEM, slides 3–9), Riks, Crisfield, Keller; Constantinescu & Korsunsky Ch. 7 (§7.2, §7.4, §7.5); author's L03 slides; Bushnell §4; Kelly (2003), Bažant (2003) |
 | 4 | Triantafyllidis BA-1 (elastica), H3, H4; Timoshenko & Gere; Audoly & Pomeau Ch. 3–5 (rods, hair, ribbons); Hibbeler (effective length, secant formula; candidate) |
-| 5 | Bažant & Cedolin, Trahair, Shanley, Hutchinson (plastic buckling), Bushnell §7; Hibbeler (inelastic columns, design curves; candidate) |
+| 5 | Hutchinson 1974 (plastic buckling, Shanley model, cruciform), Hibbeler Ch. 13 §13.5–13.7; Bažant & Cedolin, Trahair, SSRC (not available: free substitutes in the Ch. 5 README); Bushnell §7 |
 | 6 | author's note CO7 (von Kármán plate), Ciarlet 1980, Friesecke–James–Müller 2006; Triantafyllidis BB-1 and L5 (von Kármán plate, double mode), H5; Brush & Almroth; Constantinescu & Korsunsky Ch. 7 |
 | 7 | Ciarlet Vol. III, Ciarlet & Lods (from 3D); Brush & Almroth, Koiter, NASA SP-8007 (1968, 2020), Bushnell §3–8, H7 |
 | 8 | Bushnell (pressure, tanks), NASA SP-8007 2020, Hutchinson (spheres), Reis, Bertoldi |

@@ -111,22 +111,165 @@ shorter, buckles at the same load; a tube of the same card does not twist.}
 
 %======================================================================
 \section{Inelastic buckling: tangent modulus and Shanley's model}\label{sec:tw-shanley}
-\draftnote{(1)~Where Euler's hyperbola meets yield (Section~\ref{sec:rd-slender}). Engesser's
-tangent-modulus load $P_t = \pi^2E_tI/L^2$ and the reduced-modulus load of Considère, Engesser
-and von Kármán ($E_r = 4EE_t/(\sqrt E + \sqrt{E_t})^2$ for a rectangle); tests fall near $P_t$.
-(2)~Shanley's paradox (1946--47): the column can bend at $P_t$ under increasing load, without
-unloading. Shanley's model: two rigid bars joined by a cell of two flanges, bilinear material,
-two degrees of freedom: the method of Chapter~\ref{ch:ld}. Closed form of the path from $P_t$,
-rising towards $P_r$; the imperfect model has a maximum load below $P_t$. gbox: \emph{in the
-plastic range bifurcation starts at the tangent-modulus load, and the maximum load lies
-between $P_t$ and $P_r$.} Uniqueness (Hill) is cited and left to Chapter~\ref{ch:so}.
-(3)~Hutchinson's asymptotics of plastic bifurcation (1974) for the initial slope of the path
-(check the exponent on the paper). (4)~The plastic buckling paradox of the cruciform: flow
-theory keeps the shear modulus $G$ and predicts $G(t/b)^2$ far above the tests; deformation
-theory uses the secant shear modulus and agrees; small imperfections reconcile the two
-(Onat and Drucker 1953; Hutchinson and Budiansky 1976; reviews: Becque 2016, Shamass 2020;
-all to check). (5)~Hibbeler \S13.5: tangent modulus read on a measured stress--strain curve
-(worked example to take from the book).}
+\index{inelastic buckling}%
+
+\paragraph{Where Euler stops.}
+Euler's hyperbola meets the yield stress at the slenderness of
+Section~\ref{sec:rd-slender}. To the left of that point the column is no longer elastic when it
+buckles, and most columns built are there: intermediate columns, neither slender nor
+squat~\cite[Section~13.5]{tw-hibbeler2014}. The material is still stiff for unloading, with
+the modulus $E$, but it has become soft for further loading, with the tangent modulus
+$E_t = \dd\sigma/\dd\varepsilon$, the slope of the stress--strain curve at the current stress. Which
+modulus belongs in Euler's formula?
+
+\paragraph{Two answers.}
+\index{tangent modulus}\index{reduced modulus}%
+Engesser (1889) put the tangent modulus in Euler's formula:
+\begin{equation}\label{eq:tw-tangent}
+  P_t = \frac{\pi^2E_tI}{L^2} .
+\end{equation}
+Considère (1891), Engesser again and von Kármán (1910) objected. When the column bends at
+constant load, the fibres on the convex side unload with the modulus $E$, while those on the
+concave side load with $E_t$. The column is then stiffer than~\eqref{eq:tw-tangent} says, and it
+bends at the \emph{reduced-modulus} load $P_r$, with a modulus $E_r$ between $E_t$ and $E$. For a
+rectangular section $E_r = 4EE_t/(\sqrt E + \sqrt{E_t})^2$. The argument for $P_r$ was
+careful and accepted for almost forty years; the tests, however, fell near
+$P_t$~\cite[pp.~67--68]{tw-hutchinson1974}.
+
+\begin{example}[An inelastic rod]\label{ex:tw-rod}
+\index{tangent modulus}%
+A pinned rod of diameter $30$~mm and length $600$~mm has $r = 7.5$~mm and $L/r = 80$. Its material
+is elastic with $E = 150$~GPa up to $150$~MPa, then hardens linearly with $E_t = 120$~GPa up to
+$270$~MPa (Hibbeler, Example~13.5). Euler's formula gives $231$~MPa, above the limit of
+proportionality: the rod is not elastic when it buckles. With $E_t$, Engesser's
+formula~\eqref{eq:tw-tangent} gives $185$~MPa, between $150$ and $270$~MPa, so the tangent
+modulus is the right one, and $P_t = 131$~kN. A rectangular section with the same slenderness
+would give $E_r = 134$~GPa and $206$~MPa with the reduced modulus.
+\end{example}
+
+\paragraph{Shanley's model.}
+\index{Shanley model}%
+Shanley (1947) settled the question with a model and a test~\cite{tw-shanley1947}. Replace
+the column by two rigid bars of total length $L$, joined at mid-height by a short cell made
+of two flanges at the distance $\pm d$ from the axis (Hutchinson's version of it is the
+simplest~\cite[Section~II.A]{tw-hutchinson1974}). Each flange is a short spring. It
+loads with the stiffness $k_t$ (proportional to $E_t$) once it has yielded, and unloads with the
+stiffness $k$ (proportional to $E$). When the bars rotate by $\theta$, the flanges shorten by
+$u + d\theta$ and $u - d\theta$, and equilibrium of forces and moments reads
+\begin{equation}\label{eq:tw-shanley-eq}
+  F_1 + F_2 = P,
+  \qquad
+  (F_1 - F_2)\,d = P L\theta .
+\end{equation}
+The model has two degrees of freedom, $u$ and $\theta$, and is solved with the method of
+Chapter~\ref{ch:ld}. Held straight, it bifurcates elastically at $2kd^2/L$; in the plastic range
+both flanges stiffen with $k_t$ and the lowest bifurcation load is the tangent-modulus load
+$P_t = 2k_td^2/L$. Unloading of one flange with $k$ gives the reduced-modulus load
+$P_r = 2k_rd^2/L$, with $k_r = 2kk_t/(k + k_t)$.
+
+\paragraph{The path after bifurcation.}
+Let the straight column start to bend at a load $P_b$ with $P_t \le P_b \le P_r$. Flange~1
+continues to load, $\Delta F_1 = k_t(\Delta u + d\theta)$; flange~2 unloads,
+$\Delta F_2 = k(\Delta u - d\theta)$. Put these increments in~\eqref{eq:tw-shanley-eq} and
+eliminate $\Delta u$. With the rotation measured by $x = L\theta/d$ and the constant
+$c = (k - k_t)/(k + k_t)$,
+\begin{equation}\label{eq:tw-shanley-path}
+  P = P_b + (P_r - P_b)\,\frac{x}{c + x} .
+\end{equation}
+Every branch rises and tends to $P_r$ (Figure~\ref{fig:tw-shanley}, left). The flange~2 really
+unloads only if $P_b \ge P_t$: at $P_b = P_t$ its force is stationary at the start (neutral
+loading), and the initial slope is $\dd P/\dd x = P_t$. Bifurcation below $P_t$ is impossible,
+and bifurcation at any load between $P_t$ and $P_r$ is possible.
+
+\begin{gbox}{In the plastic range the column bends at the tangent-modulus load, under increasing load}\label{sec:tw-shanley-box}
+\index{Shanley model}\index{tangent modulus}%
+The lowest bifurcation load of a straight inelastic column is $P_t$. The column bends there
+while the load keeps rising, and the load creeps towards $P_r$ as the deflection grows. The
+straight column loses its uniqueness at $P_t$, not its stability.
+\end{gbox}
+
+\paragraph{Why it works.}
+The picture is the cell of two flanges. At $P_t$ both flanges respond with $k_t$, and the bending
+stiffness $2k_td^2$ just balances the overturning $PL$: a rotation costs nothing. If the load is
+held constant, the flange on the convex side must unload, which brings in the larger stiffness
+$k$; the rotation is then resisted, and the column cannot bend at constant load before $P_r$.
+If the load rises while the column bends, the axial shortening compensates the unloading:
+flange~2 is momentarily at rest, the stiffness stays $2k_td^2$, and the bending starts at $P_t$.
+Von Kármán, in his discussion of Shanley's paper~\cite{tw-karman1947}, put it in the words of the
+box: the straight column at $P_t$ loses uniqueness, not stability~\cite[p.~68]{tw-hutchinson1974}.
+The general criterion of uniqueness for elastic--plastic solids is Hill's (1958), and it belongs
+to Chapter~\ref{ch:so}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch05_thinwalled/figures/tw_shanley.pdf}
+  \caption{Shanley's column with $E_t/E = 1/3$, so that $P_r = 1.5\,P_t$. Left: the perfect column
+    can bifurcate at any load between $P_t$ (orange) and $P_r$; every branch rises towards $P_r$
+    (green), and the lowest one leaves $P_t$ with the slope $P_t$. Right: imperfect columns have no
+    bifurcation; they bend near $P_t$ and follow the lowest branch. Computed step by step with
+    elastic unloading; the perfect branches coincide with~\eqref{eq:tw-shanley-path} to machine precision.}
+  \label{fig:tw-shanley}
+\end{figure}
+
+\paragraph{Imperfections and the maximum load.}
+\index{imperfection!inelastic column}%
+A real column starts with a small rotation $\bar\theta$. It has no bifurcation: it bends gradually,
+faster as the flanges yield, and follows the lowest branch from $P_t$ (Figure~\ref{fig:tw-shanley},
+right). With constant $E_t$ the load still creeps towards $P_r$. A real metal has a tangent modulus
+that falls as the stress rises, and a real column also has the destabilising geometry of large
+deflections. Either effect gives the column a maximum load just above $P_t$. In Hutchinson's version
+of the model with a destabilising geometry, an imperfection lowers that maximum by an amount
+proportional to $\bar\theta^{1/2}$, magnified by $E/E_t$ compared with the same model in the elastic
+range~\cite[Eq.~(2.20)]{tw-hutchinson1974}: plasticity makes even a column sensitive to imperfections. Duberg and Wilder (1952)
+found with realistic stress--strain curves that the maximum load of an imperfect column is close to
+$P_t$~\cite{tw-duberg1952}. This is why Engesser's formula works in practice, and why codes use
+it~\cite[Section~13.5]{tw-hibbeler2014}.
+
+\paragraph{A continuous column is different in detail.}
+In a real column the zone of elastic unloading starts at one fibre and spreads across the section
+as the column bends. Hutchinson showed that this puts fractional powers into the expansion of the
+path. For a pinned column of solid circular section, with $\xi$ the deflection at mid-length divided by
+the radius,
+\begin{equation}\label{eq:tw-hutchinson}
+  \frac{P}{P_t} = 1 + 4\xi + a_2\,\xi^{4/3} + \dots,
+  \qquad a_2 < 0,
+\end{equation}
+where $a_2$ depends on $E/E_t$ and on how fast the tangent modulus falls with
+stress~\cite[Eqs.~(4.58)--(4.59)]{tw-hutchinson1974}. The negative term soon overtakes the first one,
+and the maximum load is only slightly above $P_t$:
+\begin{equation}\label{eq:tw-hutchinson-max}
+  \frac{P_{\max}}{P_t} \approx 1 + \frac{E - E_t}{3\pi E_t\,(1 + q)} ,
+\end{equation}
+with $q$ a dimensionless measure of the fall of $E_t$, typically of order one~\cite[Eq.~(4.61)]{tw-hutchinson1974}.
+For $E_t = E/3$ and $q = 1$ the column carries $11\,\%$ more than $P_t$, far below
+$P_r = 1.5\,P_t$ of the model with constant $E_t$. The exponent depends on how the unloading zone
+grows: $4/3$ here, $3/2$ for a bar on a continuous bed of springs~\cite[Eq.~(2.47)]{tw-hutchinson1974}.
+Koiter's expansions of Chapter~\ref{ch:ld} have integer powers only; the fractional power is the
+signature of plasticity.
+
+\paragraph{The plastic buckling paradox.}
+\index{plastic buckling paradox}\index{cruciform column!plastic range}%
+The cruciform of Section~\ref{sec:tw-cruciform} is the simplest structure on which two theories of
+plasticity disagree~\cite[pp.~99--101]{tw-hutchinson1974}. Its torsional buckling involves only
+the shear modulus. In the simplest \emph{flow theory}, with a smooth yield surface, an increment of
+shear after uniaxial compression is elastic, so the plastic cruciform still buckles at
+$\sigma = G(t/b)^2$, as if nothing had yielded. In a \emph{deformation theory}, a nonlinear elastic law
+written with the secant modulus $E_s = \sigma/\varepsilon$, the effective shear modulus drops to
+\begin{equation}\label{eq:tw-gdef}
+  \bar G = \frac{G}{1 + 3G\,(1/E_s - 1/E)} ,
+  \qquad
+  \sigma = \bar G\,(t/b)^2 ,
+\end{equation}
+which is $GE_s/E$ for an incompressible material. Tests on aluminium alloy 2024-T4 cruciforms by
+Gerard and Becker (1957) follow the deformation theory, and the flow theory is far too
+high~\cite{tw-gerard1957}; the same holds, less dramatically, for plates and shells. Two
+explanations stand. A yield surface may develop a corner at the loading point, and then a flow
+theory with a corner coincides with deformation theory for the loadings of a buckling test (Batdorf
+1949, Sanders 1954). Or tiny imperfections, always present, bring the maximum load of the
+flow theory down to the bifurcation load of deformation theory (Onat and Drucker
+1953~\cite{tw-onat1953}). Hutchinson concludes that the bifurcation loads of deformation theory are the ones to use for
+engineering purposes~\cite[p.~101]{tw-hutchinson1974}. A finite element code such as Cast3M uses flow theory: the computer exercise on
+the cruciform shows the paradox and the role of the imperfection.
 
 %======================================================================
 \section{Residual stresses and column curves}\label{sec:tw-curves}
@@ -187,7 +330,12 @@ the plastic range, where Cast3M's flow theory shows the paradox.}
 
 \begin{chapterbib}{99}
 \bibitem{tw-trahair1993} N.~S.~Trahair, \emph{Flexural-Torsional Buckling of Structures}, E \& FN Spon, London, 1993.
-\bibitem{tw-shanley1947} F.~R.~Shanley, Inelastic column theory, \emph{Journal of the Aeronautical Sciences} 14 (1947) 261--268.
+\bibitem{tw-shanley1947} F.~R.~Shanley, Inelastic column theory, \emph{Journal of the Aeronautical Sciences} 14 (1947) 261--267.
+\bibitem{tw-karman1947} Th.~von K\'arm\'an, Discussion of ``Inelastic column theory'', \emph{Journal of the Aeronautical Sciences} 14 (1947) 267--268.
+\bibitem{tw-duberg1952} J.~E.~Duberg and T.~W.~Wilder, Inelastic column behavior, NACA Report 1072, 1952.
+\bibitem{tw-onat1953} E.~T.~Onat and D.~C.~Drucker, Inelastic instability and incremental theories of plasticity, \emph{Journal of the Aeronautical Sciences} 20 (1953) 181--186.
+\bibitem{tw-gerard1957} G.~Gerard and H.~Becker, \emph{Handbook of Structural Stability, Part~I: Buckling of Flat Plates}, NACA Technical Note 3781, 1957.
+\bibitem{tw-hibbeler2014} R.~C.~Hibbeler, \emph{Mechanics of Materials}, 9th ed., Pearson, Boston, 2014, Chapter~13.
 \bibitem{tw-hutchinson1974} J.~W.~Hutchinson, Plastic buckling, \emph{Advances in Applied Mechanics} 14 (1974) 67--144.
 \bibitem{tw-ziemian2010} R.~D.~Ziemian (ed.), \emph{Guide to Stability Design Criteria for Metal Structures}, 6th ed., Wiley, Hoboken, 2010.
 \bibitem{tw-bazant1991} Z.~P.~Ba\v{z}ant and L.~Cedolin, \emph{Stability of Structures}, Oxford University Press, 1991.
