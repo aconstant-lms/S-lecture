@@ -11,6 +11,7 @@ Status: skeleton (planned content only).
 - Exercises: Cast3M beams with residual stress fields.
 
 ## Decisions and open questions
+- From 3D (hub, 23 Nov 2026): Trabucho & Viaño (1996) and Viaño's later work justify the Saint-Venant and Vlasov thin-walled models by asymptotics — check and cite in the "From 3D" section. See "Balance" in CLAUDE.md.
 (Kept up to date by the chapter thread; anything that affects other chapters also goes into
 the course plan of `CLAUDE.md`.)
 

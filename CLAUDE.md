@@ -50,6 +50,23 @@ frame are shared. When a convention changes in one book, check whether it should
   Thompson & Hunt, Bažant & Cedolin, Brush & Almroth, Koiter, Guckenheimer & Holmes; design practice comes from
   Bushnell (1981) and NASA SP-8007; Audoly & Pomeau, Reis, Bertoldi, Hutchinson give physical examples and pictures.
 
+## Balance in Chapters 4-8: 3D link, engineering, physical examples (author, 23 Nov 2026)
+Every structural chapter has three layers, in this order and roughly these proportions:
+1. **From 3D (about 15 %)**, one short section. The physical assumptions and energy scalings in the spirit of
+   Audoly & Pomeau (bending cheap, stretching expensive), then what the mathematics proves, with its precise
+   assumptions: asymptotic expansions in the thickness (Ciarlet's school) and Γ-convergence (Friesecke, James,
+   Müller; Mora & Müller). State which scaling of loads and displacements gives which model, and when the
+   reduced model fails (thick walls, supports, local plasticity). Continuum notation of the author's book.
+   Precise statements go in a `gbox`, proofs are cited, not reproduced. Rods: Ch. 4 §`sec:rd-3d` (done);
+   plates: Ciarlet (1980) + the author's note CO7 on the von Kármán plate; shells: Ciarlet Vol. III, Ciarlet & Lods.
+2. **Engineering core (about two thirds)**: Thompson & Hunt, Koiter, Brush & Almroth for theory and solutions,
+   Bushnell and NASA SP-8007 for design and failures. Exercises and projects live here.
+3. **Physical examples (about 20 %)**: one or two boxed examples per chapter, kept only if they show a mechanism
+   already in the engineering problem (same equations) and carry a scaling law students can check, ideally on a
+   table top (Audoly & Pomeau, Reis, Bertoldi, Cerda & Mahadevan, Virot et al.). Otherwise they go to `extra/`.
+Chapter 9 closes the loop: Hill's 3D criterion recovers Euler for a slender bar and shows where reduced theories end;
+the running cylinder example compares a reduced model with a 3D FEniCS solid.
+
 ## Figures and sketches
 - Figures should be **nice, structured and inspirational**: a reader should grasp the mechanism from the picture
   before reading the formulas (Strang: the picture first). Every section with a new structure, load case or idea
@@ -113,7 +130,7 @@ checked against the closed form. A running example: the cylinder (1 dof model, r
 | 0 | `ch00_intro` | `in` | Introduction | front matter, course overview |
 | 1 | `ch01_bifurcation` | `st` | Differential equations and bifurcation | slope test, normal forms, imperfections, rigid bar (drafted) |
 | 2 | `ch02_discrete` | `ld` | Discrete systems: energy and Lagrangian mechanics | Hessian, Koiter with 1-2 dof, von Mises truss, Augusti, Ziegler (flutter) |
-| 3 | `ch03_continuation` | `nc` | Continuation and finite elements | pseudo-arclength, Riks/Crisfield, branch switching, linear buckling, ANM, FEniCS/Cast3M |
+| 3 | `ch03_continuation` | `nc` | From continuum to discrete: numerical methods | weak forms, bifurcation of a 3D elastic body, linear buckling (eigenproblem, Rayleigh quotient), Riks arc-length, detection, branch switching, FEniCS/Cast3M |
 | 4 | `ch04_rods` | `rd` | Rods: the elastica and beyond | Kirchhoff rods, elastica, elastic foundation, twist and natural curvature |
 | 5 | `ch05_thinwalled` | `tw` | Thin-walled members and real materials | torsional buckling, cruciform column, Shanley, residual stresses, column curves |
 | 6 | `ch06_plates` | `pl` | Plates | Föppl-von Kármán, plate buckling, effective width, wrinkling, d-cones |
@@ -146,6 +163,13 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
   polytechnique, 2011) and MEC553 slides and homeworks (2018); Constantinescu & Korsunsky (2007).
 - What to take from each source, with page numbers and a chapter map: `SOURCES.md`. The files are not in the
   repository (public, copyrighted); ask the author to upload them in the thread that needs them.
+- Rigorous derivation of reduced models (checked 23 Nov 2026): plates — Ciarlet, A justification of the von Kármán
+  equations, *ARMA* 73 (1980) 349–389; Friesecke, James & Müller, A hierarchy of plate models derived from nonlinear
+  elasticity by Γ-convergence, *ARMA* 180 (2006) 183–236 (von Kármán: energy per unit volume ∼ h⁴, forces ∼ h³);
+  rods — Bermúdez & Viaño (1984), Trabucho & Viaño (Handbook of Numerical Analysis IV, 1996), Cimetière et al. (1988),
+  Mora & Müller (2003, 2004), all in Ch. 4; shells — Ciarlet, *Mathematical Elasticity III: Theory of Shells*
+  (North-Holland, 2000); Ciarlet & Lods, Asymptotic analysis of linearly elastic shells III: justification of Koiter's
+  shell equations, *ARMA* 136 (1996) 191–200.
 - Before a reference enters a chapterbib, check its details (authors, journal, volume, pages) against the source.
 
 ## Threads: one hub, one thread per chapter
@@ -165,6 +189,8 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
 - 2026-11-21: editorial line structural engineering + physical examples; sources recorded in `SOURCES.md`;
   elasticity notation from Constantinescu & Korsunsky, LSK notation from Triantafyllidis.
 - 2026-11-21: Hooke tensor ℂ (blackboard, `\bbC`); load parameter η from Chapter 2 on (notation list updated).
+- 2026-11-23 (hub, author): balance rule for Ch. 4-8 (3D link with physical assumptions and rigorous derivations,
+  engineering core, boxed physical examples); Ch. 3 retitle propagated to the plan table, README and overview.
 - 2026-11-23: figures: TikZ sketches in `<chNN>/figures/tikz/`, plots from scripts, one visual language
   (section "Figures and sketches").
 - 2026-11-21 (Ch. 1 thread): Lyapunov stability, Jacobian eigenvalues and the Hopf bifurcation (galloping example)

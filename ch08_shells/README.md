@@ -11,6 +11,7 @@ Status: skeleton (planned content only).
 - Exercises: continuation of the snap-through of a deployable structure.
 
 ## Decisions and open questions
+- Balance (hub, 23 Nov 2026): engineering core (Bushnell, NASA) first; physical examples (snapping shells, tape springs, kirigami) as boxed examples. See "Balance" in CLAUDE.md.
 (Kept up to date by the chapter thread; anything that affects other chapters also goes into
 the course plan of `CLAUDE.md`.)
 

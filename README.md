@@ -36,7 +36,7 @@ One folder per chapter, the same sub-folders everywhere:
 |---|---|---|
 | 1 | `ch01_bifurcation` | Differential equations and bifurcation (drafted) |
 | 2 | `ch02_discrete` | Discrete systems: energy and Lagrangian mechanics |
-| 3 | `ch03_continuation` | Continuation and finite elements |
+| 3 | `ch03_continuation` | From continuum to discrete: numerical methods |
 | 4 | `ch04_rods` | Rods: the elastica and beyond |
 | 5 | `ch05_thinwalled` | Thin-walled members and real materials |
 | 6 | `ch06_plates` | Plates |

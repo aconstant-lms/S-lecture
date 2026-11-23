@@ -135,6 +135,25 @@ suggested by the Ch. 3 thread for later chapters). Chapter and page numbers to b
   Bažant & Cedolin and Brush & Almroth. For the column curves, the SSRC guide (Ziemian, *Guide to Stability
   Design Criteria for Metal Structures*, 6th ed., Wiley 2010) and Trahair are the design references.
 
+## 6. From 3D to reduced models: physical assumptions and rigorous derivations (added 23 Nov 2026)
+**Role: layer 1 of Chapters 4-8** (see "Balance" in `CLAUDE.md`).
+- **A. Constantinescu, CO7 — Von Kármán plate model and stability equations (note, 2026), 7 p.** Kirchhoff–Love
+  kinematics, Green–Lagrange strain, the von Kármán ordering (w = O(ε), in-plane displacement O(ε²), h/L = O(ε)) and
+  which products are kept, linear elastic law, total potential energy W, equilibrium from the first variation,
+  stability equations from the second variation, summary of assumptions (§6). Base text for Ch. 6; energy written 𝒲,
+  load parameter η in the book.
+- **P. G. Ciarlet, A justification of the von Kármán equations, ARMA 73 (1980) 349–389**, 41 p. Asymptotic expansion
+  in the thickness of the 3D nonlinear equations for a class of plates and loads; the leading term solves equations
+  equivalent to von Kármán's, the displacement is of Kirchhoff–Love type, admissible boundary conditions come out of the
+  analysis; limitations discussed in the conclusion. The introduction quotes Truesdell's and Antman's five objections to
+  the classical derivation: a good opening for the "From 3D" section of Ch. 6.
+- Friesecke, James & Müller (2006): the same plate as a Γ-limit; the scaling of the energy with the thickness selects
+  membrane, nonlinear bending, von Kármán or linear plate theory — one table that organises Ch. 6.
+- Rods (Ch. 4, done): Bermúdez & Viaño (1984), Trabucho & Viaño (1996, also Timoshenko, Saint-Venant, Vlasov models —
+  candidate for Ch. 5 thin-walled bars), Cimetière, Geymonat, Le Dret, Raoult & Tutek (1988), Mora & Müller (2003, 2004).
+- Shells (Ch. 7-8): Ciarlet, Mathematical Elasticity III (2000): membrane vs flexural shells, Koiter's equations;
+  Ciarlet & Lods (1996).
+
 ## 5. Map: sources by chapter
 | Ch | Main sources |
 |---|---|
@@ -144,7 +163,7 @@ suggested by the Ch. 3 thread for later chapters). Chapter and page numbers to b
 | 3 | Triantafyllidis L6 (FEM, slides 3–9), Riks, Crisfield, Keller; Constantinescu & Korsunsky Ch. 7 (§7.2, §7.4, §7.5); author's L03 slides; Bushnell §4; Kelly (2003), Bažant (2003) |
 | 4 | Triantafyllidis BA-1 (elastica), H3, H4; Timoshenko & Gere; Audoly & Pomeau Ch. 3–5 (rods, hair, ribbons); Hibbeler (effective length, secant formula; candidate) |
 | 5 | Bažant & Cedolin, Trahair, Shanley, Hutchinson (plastic buckling), Bushnell §7; Hibbeler (inelastic columns, design curves; candidate) |
-| 6 | Triantafyllidis BB-1 and L5 (von Kármán plate, double mode), H5; Brush & Almroth; Constantinescu & Korsunsky Ch. 7 |
-| 7 | Brush & Almroth, Koiter, NASA SP-8007 (1968, 2020), Bushnell §3–8, H7 |
+| 6 | author's note CO7 (von Kármán plate), Ciarlet 1980, Friesecke–James–Müller 2006; Triantafyllidis BB-1 and L5 (von Kármán plate, double mode), H5; Brush & Almroth; Constantinescu & Korsunsky Ch. 7 |
+| 7 | Ciarlet Vol. III, Ciarlet & Lods (from 3D); Brush & Almroth, Koiter, NASA SP-8007 (1968, 2020), Bushnell §3–8, H7 |
 | 8 | Bushnell (pressure, tanks), NASA SP-8007 2020, Hutchinson (spheres), Reis, Bertoldi |
 | 9 | Constantinescu & Korsunsky Ch. 1–4, Triantafyllidis L6–L7 (composites, Bloch waves), H6, H8 |
