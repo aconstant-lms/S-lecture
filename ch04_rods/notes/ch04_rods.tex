@@ -15,7 +15,8 @@ to rotate, not on how it is allowed to stretch. Three energies give three differ
 bifurcation diagrams (Figure~\ref{fig:rd-models}). With no rotation, the bar never buckles.
 With small rotations, it buckles at Euler's load and the buckled branch is flat: any
 amplitude is in equilibrium at the same load. With large rotations, the Euler elastica, the
-branch rises: the column is stable after buckling, but it gains very little load. A
+branch rises: the column is stable after buckling, but it gains very little load, and only the
+first branch is stable. A
 foundation under the rod changes the picture once more. It selects a wavelength, independent
 of the length, and it makes the post-buckling unstable.
 
@@ -51,8 +52,8 @@ Hibbeler~\cite{rd-hibbeler2014}.
   \caption{One column, three energies (Section~\ref{sec:rd-3d}). Load against the deflection at
     mid-length, for a pinned column. Without rotations nothing happens. With small rotations
     the column buckles at $P_c$ and at $4P_c$, and the branches are flat. With large rotations
-    (the elastica) the branches rise and the first one is stable. Solid: stable. Dashed:
-    unstable. Orange: critical points.}
+    (the elastica) the branches rise; the first one is stable until the ends of the column touch.
+    Solid: stable. Dashed: unstable. Orange: critical points.}
   \label{fig:rd-models}
 \end{figure}
 
@@ -338,8 +339,7 @@ $K(k)$, the complete elliptic integral of the first kind, so $L\sqrt{P/EI} = 2K(
 $w_{\max}$ is the deflection at mid-length, $\Delta$ the end shortening, and $E(k)$ the
 complete integral of the second kind. Table~\ref{tab:rd-elastica} and
 Figure~\ref{fig:rd-elastica} show the path and the shapes. At $\theta_0 = 130.7^\circ$ the ends
-meet, at $P = 2.18\,P_c$; beyond, the moving end passes the fixed one, which a test allows only if
-the two supports are offset out of the plane.
+meet, at $P = 2.18\,P_c$. There the first branch loses its stability, as we show below.
 
 \begin{table}[ht]
 \centering
@@ -367,14 +367,16 @@ the two supports are offset out of the plane.
   \centering
   \includegraphics{ch04_rods/figures/rd_elastica.pdf}
   \caption{The pinned elastica. Left: load against end rotation, exact (blue), Koiter's
-    expansion (green) and shooting (dots). Right: shapes for $\theta_0 = 20^\circ$, $60^\circ$,
-    $90^\circ$, $131^\circ$ (the ends touch, orange) and $160^\circ$.}
+    expansion (green) and shooting (dots); the branch is stable up to the orange point, where the ends
+    touch. Right: shapes for $\theta_0 = 20^\circ$, $60^\circ$, $90^\circ$, $131^\circ$ (the ends touch,
+    orange) and $160^\circ$ (unstable, dashed).}
   \label{fig:rd-elastica}
 \end{figure}
 
 \begin{gbox}{The elastica is stable after buckling, but its reserve of strength is tiny}\label{sec:rd-reserve}
 \index{post-buckling!elastica}%
-Near the critical load, $P/P_c = 1 + \theta_0^2/8 + \dots$: a stable symmetric point. At one per
+Near the critical load, $P/P_c = 1 + \theta_0^2/8 + \dots$: a stable symmetric point, and the branch
+stays stable until the ends touch. At one per
 cent above $P_c$ the column is already bent by $\theta_0 = 16^\circ$, with a deflection of
 $9\,\%$ of its length. For design, Euler's load is the strength of the column.
 \end{gbox}
@@ -386,8 +388,37 @@ Section~\ref{sec:nc-koiter-var}, computed for the elastica in~\eqref{eq:nc-elast
 give the same coefficient without the elliptic functions. The branch rises, so it is stable
 (Section~\ref{sec:ld-koitercoef}), but it rises with the square of the rotation: a visible
 deflection costs almost no load. Plates behave differently, as Chapter~\ref{ch:pl} will show.
-The branches from the higher Euler loads, $n^2P_c$, start where the straight column has already
-lost its stability, and they are unstable.
+
+\paragraph{Which branches are stable?}
+\index{elastica!stability of branches}%
+Koiter's analysis speaks only near $P_c$. Far from it, the test is the second variation of
+Section~\ref{sec:nc-bif} on the whole branch,
+\begin{equation}\label{eq:rd-elastica-second}
+  D_{\theta\theta}\mathcal{W}[v,v] = \int_0^L \bigl(EI\,v'^2 - P\cos\theta\; v^2\bigr)\dd s,
+  \qquad
+  \int_0^L \cos\theta\; v\dd s = 0,
+\end{equation}
+where the constraint keeps the far pin on the axis (it is the variation of
+$\displaystyle\int_0^L\sin\theta\dd s = 0$). The answer was proved by Maddocks~\cite{rd-maddocks1984}: the first
+branch is stable until the ends touch, and the branches from the higher Euler loads $n^2P_c$ are
+always unstable. A numerical look confirms it (Figure~\ref{fig:rd-stability},
+Exercise~\ref{exo:rd-computer-stability}). Discretise~\eqref{eq:rd-elastica-second} by finite
+elements on the exact branch and count the negative eigenvalues. The $n$-th branch is born with
+$n - 1$ of them, the ones the straight column had already acquired when it reached $n^2P_c$. Every
+branch gains one more at the same rotation, $\theta_0 = 130.710^\circ$, where the ends touch
+($130.709^\circ$ in closed form). The picture explains why: when the two pins coincide, a rigid
+rotation of the whole rod about them keeps both pins in place and costs no energy, a zero
+eigenvalue. Beyond, the loop can escape by turning.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch04_rods/figures/rd_stability.pdf}
+  \caption{Stability of the pinned elastica, from the second
+    variation~\eqref{eq:rd-elastica-second}. Left: for the $n$-th branch, the $n$-th eigenvalue, which
+    changes sign where the ends touch (dotted). Right: the number of unstable directions on the
+    branches of modes 1, 2 and 3. Only the first branch, before the ends touch, is stable.}
+  \label{fig:rd-stability}
+\end{figure}
 
 \paragraph{A rod standing up.}
 Audoly and Pomeau work the elastica out on a rod clamped at its foot and carrying a weight at
@@ -536,7 +567,8 @@ structures of Chapter~\ref{ch:sh}, where twist and natural curvature are treated
         and the bow from tests far below it; the secant formula gives the load of first yield.
   \item \textbf{The elastica.} $EI\theta'' + P\sin\theta = 0$ is a pendulum in space;
         $P/P_c = (2K(k)/\pi)^2 = 1 + \theta_0^2/8 + \dots$: stable, but one per cent of load buys a
-        deflection of $9\,\%$ of the length.
+        deflection of $9\,\%$ of the length. Only the first branch is stable, until the ends touch; the
+        higher branches are unstable (Maddocks).
   \item \textbf{Foundation.} $P_c = 2\sqrt{kEI}$ and the wavelength $2\pi(EI/k)^{1/4}$, independent
         of the length; mode jumps at $L = \sqrt{n(n+1)}\,\pi/q_c$. With large rotations the
         post-buckling is unstable, $P/P_c \approx 1 - A^2/4$.
@@ -741,6 +773,22 @@ energy gives the same coefficient $-1/4$.
 \lstinputlisting[firstline=4]{ch04_rods/code/python/ex_foundation.py}
 \end{solution}
 
+\exercise{Computer: which elastica branches are stable?}\label{exo:rd-computer-stability}
+\index{elastica!stability of branches}%
+On the exact branches of modes 1, 2 and 3, discretise the second
+variation~\eqref{eq:rd-elastica-second} by linear elements, eliminate the constraint with a
+null-space basis, and compute the lowest eigenvalues. Count the negative ones. Check the straight
+column first.
+\begin{solution}
+Straight column: $0$, $1$, $1$, $2$, $3$ negative eigenvalues at $P/P_c = 0.5$, $1.5$, $3$, $5$, $10$,
+with the values $(n\pi)^2 - P$. Branch $n$ has $n - 1$ negative eigenvalues from its birth, and one more
+beyond $\theta_0 = 130.710^\circ$, where the ends touch; bisection on the lowest eigenvalue of the first
+branch gives $130.710^\circ$ against $130.709^\circ$. This is Maddocks' result~\cite{rd-maddocks1984}.
+Without the constraint (a far end free to move sideways) the first branch would be found unstable:
+the constraint is part of the problem.
+\lstinputlisting[firstline=4]{ch04_rods/code/python/ex_stability.py}
+\end{solution}
+
 \exercise{Computer: the elastica in FEniCS and Cast3M}\label{exo:rd-computer-fe}
 \index{finite elements!elastica}%
 Compute the elastica with a finite element code in two ways: (a)~a one-dimensional rod in the
@@ -769,5 +817,6 @@ model itself: a direct check of Section~\ref{sec:rd-3d}. Trust the code only aft
 \bibitem{rd-mora2004} M.~G.~Mora and S.~M\"uller, A nonlinear model for inextensible rods as a low energy $\Gamma$-limit of three-dimensional nonlinear elasticity, \emph{Annales de l'Institut Henri Poincar\'e (C) Analyse non lin\'eaire} 21 (2004) 271--293.
 \bibitem{rd-cerda2003} E.~Cerda and L.~Mahadevan, Geometry and physics of wrinkling, \emph{Physical Review Letters} 90 (2003) 074302.
 \bibitem{rd-hunt1993} G.~W.~Hunt, M.~K.~Wadee and N.~Shiacolas, Localized elasticae for the strut on the linear foundation, \emph{Journal of Applied Mechanics} 60 (1993) 1033--1038.
+\bibitem{rd-maddocks1984} J.~H.~Maddocks, Stability of nonlinearly elastic rods, \emph{Archive for Rational Mechanics and Analysis} 85 (1984) 311--354.
 \bibitem{rd-bergou2008} M.~Bergou, M.~Wardetzky, S.~Robinson, B.~Audoly and E.~Grinspun, Discrete elastic rods, \emph{ACM Transactions on Graphics} 27 (2008) 63.
 \end{chapterbib}

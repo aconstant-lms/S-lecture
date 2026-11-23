@@ -1,0 +1,27 @@
+% h3_bimetal.tex -- Chapter 4, kept for a later revision (not compiled).
+% Source: Triantafyllidis, MEC553 homework 3 (2018), Problem 2. Author's decision (23 Nov 2026): keep for later.
+% Candidate places: a second thermal problem in Chapter 4 (after exo:rd-kinematics), or Chapter 5 (real materials).
+
+\exercise{Thermal buckling of a bimetallic beam}\label{exo:rd-bimetal}
+\index{thermal buckling}%
+Two strips of height $h$ and width $b$, aluminium on top (1) and copper below (2), are bonded along
+their length $L$. The beam is clamped at both ends, $u = w = w' = 0$ at $x = 0$ and $x = L$, and heated
+uniformly by $\Delta\theta$ (the load parameter). In each strip $\sigma = E_i(e + z\kappa - \alpha_i\Delta\theta)$, with
+$e = u' + \tfrac12 w'^2$ and $\kappa = -w''$ on the bonded mid-line.
+(a)~Write the energy. (b)~Derive the equilibrium equations. (c)~Find the principal solution for any
+$\Delta\theta$. (d)~From the second variation on it, find the critical $\Delta\theta_c$ and the mode.
+(e)~Solve the bifurcated problem in closed form and read off $\eta_1$, $\eta_2$. (f)~Check $\eta_1 = 0$ with
+Koiter's formulas of Section~\ref{sec:nc-koiter-var}. (g)~Set up and solve for the second-order field
+${}^2\vu$. (h)~Compute $\eta_2$ and compare with (e).
+
+% Notes for the solution (to be written and checked by a code before the problem enters the book):
+% - Section stiffnesses about the bond line: A = b h (E1 + E2), B = b h^2 (E1 - E2)/2 (coupling),
+%   D = b h^3 (E1 + E2)/3; thermal force and moment N_T = b h (E1 a1 + E2 a2) dT, M_T = b h^2 (E1 a1 - E2 a2) dT/2.
+%   Better: refer to the neutral axis z_n = B/A, which uncouples stretching and bending, EI* = D - B^2/A.
+% - Clamped ends: the uniform thermal curvature is fully restrained (the clamps react with a constant moment),
+%   the principal solution stays straight, w = 0, with N = -N_T (u = 0 everywhere).
+% - Critical temperature from the clamped column: N_T(dT_c) = 4 pi^2 EI*/L^2, mode 1 - cos(2 pi x/L).
+% - With the small-rotation strain the bifurcated branch is flat (eta_2 = 0, as in exo:rd-kinematics (a));
+%   a stable branch needs the exact kinematics. To be confirmed by the computation of (e) and (h).
+% - Link: rails and pipelines heated in place (Section rd-foundation), bimetallic strips and snap-through
+%   thermostats (Chapter 8).

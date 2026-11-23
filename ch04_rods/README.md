@@ -49,10 +49,11 @@ continuation, foundation, FEniCS and Cast3M).
   a wrong model, noted here because it is an easy mistake.
 
 ## Files
-- `notes/ch04_rods.tex`. Figures: `figures/rd_models.pdf`, `rd_elastica.pdf`, `rd_foundation.pdf`, `rd_imperfect.pdf` from
+- `notes/ch04_rods.tex`. Figures: `figures/rd_models.pdf`, `rd_elastica.pdf`, `rd_foundation.pdf`, `rd_imperfect.pdf`, `rd_stability.pdf` from
   `code/figures/fig_ch4.py`; TikZ sketches `figures/tikz/rd_fibre.tex`, `rd_supports.tex`, `rd_pendulum.tex`,
   `rd_foundation_sketch.tex`.
-- `code/python/elastica.py` (exact, shooting, continuation), `ex_columns.py` (supports, imperfection, Southwell, secant,
+- `code/python/ex_stability.py` (second variation with the pin constraint, eigenvalues along the branches, bisection
+  for the loss of stability), `code/python/elastica.py` (exact, shooting, continuation), `ex_columns.py` (supports, imperfection, Southwell, secant,
   SI tube), `ex_foundation.py` (festoon, Ritz post-buckling, rail), `ex_kinematics.py` (H3, three strain measures).
 - `code/mathematica/elastica.wl` (elliptic solution, series, shapes, Koiter by integrals). **Not run.**
 - `code/fenics/elastica_rod_fenicsx.py` (1D rod in θ, clamped–sliding, load control from the mode) and
@@ -72,12 +73,14 @@ continuation, foundation, FEniCS and Cast3M).
 5. (author, 23 Nov 2026) Timoshenko & Gere is not available: the foundation follows Alfutov §3.3 and Brush & Almroth
    §2.2d; Brush & Almroth §1.3–1.4 and §2.2 for the engineering view of columns. Notation kept as in the book (EI, k, w),
    which is also Brush & Almroth's; Alfutov writes EJ, κ, v.
-6. Open (notation): `k` is both the elliptic modulus sin(θ₀/2) (§4.3, as in Triantafyllidis and A&P) and the foundation
-   stiffness (§4.4, as in B&A); `K` is both the effective-length factor and the elliptic integral K(k). Both pairs are
-   standard in their fields and live in different sections; rename one (e.g. foundation `k_f`) if the author prefers.
-7. Open: H3 Problem 2 (bimetallic Al/Cu beam, thermal buckling, LSK with u₂) is not used yet; candidate for Ch. 5
-   (real materials) or a second problem here.
-8. Open: the stability of the higher elastica branches is stated, not shown (Maddocks 1984 would be the reference).
+6. (author, 23 Nov 2026) Double duty accepted: `k` is the elliptic modulus in §4.3 and the foundation stiffness in §4.4;
+   `K` is the effective-length factor and the elliptic integral K(k). Each is standard in its field.
+7. (author, 23 Nov 2026) H3 Problem 2 (bimetallic beam, thermal buckling) kept for later: `extra/h3_bimetal.tex`
+   (statement and solution notes, not compiled).
+8. (author, 23 Nov 2026) Stability of the elastica branches: cited to Maddocks (1984) and checked numerically
+   (`code/python/ex_stability.py`, `fig:rd-stability`, `exo:rd-computer-stability`). Branch n has n − 1 unstable
+   directions; every branch gains one where the ends touch, θ₀ = 130.710° (closed form 130.709°): the first branch is
+   stable only up to there. The earlier draft called it stable throughout; corrected in the text and figures.
 9. Slides use λ for the load; the book keeps η, and P for a physical end load (as in Ch. 3).
 
 ## Sources
@@ -95,5 +98,7 @@ continuation, foundation, FEniCS and Cast3M).
   slender bars (tangent modulus, CRC guide) for Ch. 5; §4.6 ring on an elastic foundation for Ch. 7.
 - Alfutov, *Stability of Elastic Structures* (Springer, 2000), PDF = book + 10: §3.3 columns on elastic foundations and
   elastic supports, pp. 103–107 (Eq. 3.33, Fig. 3.13, the √(κEJ) limit with a free end).
+- Maddocks, Stability of nonlinearly elastic rods, ARMA 85 (1984) 311–354: first pinned mode stable until the ends meet,
+  higher modes unstable.
 - Checked references: Bermúdez & Viaño (1984), Trabucho & Viaño (Handbook IV, 487–974; zbMATH lists 1995, the volume is
   dated 1996), Cimetière et al. (1988), Mora & Müller (2003, 2004), Cerda & Mahadevan (2003), Hunt, Wadee & Shiacolas (1993).

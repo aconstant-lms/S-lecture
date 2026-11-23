@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", "python"))
 from elastica import exact, shape
+from ex_stability import branch, spectrum
 
 OUT = os.path.join(HERE, "..", "..", "figures")
 os.makedirs(OUT, exist_ok=True)
@@ -46,16 +47,23 @@ for ax in axs[1:]:
     ax.plot([0, 0], [0, 1], color=CU); ax.plot([0, 0], [1, 4.6], color=GRAY, ls="--")
     ax.plot([0], [1], "o", color=ORANGE, ms=4); ax.plot([0], [4], "o", color=ORANGE, ms=4)
 axs[1].plot([-0.45, 0.45], [1, 1], color=CU); axs[1].plot([-0.45, 0.45], [4, 4], color=GRAY, ls="--")
+TOUCH = np.radians(130.709)                       # the first branch loses stability where the ends touch
 for n, col, ls in ((1, CU, "-"), (2, GRAY, "--")):
-    m = P * n**2 <= 4.6
     for sg in (1, -1):
+        m = (P * n**2 <= 4.6) & ((th <= TOUCH) | (n > 1))
         axs[2].plot(sg * W[m] / n, n**2 * P[m], color=col, ls=ls)
+        if n == 1:
+            m2 = (P <= 4.6) & (th >= TOUCH)
+            axs[2].plot(sg * W[m2], P[m2], color=GRAY, ls="--")
 fig.tight_layout(); fig.savefig(os.path.join(OUT, "rd_models.pdf")); plt.close(fig)
 
 # 2. The elastica: load against end rotation, and shapes ------------------------------
 fig, (a1, a2) = plt.subplots(1, 2, figsize=(6.3, 2.5), gridspec_kw={"width_ratios": [1, 1.25]})
 clean(a1)
-a1.plot(np.degrees(th), P, color=CU, label="exact (elliptic)")
+st = th <= np.radians(130.709)
+a1.plot(np.degrees(th[st]), P[st], color=CU, label="exact (elliptic)")
+a1.plot(np.degrees(th[~st]), P[~st], color=GRAY, ls="--")
+a1.plot([130.71], [2.1834], "o", color=ORANGE, ms=4)
 a1.plot(np.degrees(th), 1 + th**2 / 8, color=GREEN, ls="-.", label=r"Koiter $1 + \theta_0^2/8$")
 ts = np.radians([20, 40, 60, 90, 120, 150])
 a1.plot(np.degrees(ts), [exact(t)[0] for t in ts], "o", ms=3.5, mfc="white", color=ORANGE,
@@ -65,7 +73,8 @@ a1.set_xlim(0, 175); a1.set_ylim(0.9, 4.0); a1.legend(frameon=False, loc="upper 
 clean(a2); a2.set_aspect("equal")
 for deg in (20, 60, 90, 130.71, 160):
     x, w = shape(np.radians(deg))
-    a2.plot(x, w, color=ORANGE if abs(deg - 130.71) < 1 else CU, lw=1.3)
+    col, ls = (ORANGE, "-") if abs(deg - 130.71) < 1 else ((GRAY, "--") if deg > 131 else (CU, "-"))
+    a2.plot(x, w, color=col, ls=ls, lw=1.3)
     i = np.argmax(w); a2.text(x[i], w[i] + 0.02, f"{deg:.0f}$^\\circ$", ha="center", fontsize=7)
 a2.plot([0, 1], [0, 0], color=GRAY, lw=0.8)
 a2.set_xlabel(r"$x/L$"); a2.set_ylabel(r"$w/L$"); a2.set_ylim(-0.05, 0.52)
@@ -113,4 +122,18 @@ dd = np.linspace(0, d.max() * 1.1, 10); a2.plot(dd * 1e3, (dd + a) * 1e3, color=
 a2.set_xlabel(r"$w(L/2)/L\ \ (\times 10^{-3})$"); a2.set_ylabel(r"$(w/L)/(P/P_c)\ \ (\times 10^{-3})$")
 a2.text(4, 3.0, r"slope $=1/P_c$" "\n" r"intercept $=\bar a$", fontsize=8)
 fig.tight_layout(); fig.savefig(os.path.join(OUT, "rd_imperfect.pdf")); plt.close(fig)
+# 5. Stability of the elastica branches: the lowest eigenvalues of the second variation ----------
+fig, (a1, a2) = plt.subplots(1, 2, figsize=(6.3, 2.4))
+degs = np.linspace(3, 172, 70)
+for n, col in ((1, CU), (2, GREEN), (3, ORANGE)):
+    lam = np.array([spectrum(*branch(n, np.radians(d)), ne=300, nev=4) for d in degs])
+    a1.plot(degs, lam[:, n - 1] / np.pi**2, color=col, label=f"mode {n}")
+    a2.step(degs, (lam < -1e-6).sum(axis=1), where="mid", color=col, label=f"mode {n}")
+for a in (a1, a2):
+    clean(a); a.axvline(130.71, color=GRAY, lw=0.8, ls=":"); a.set_xlabel(r"end rotation $\theta_0$ (deg)")
+a1.axhline(0, color=GRAY, lw=0.8)
+a1.set_ylabel(r"$n$-th eigenvalue $/\pi^2$"); a1.set_ylim(-1, 3.2); a1.legend(frameon=False, loc="upper right")
+a2.set_ylabel("unstable directions"); a2.set_yticks([0, 1, 2, 3]); a2.set_ylim(-0.2, 3.4)
+a2.text(135, 0.3, "ends touch", fontsize=7.5, color=GRAY)
+fig.tight_layout(); fig.savefig(os.path.join(OUT, "rd_stability.pdf")); plt.close(fig)
 print("written:", sorted(f for f in os.listdir(OUT) if f.startswith("rd_")))
