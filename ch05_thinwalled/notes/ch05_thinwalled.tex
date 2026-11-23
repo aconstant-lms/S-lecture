@@ -1,41 +1,189 @@
 %======================================================================
 \chapter{Thin-walled members and real materials}\label{ch:tw}
 %======================================================================
-% Skeleton. Labels of this chapter: *:tw-*  (bibitem keys tw-*).
-% Planned content: see ch05_thinwalled/README.md and the course plan in CLAUDE.md.
+% Outline drafted 23 Nov 2026. Labels of this chapter: *:tw-*  (bibitem keys tw-*).
+% Status and decisions: ch05_thinwalled/README.md. Proposed title (author to confirm):
+% "Rods II: thin-walled members and real materials".
 
 \framepart{Outline}
-\draftnote{Chapter 5 is planned, not yet written. Planned content:}
+Chapter~\ref{ch:rd} ended with two promises. Euler's load assumes that the cross-section
+does not twist and that the material stays elastic. Real steel members break both
+assumptions. An open section made of thin walls twists far more easily than it bends, and
+it may buckle by twisting at a load well below Euler's. A stocky column yields before it
+buckles, and the yield starts early, because rolling and welding leave stresses locked in
+the section. Each effect lowers the load; Euler's hyperbola becomes an upper bound.
+
+The thread of the chapter is one structure: the roof of the Hartford Civic Center, which fell
+under snow in January 1978. Its top chords were four steel angles bolted into a cross, a
+\emph{cruciform}. A cruciform has a remarkable property: its torsional buckling load does not
+depend on its length. Bracing it at shorter intervals, the usual cure for a weak strut, does
+not help. Its torsional buckling stress also lies close to the yield stress, so that elastic
+theory alone cannot tell how much it carries. The chapter follows this column from the
+elastic twist to the plastic range, and ends with the design curves that engineers use for
+every steel column.
+
+\paragraph{By the end of this chapter you should be able to:}
 \begin{itemize}
-  \item \draftnote{Torsional and flexural-torsional buckling of open sections.}
-  \item \draftnote{The cruciform column: a torsional buckling load independent of the length.}
-  \item \draftnote{Inelastic columns: tangent modulus, reduced modulus, Shanley's model.}
-  \item \draftnote{Residual stresses (rolling, welding) and the column curves of design codes.}
-  \item \draftnote{Exercises: Cast3M beams with residual stress fields.}
+  \item explain why a thin-walled open section twists before it bends, from the scaling of
+        the torsional and bending stiffnesses, and say which model the asymptotic analysis
+        of the thin body justifies;
+  \item compute the torsional and flexural--torsional buckling loads of a column of open
+        section, and the lateral--torsional buckling moment of a beam;
+  \item show that the cruciform buckles at $\sigma = G(t/b)^2$ whatever its length, and relate
+        this to the buckling of a long plate with a free edge;
+  \item compare the tangent-modulus and reduced-modulus loads, and resolve Shanley's
+        paradox with a two-degree-of-freedom model;
+  \item describe the residual stresses of rolled and welded sections and their effect on the
+        stiffness of a column;
+  \item derive a design column curve from an imperfect, residually stressed, inelastic
+        column, and use the curves of the codes;
+  \item compute a column curve with finite elements, residual stresses included, and check it
+        against the closed forms.
 \end{itemize}
 
-\section{Torsional buckling of open sections}\label{sec:tw-1}
-\draftnote{To be written.}
+\paragraph{Plan of the chapter.}
+Section~\ref{sec:tw-3d} goes from the three-dimensional body to the thin-walled bar: warping,
+the torsion constants and the energy of Vlasov. Section~\ref{sec:tw-ft} computes the torsional and
+flexural--torsional loads of columns and the lateral--torsional load of beams.
+Section~\ref{sec:tw-cruciform} studies the cruciform and the Hartford collapse.
+Section~\ref{sec:tw-shanley} leaves elasticity: tangent and reduced modulus, Shanley's model, and
+the plastic buckling paradox of the cruciform. Section~\ref{sec:tw-curves} adds residual stresses
+and imperfections and arrives at the column curves of the codes. A summary, exercises with
+solutions (page~\pageref{sec:tw-exo}) and the references close the chapter.
+\draftnote{Sources: Trahair and Ba\v{z}ant--Cedolin (thin-walled theory), Shanley and Hutchinson
+(inelastic columns), the SSRC guide and Brush--Almroth \S2.6 (residual stresses, column curves),
+Hibbeler \S13.5--13.7 (tangent modulus, design formulas; numbers and examples, file to upload
+again), Loomis et al.\ and Martin--Delatte (Hartford). Detailed plan: README of the chapter.}
 
-\section{The cruciform column}\label{sec:tw-2}
-\draftnote{To be written.}
+%======================================================================
+\section{From the three-dimensional body to the thin-walled bar}\label{sec:tw-3d}
+\draftnote{About 15\,\% of the chapter. (1)~Picture: a strip of width $b$ and thickness $t$ bends
+with $EI \propto b^3t$ but twists with $GJ \propto bt^3$; for an open section $GJ/EI \sim (t/b)^2$, so it
+twists first. A closed section (tube) has $J \propto$ (area enclosed)$^2t$/perimeter (Bredt) and does
+not. (2)~Vlasov kinematics: twist $\varphi$, sectorial coordinate $\omega$, warping displacement
+$-\omega\varphi'$, warping constant $\Gamma$, shear centre $(y_0,z_0)$. (3)~Energy: the fibre strain of
+Chapter~\ref{ch:rd} for a fibre at $(y,z)$ of a section that also rotates by $\varphi$ gives the
+Wagner term $\tfrac12 P r_0^2\varphi'^2$, with $r_0^2 = (I_y + I_z)/A + y_0^2 + z_0^2$:
+$\mathcal W = \tfrac12\int(EI_z v''^2 + EI_y w''^2 + GJ\varphi'^2 + E\Gamma\varphi''^2) -
+\tfrac12 P\int(v'^2 + w'^2 + r_0^2\varphi'^2 + 2z_0 v'\varphi' - 2y_0 w'\varphi')$ (signs to check against
+Trahair). gbox: table of stiffness scalings. (4)~Why it works: Vlasov's theory as a $\Gamma$-limit
+of 3D linear elasticity for cross-sections made of rectangles of sides $\varepsilon$ and
+$\varepsilon^2$ (Freddi, Morassi and Paroni 2007), closed sections (Davini, Freddi and Paroni 2014),
+asymptotic expansions (Trabucho and Vi\~ano 1996). Where it fails: walls so thin that they buckle
+locally (plates, Chapter~\ref{ch:pl}), distortion of the section, short members.}
 
-\section{Inelastic buckling and Shanley's model}\label{sec:tw-3}
-\draftnote{To be written.}
+%======================================================================
+\section{Torsional and flexural--torsional buckling}\label{sec:tw-ft}
+\draftnote{Engineering core. (1)~Adjacent equilibrium: three coupled equations in $v$, $w$,
+$\varphi$; pinned ends with fork supports, sine modes, a $3\times3$ determinant, a cubic in $P$.
+(2)~Doubly symmetric section (I, H): three separate loads $P_y$, $P_z$ and
+$P_\varphi = (GJ + \pi^2E\Gamma/L^2)/r_0^2$. (3)~Monosymmetric sections (angles, tees, channels):
+bending about the axis of symmetry stays alone, the other two couple and give a load below
+both. Example in numbers: an equal-leg angle strut and a channel, computed by
+\texttt{code/python/ft\_section.py}. (4)~Lateral--torsional buckling of a beam:
+$M_{cr} = (\pi/L)\sqrt{EI_zGJ}\,\sqrt{1 + \pi^2E\Gamma/(GJL^2)}$. Failures: the Dee Bridge (1847,
+Petroski: lateral instability of the girders); the Marcy pedestrian bridge (2002, a girder
+system that buckled torsionally during the pour of the deck). (5)~Post-buckling of the
+torsional mode: stable, like a plate (forward to Chapter~\ref{ch:pl}); interaction of local and
+global modes (Bushnell \S7, the Augusti model of Chapter~\ref{ch:ld}).
+Physical box (table top): a ruler held on its edge and loaded at the tip twists sideways; the
+critical load scales as $\sqrt{EI_zGJ}/L^2$.}
 
-\section{Residual stresses and column curves}\label{sec:tw-4}
-\draftnote{To be written.}
+%======================================================================
+\section{The cruciform column}\label{sec:tw-cruciform}
+\draftnote{(1)~Four legs of width $b$ and thickness $t$ meeting at one point: the sectorial
+coordinate vanishes, $\Gamma$ is only the tiny warping of the legs themselves, $J = 4bt^3/3$,
+$I_y + I_z = 4tb^3/3$. gbox: \emph{a cruciform twists at the same stress whatever its length},
+$\sigma_T = G(t/b)^2$. Why it works: the twist stiffness $GJ\varphi'^2$ and the Wagner term
+$Pr_0^2\varphi'^2$ both carry $\varphi'^2$, so $L$ cancels. (2)~The same number from a plate: a long
+plate pinned on one edge and free on the other buckles at $k = 6(1-\nu)/\pi^2 = 0.426$, the
+textbook $0.425$; with the legs' own warping one gets $k = 0.425 + (b/a)^2$ (bridge to
+Chapter~\ref{ch:pl}). (3)~Torsion or flexure? The crossover length $L = \pi(b^2/t)\sqrt{E/6G}
+\approx 2.07\,b^2/t$ for steel: $2$~m for $b = 100$~mm, $t = 10$~mm; shorter cruciforms twist.
+(4)~Box: the Hartford Civic Center (1978), a $91\times110$~m space truss whose top chords were
+four-angle cruciforms; the snow load was below the design load; the torsional analysis of
+Loomis et al.\ (1980) points to torsional buckling of the chords; the bracing assumed in the
+computer model was not provided by the offset joints (Martin and Delatte 2001). Lesson: the
+model did not contain the mode (Chapter~\ref{ch:nc}, Section~\ref{sec:nc-trust}).
+(5)~For usual proportions, $G(t/b)^2$ is close to the yield stress: the cruciform is the bridge
+to Section~\ref{sec:tw-shanley}. Physical box (table top): a cruciform of card, cut shorter and
+shorter, buckles at the same load; a tube of the same card does not twist.}
 
+%======================================================================
+\section{Inelastic buckling: tangent modulus and Shanley's model}\label{sec:tw-shanley}
+\draftnote{(1)~Where Euler's hyperbola meets yield (Section~\ref{sec:rd-slender}). Engesser's
+tangent-modulus load $P_t = \pi^2E_tI/L^2$ and the reduced-modulus load of Considère, Engesser
+and von Kármán ($E_r = 4EE_t/(\sqrt E + \sqrt{E_t})^2$ for a rectangle); tests fall near $P_t$.
+(2)~Shanley's paradox (1946--47): the column can bend at $P_t$ under increasing load, without
+unloading. Shanley's model: two rigid bars joined by a cell of two flanges, bilinear material,
+two degrees of freedom: the method of Chapter~\ref{ch:ld}. Closed form of the path from $P_t$,
+rising towards $P_r$; the imperfect model has a maximum load below $P_t$. gbox: \emph{in the
+plastic range bifurcation starts at the tangent-modulus load, and the maximum load lies
+between $P_t$ and $P_r$.} Uniqueness (Hill) is cited and left to Chapter~\ref{ch:so}.
+(3)~Hutchinson's asymptotics of plastic bifurcation (1974) for the initial slope of the path
+(check the exponent on the paper). (4)~The plastic buckling paradox of the cruciform: flow
+theory keeps the shear modulus $G$ and predicts $G(t/b)^2$ far above the tests; deformation
+theory uses the secant shear modulus and agrees; small imperfections reconcile the two
+(Onat and Drucker 1953; Hutchinson and Budiansky 1976; reviews: Becque 2016, Shamass 2020;
+all to check). (5)~Hibbeler \S13.5: tangent modulus read on a measured stress--strain curve
+(worked example to take from the book).}
+
+%======================================================================
+\section{Residual stresses and column curves}\label{sec:tw-curves}
+\draftnote{(1)~Origin: cooling after rolling (flange tips cool first and end in compression,
+about $0.3\sigma_Y$; tension near the web), welding (tension near $\sigma_Y$ at the welds), cold
+forming. Self-equilibrated fields $\sigma_0$: $\int\sigma_0\dd A = 0$, $\int\sigma_0 y\dd A = 0$.
+(2)~Effect: the section yields gradually; the bending stiffness is that of the elastic core.
+Flange tips yield first, so the weak axis loses $(b_e/b)^3$ and the strong axis $b_e/b$: weak-axis
+curves are lower. The CRC parabola (Brush and Almroth \S2.6). (3)~Imperfection, residual stress
+and yield together: a maximum load, not a bifurcation. Ayrton--Perry: first yield of a bowed
+column (the secant formula of Chapter~\ref{ch:rd} with a bow), with the equivalent imperfection
+$\alpha(\bar\lambda - 0.2)$, gives the European curves: $\alpha = 0.13$, $0.21$, $0.34$, $0.49$, $0.76$ for
+curves $a_0$, $a$, $b$, $c$, $d$, calibrated on more than 1000 ECCS tests; $\chi = 0.60$ on curve $b$
+and $0.54$ on curve $c$ at $\bar\lambda = 1$. SSRC curves, AISC. Hibbeler \S13.6--13.7: design
+formulas for steel, aluminium and timber on one plot; eccentric loads and interaction.
+gbox: \emph{a column curve is the maximum load of an imperfect, residually stressed,
+inelastic column; the loss is largest near $\bar\lambda = 1$, where yield and buckling meet}
+(erosion of an optimum, Chapter~\ref{ch:ld}). (4)~Box: the Quebec Bridge (1907): a built-up lower
+chord with weak latticing (a shear-soft column, Chapter~\ref{ch:nc}); its bow grew from 19 to
+57~mm in the two weeks before the collapse, a Southwell signal (Chapter~\ref{ch:rd}) that was
+read too late.}
+
+%======================================================================
 \framepart{Summary}
 \begin{gbox*}
 \begin{itemize}
-  \item \textbf{To be written.} \draftnote{take-home messages.}
+  \item \textbf{To be written.} \draftnote{take-home messages: twist is cheap for open sections;
+        three loads and their coupling; the cruciform's length-free load; tangent modulus and
+        Shanley; residual stresses and column curves.}
 \end{itemize}
 \end{gbox*}
 
+%======================================================================
 \framepart{Exercises}\label{sec:tw-exo}
 \framesub{Short questions}
-\draftnote{To be written.}
+\draftnote{Planned: why tubes do not twist; the crossover length of a cruciform; which mode for
+an angle strut; tangent or reduced modulus from a given curve; Shanley in one sentence; $\chi$
+from curve $b$; why the weak axis has a lower curve; what Hartford teaches about a computer
+model.}
+
+\framesub{Problems}
+\draftnote{Planned: (1)~the three loads of an H-section and the cubic of a channel; (2)~the
+cruciform: $G(t/b)^2$, the plate check $k = 0.425 + (b/a)^2$, the crossover length; (3)~Shanley's
+model, perfect and imperfect; (4)~the Lehigh residual stress pattern: elastic core, both axes,
+the CRC parabola; (5)~Ayrton--Perry and the European curves, against the secant formula;
+(6)~design of a steel, an aluminium and a timber column with the code formulas (Hibbeler);
+(7)~lateral--torsional buckling of a ruler and of a girder during a deck pour.}
+
+\framesub{Computer exercises}
+\draftnote{Planned: (1)~Python: section properties (shear centre, $J$, $\Gamma$) and the three loads
+of any thin-walled open section; (2)~Python: Shanley's model by continuation with the
+Chapter~\ref{ch:st} code; (3)~Python: a fibre column with residual stresses and a bow, its
+maximum load against the slenderness, our own column curve; (4)~Cast3M: multifibre beams with
+residual stresses given as initial fibre stresses, elastic--plastic, bow $L/1000$,
+\texttt{pasapas} with large displacements, the column curve checked against (3) and the
+European curves; a shell model of the cruciform at three lengths (\texttt{flambage}) and in
+the plastic range, where Cast3M's flow theory shows the paradox.}
 
 \begin{chapterbib}{99}
 \bibitem{tw-trahair1993} N.~S.~Trahair, \emph{Flexural-Torsional Buckling of Structures}, E \& FN Spon, London, 1993.
@@ -44,4 +192,8 @@
 \bibitem{tw-ziemian2010} R.~D.~Ziemian (ed.), \emph{Guide to Stability Design Criteria for Metal Structures}, 6th ed., Wiley, Hoboken, 2010.
 \bibitem{tw-bazant1991} Z.~P.~Ba\v{z}ant and L.~Cedolin, \emph{Stability of Structures}, Oxford University Press, 1991.
 \bibitem{tw-bushnell1981} D.~Bushnell, Buckling of shells---pitfall for designers, \emph{AIAA Journal} 19 (1981) 1183--1226.
+\bibitem{tw-freddi2007} L.~Freddi, A.~Morassi and R.~Paroni, Thin-walled beams: a derivation of Vlassov theory via $\Gamma$-convergence, \emph{Journal of Elasticity} 86 (2007) 263--296.
+\bibitem{tw-loomis1980} R.~S.~Loomis, R.~H.~Loomis, R.~W.~Loomis and R.~W.~Loomis, Torsional buckling study of Hartford Coliseum, \emph{Journal of the Structural Division (ASCE)} 106 (1980) 211--231.
+\bibitem{tw-martin2001} R.~Martin and N.~Delatte, Another look at Hartford Civic Center Coliseum collapse, \emph{Journal of Performance of Constructed Facilities} 15 (2001) 31--36.
+\bibitem{tw-pearson2006} C.~Pearson and N.~Delatte, Collapse of the Quebec Bridge, 1907, \emph{Journal of Performance of Constructed Facilities} 20 (2006) 84--91.
 \end{chapterbib}

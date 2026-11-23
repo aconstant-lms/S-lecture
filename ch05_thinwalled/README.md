@@ -1,20 +1,74 @@
 # Chapter 5: Thin-walled members and real materials
 
 Label prefix `tw` (`sec:tw-*`, `eq:tw-*`, `fig:tw-*`, `exo:tw-*`, bibitem keys `tw-*`).
-Status: skeleton (planned content only).
+Status: **outline drafted (23 Nov 2026)**. `notes/ch05_thinwalled.tex` has the Outline frame part in prose
+(thread, objectives, plan) and one `\draftnote` per section with the planned content. No text, figures or codes yet.
 
-## Planned content
-- Torsional and flexural-torsional buckling of open sections.
-- The cruciform column: a torsional buckling load independent of the length.
-- Inelastic columns: tangent modulus, reduced modulus, Shanley's model.
-- Residual stresses (rolling, welding) and the column curves of design codes.
-- Exercises: Cast3M beams with residual stress fields.
+## Thread
+Chapter 4 promised two things: columns that twist and columns that yield. The running structure is the Hartford
+Civic Center roof (1978), whose top chords were four-angle cruciforms. The cruciform carries the chapter: its
+elastic torsional load does not depend on the length, it sits close to yield, and its plastic buckling is the
+classic "plastic buckling paradox". The chapter ends with the column curves of the codes.
+
+## Outline (sections and labels)
+1. `sec:tw-3d` From 3D to the thin-walled bar (≈15 %). GJ ∝ bt³ vs EI ∝ b³t: open sections twist first; Bredt for
+   tubes. Vlasov kinematics (twist φ, sectorial coordinate ω, warping constant Γ, shear centre y₀, z₀). Energy from the
+   Ch. 4 fibre strain applied to a fibre at (y, z): the Wagner term ½P r₀²φ'². Γ-convergence: Freddi, Morassi & Paroni
+   (J. Elasticity 86, 2007, 263–296; cross-sections of rectangles ε × ε²), Davini, Freddi & Paroni (2014, closed
+   sections), Trabucho & Viaño (1996). Limits: local buckling (→ Ch. 6), distortion, short members.
+2. `sec:tw-ft` Torsional and flexural–torsional buckling. Three coupled equations, fork supports, cubic in P.
+   Doubly symmetric: P_y, P_z, P_φ = (GJ + π²EΓ/L²)/r₀². Monosymmetric: angle and channel in numbers. Lateral–torsional
+   buckling of beams, M_cr = (π/L)√(EI_z GJ)√(1 + π²EΓ/(GJL²)). Failures: Dee Bridge 1847, Marcy pedestrian bridge 2002.
+   Physical box: a ruler on its edge (P_cr ∝ √(EI_z GJ)/L²).
+3. `sec:tw-cruciform` The cruciform. σ_T = G(t/b)², independent of L (gbox). Same as a long plate with one free edge:
+   k = 6(1−ν)/π² = 0.426 (textbook 0.425), k = 0.425 + (b/a)² with the legs' own warping → bridge to Ch. 6. Crossover
+   length L = π(b²/t)√(E/6G) ≈ 2.07 b²/t for steel. Box: Hartford (Loomis et al. 1980; Martin & Delatte 2001); the mode
+   was not in the model (Ch. 3, `sec:nc-trust`). Physical box: a card cruciform cut shorter and shorter.
+4. `sec:tw-shanley` Inelastic buckling. Tangent modulus (Engesser), reduced modulus (Considère, Engesser, von Kármán),
+   Shanley's paradox and his two-flange model (2 dof, the method of Ch. 2), the imperfect model's maximum load;
+   Hutchinson (1974) asymptotics; the plastic buckling paradox of the cruciform (flow vs deformation theory,
+   imperfections; Onat & Drucker 1953, Hutchinson & Budiansky 1976, Becque 2016, Shamass 2020 — to check). Hill's
+   uniqueness cited, owned by Ch. 9. Hibbeler §13.5 worked example.
+5. `sec:tw-curves` Residual stresses and column curves. Rolled, welded, cold-formed patterns; σ₀ self-equilibrated;
+   elastic core, weak axis (b_e/b)³ vs strong axis b_e/b; CRC parabola (B&A §2.6). Ayrton–Perry with α(λ̄ − 0.2) →
+   European curves (α = 0.13, 0.21, 0.34, 0.49, 0.76; > 1000 ECCS tests; χ(1) = 0.60 on b, 0.54 on c, checked);
+   SSRC, AISC; Hibbeler §13.6–13.7 (steel, aluminium, timber; eccentric loads). gbox: a column curve is the maximum
+   load of an imperfect, residually stressed, inelastic column. Box: Quebec Bridge 1907 (built-up chord with weak
+   latticing = shear-soft column of Ch. 3; bow 19 → 57 mm in two weeks, a Southwell signal of Ch. 4).
+
+Balance target: from 3D ≈15 %, engineering ≈65 %, physical ≈20 % (two table-top boxes: ruler, card cruciform;
+CLAUDE.md flagged Ch. 5 as at risk of too little physics).
+
+## Exercises (planned)
+- Short questions (8): tubes don't twist; cruciform crossover length; angle strut mode; tangent vs reduced modulus;
+  Shanley in one sentence; χ from curve b; weak axis lower; Hartford and the computer model.
+- Problems (7): H-section loads and channel cubic; cruciform and the plate check; Shanley perfect and imperfect;
+  Lehigh residual stresses and the CRC parabola; Ayrton–Perry vs secant formula; steel/aluminium/timber design
+  (Hibbeler numbers); lateral–torsional buckling of a ruler and of a girder during a pour.
+- Computer: `code/python/ft_section.py` (thin-walled section properties and the three loads); `shanley.py`
+  (continuation with Ch. 1 `arclength.py`); `fibre_column.py` (fibre column with residual stresses and bow, max load vs
+  slenderness: the closed-form check for the FE); Cast3M `column_curve.dgibi` (multifibre beams, initial fibre stresses,
+  elastic–plastic, bow L/1000, `pasapas` large displacements) and `cruciform.dgibi` (shells, `flambage` at three
+  lengths, then plastic: Cast3M's flow theory shows the paradox).
+- Session (2 h): (a) by hand, cruciform and angle (30 min); (b) Shanley and Ayrton–Perry in Python (40 min);
+  (c) Cast3M column with residual stresses vs the European curve (50 min).
 
 ## Decisions and open questions
-- From 3D (hub, 23 Nov 2026): Trabucho & Viaño (1996) and Viaño's later work justify the Saint-Venant and Vlasov thin-walled models by asymptotics — check and cite in the "From 3D" section. See "Balance" in CLAUDE.md.
-(Kept up to date by the chapter thread; anything that affects other chapters also goes into
-the course plan of `CLAUDE.md`.)
+1. (author, 23 Nov 2026, to confirm) Title "Rods II: thin-walled members and real materials". Folder `ch05_thinwalled`
+   and prefix `tw` unchanged. If accepted, the hub updates the plan tables (CLAUDE.md, course_plan), README.md and
+   `ch00_intro/notes/overview.tex`.
+2. Notation to add (proposal): v (second lateral displacement), φ twist, J, Γ, ω, y₀, z₀, r₀, G, E_t, E_r, P_t, P_r,
+   χ, α (imperfection factor). Clashes to accept or avoid: λ̄ (code slenderness) vs λ (growth rate, multiplier, Lamé);
+   α vs thermal expansion (Ch. 4 rail exercise). Proposal: keep the code symbols λ̄, χ, α, as Ch. 4 kept k and K.
+3. Cast3M syntax for initial fibre stresses in multifibre beams (`pasapas` table, 'CONTRAINTES' at time 0) is to be
+   checked; the author's `Castem_Introduction` repository may hold a template. Fallback: shell model of the I-section.
+4. FEniCS: optional in this chapter (shells come in Ch. 7); the Python fibre column is the closed-form check.
+5. From 3D (hub, 23 Nov 2026): Trabucho & Viaño (1996) and Viaño's later work justify Saint-Venant and Vlasov models;
+   Freddi–Morassi–Paroni (2007) checked and added to the chapterbib.
 
 ## Sources
-Bažant & Cedolin, Trahair, Shanley, Hutchinson (plastic buckling), Bushnell §7.
-Details and page numbers: `SOURCES.md`. Ask the author to upload a file when it is needed.
+Bažant & Cedolin (thin-walled beams and elastoplastic buckling; chapter numbers to check on the file), Trahair (1993),
+Shanley (1947), Hutchinson (1974), Ziemian / SSRC guide (2010), Brush & Almroth §2.5–2.6, Bushnell §7, Hibbeler 9th ed.
+Ch. 13 §13.5–13.7. Failures: Loomis et al. (1980), Martin & Delatte (2001), Pearson & Delatte (2006); Marcy and Dee
+Bridge sources to pick. To upload in this thread: Hibbeler Ch. 13, Bažant & Cedolin, Trahair, Shanley (1947),
+Hutchinson (1974), the SSRC column chapter. Details and page numbers: `SOURCES.md`.
