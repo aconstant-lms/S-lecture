@@ -89,6 +89,29 @@ Candidate moves and additions (decided in the chapter threads, examples may come
 - Ch. 9: Biot wrinkling and Bloch-wave instabilities of honeycombs (Triantafyllidis L7) carry the engineering
   side; pattern transformation (Mullin et al.) as the box.
 
+### Who owns what (overlap check, hub, 23 Nov 2026)
+A topic is developed once, in its owner chapter; the others recall it in one sentence and cite it.
+| Topic | Owner | Others (refer, do not redo) |
+|---|---|---|
+| Stability of ODEs, Lyapunov, Jacobian, Hopf, normal forms | Ch. 1 | Ch. 2 (flutter uses Hopf) |
+| Pseudo-arclength on ODEs (Box 1.2, `arclength.py`) | Ch. 1 | Ch. 3 extends to FE (Box 3.3 bordering, `truss_fe.py`) |
+| von Mises truss: 1 dof fold | Ch. 1 | Ch. 2 adds the sideways dof, Ch. 3 is its FE test case |
+| Energy criterion, Hessian, Koiter's coefficients (Box 2.2), imperfection power laws | Ch. 2 | Ch. 3 (variations), Ch. 4-8 use them |
+| Vibration and buckling (ω² → 0, Southwell by vibration) | Ch. 2 (Ch. 1 one exercise) | Ch. 7 vibration correlation technique on shells |
+| Weak form, variations, Green–Lagrange `e = ε + ½q(u,u)`, 3D bifurcation, Koiter for a body | Ch. 3 | Ch. 4, 6, 7 use them; Ch. 9 starts from `sec:nc-bif` (Hill adds uniqueness, ellipticity) |
+| Linear buckling, Rayleigh quotient, Ritz, arc-length, pivots, branch switching, the codes | Ch. 3 | all later chapters |
+| Shear-soft columns, Engesser–Haringx, rubber bearing | Ch. 3 | Ch. 4-5 refer |
+| Euler loads, effective length, elastica (exact), Southwell plot, secant formula, foundation | Ch. 4 | Koiter coefficients of the elastica stay in Ch. 3 (eq. `nc-elastica-koiter`) |
+| From 3D to the rod (fibre strain, three energies) | Ch. 4 | Ch. 6 follows the same pattern for the plate, Ch. 7 for the shell |
+| Wrinkling, thin film on soft substrate | Ch. 6 | Ch. 4 one sentence, Ch. 9 surface instability of the half-space |
+| Twist, natural curvature, tape springs | Ch. 8 | Ch. 4 remark only |
+| Inelastic buckling, tangent modulus, column curves | Ch. 5 | Ch. 4 design only through the secant formula |
+Points to watch: (1) the vibration–buckling link appears in Ch. 1 (exercise) and Ch. 2 (example + exercise):
+keep, they build, but Ch. 7 must only cite them; (2) two "from scratch" continuation exercises (Ch. 1 ODE, Ch. 3 FE):
+the Ch. 3 one should start from the Ch. 1 code; (3) Ch. 6, built on the author's note CO7, must reuse Ch. 3's
+Green–Lagrange notation and variations and mirror Ch. 4's "From 3D" section, not restate them
+(CO7's ê, κ̂, hats → Ch. 3 notation; W → 𝒲; λ → η).
+
 ## Figures and sketches
 - Figures should be **nice, structured and inspirational**: a reader should grasp the mechanism from the picture
   before reading the formulas (Strang: the picture first). Every section with a new structure, load case or idea

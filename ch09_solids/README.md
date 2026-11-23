@@ -11,6 +11,7 @@ Status: skeleton (planned content only).
 - Exercises: hyperelastic blocks in FEniCS; mini-project presentations.
 
 ## Decisions and open questions
+- Overlap (hub, 23 Nov 2026): Ch. 3 §`sec:nc-bif` already has the 3D principal branch and critical point; Ch. 9 starts from it (Hill's uniqueness, loss of ellipticity).
 - Balance (hub, 23 Nov 2026): Biot wrinkling and Bloch-wave analysis of honeycombs (Triantafyllidis L7) as the engineering side; pattern transformation (Mullin et al.) as the box.
 (Kept up to date by the chapter thread; anything that affects other chapters also goes into
 the course plan of `CLAUDE.md`.)

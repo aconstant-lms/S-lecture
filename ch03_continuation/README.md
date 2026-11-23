@@ -58,6 +58,7 @@ Engesser and Haringx); 4 computer exercises (arc-length from scratch, the bearin
   with Algorithm 3.1 (arc-length by bordering, CMAME style); (c) Cast3M. Listed in `preamble/manual_chapters.tex`.
 
 ## Decisions and open questions
+- Overlap (hub, 23 Nov 2026): the exercise "Computer: arc-length from scratch" could start from the Ch. 1 code `arclength.py` instead of a second from-scratch code. See "Who owns what" in CLAUDE.md.
 - (author, 21 Nov 2026) The title is "From continuum to discrete: numerical methods". Folder and prefix are unchanged.
   The hub should update the plan table in `CLAUDE.md`, `README.md` and the roadmap in `ch00_intro/notes/overview.tex`.
 - The Chapter 2 two-bar truss is the test case of the whole chapter. The Euler column is used only in its
