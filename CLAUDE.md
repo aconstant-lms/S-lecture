@@ -196,6 +196,13 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
   critical point, limit vs bifurcation, 3D linear buckling, Koiter's η₁, η₂ by variations) goes in Ch. 3; if too
   long, a chapter of its own between Ch. 3 and Ch. 4. Sources: author's C04 slides, Triantafyllidis notes AC.
 - 2026-11-23 (Ch. 4 thread, author): twist and natural curvature are a remark in Ch. 4 and treated in Ch. 8.
+- 2026-11-23 (Ch. 4 thread): Chapter 4 drafted. Notation: rod displacements u, w, EA, EI, r, N, M, end load P, P_c,
+  effective-length factor K, wavenumber q, elastica angle θ(s), end rotation θ₀, elliptic K(k), E(k), foundation k
+  (notation list updated). Reusable: `ch04_rods/code/python/elastica.py` (exact elastica, shooting, continuation with
+  Ch. 1 `arclength.py`) for the plates and shells threads as a code check; TikZ sketches in `ch04_rods/figures/tikz/`.
+- 2026-11-23 (Ch. 4 thread, author): Timoshenko & Gere is not available. Alfutov, *Stability of Elastic Structures*
+  (Springer, 2000) and Brush & Almroth (1975) were uploaded and used; hub: add Alfutov to `SOURCES.md` (B&A §4.6 ring on a
+  foundation for Ch. 7, §2.5–2.6 beam columns and failure of bars for Ch. 5).
 
 ## Workflow
 - One conversation per chapter; touch other files only when needed (cross-references, notation).

@@ -1,0 +1,13 @@
+% rd_foundation_sketch.tex -- Chapter 4: a beam on a Winkler foundation and its buckling wave.
+\begin{tikzpicture}[>=Stealth,x=1cm,y=1cm]
+  \fill[pattern=north east lines] (0,-1.45) rectangle (10,-1.25);
+  \draw[thick] (0,-1.25) -- (10,-1.25);
+  \foreach \x in {0.5,1.0,...,9.5}{\draw[spring,gray] (\x,-1.25) -- (\x,{-0.05+0.35*sin(deg(2*pi*\x/3.4))});}
+  \draw[cu!40,line width=1.0pt] (0,0) -- (10,0);
+  \draw[cu,line width=1.6pt,domain=0:10,samples=200] plot (\x,{0.35*sin(deg(2*pi*\x/3.4))});
+  \draw[->,line width=1.1pt,cphi] (-1.0,0) -- (-0.1,0) node[midway,above] {$P$};
+  \draw[->,line width=1.1pt,cphi] (11.0,0) -- (10.1,0) node[midway,above] {$P$};
+  \draw[|<->|,thin] (0.85,0.75) -- (4.25,0.75) node[midway,above,font=\small] {$2\pi(EI/k)^{1/4}$};
+  \node[font=\small,anchor=west] at (6.2,0.85) {beam $EI$};
+  \node[font=\small,gray,anchor=west] at (10.2,-0.8) {springs $k$};
+\end{tikzpicture}

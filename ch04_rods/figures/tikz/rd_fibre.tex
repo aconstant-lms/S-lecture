@@ -1,0 +1,30 @@
+% rd_fibre.tex -- Chapter 4: kinematics of the Euler--Bernoulli rod (author's slides C05, 8--9).
+\begin{tikzpicture}[>=Stealth,scale=1.0]
+  % axes
+  \draw[->,gray] (-0.3,0) -- (7.6,0) node[right,black] {$x$};
+  \draw[->,gray] (0,-0.3) -- (0,3.3) node[above,black] {$z$};
+  % reference rod
+  \fill[cu!12] (0.4,-0.25) rectangle (3.2,0.25);
+  \draw[cu,line width=1.4pt] (0.4,0) -- (3.2,0);
+  \draw[thick] (1.6,-0.25) -- (1.6,0.25);
+  \fill (1.6,0) circle (1.5pt) node[below right=1pt and 0pt] {\small $X$};
+  \node[cu] at (2.6,-0.55) {\small reference};
+  % deformed rod: rotated by beta, lifted by w
+  \begin{scope}[shift={(5.4,1.9)},rotate=-22]
+    \fill[cu!12] (-1.6,-0.25) rectangle (1.6,0.25);
+    \draw[cu,line width=1.4pt] (-1.6,0) -- (1.6,0);
+    \draw[thick] (0,-0.25) -- (0,0.25) -- (0,0.62);
+    \fill (0,0) circle (1.5pt);
+    \fill[cphi] (0,0.45) circle (1.3pt);
+    \draw[gray,dashed] (0,0) -- (1.9,0);
+  \end{scope}
+  \draw[gray,dashed] (5.4,1.9) -- (7.2,1.9);
+  \draw[->] (6.8,1.9) arc (0:-22:1.4) node[midway,right] {\small $\beta = -w'$};
+  % displacements of the mid-line point
+  \draw[->,thick] (1.6,0.02) -- (5.36,0.02) node[midway,below] {\small $u$};
+  \draw[->,thick] (5.4,0.02) -- (5.4,1.86) node[midway,right] {\small $w$};
+  \node[cu] at (7.1,0.8) {\small deformed};
+  \node[cphi,font=\small] at (6.2,3.0) {$\bar u = u + z\beta$};
+  \node[align=left,font=\small] at (2.0,2.4)
+    {fibre at height $z$:\\ $e = u' + \tfrac12 w'^2 - z\,w''$};
+\end{tikzpicture}

@@ -1,65 +1,773 @@
 %======================================================================
 \chapter{Rods: the elastica and beyond}\label{ch:rd}
 %======================================================================
-% Outline (23 Nov 2026). Labels of this chapter: *:rd-*  (bibitem keys rd-*).
-% Planned content, sources and open questions: ch04_rods/README.md.
+% Labels of this chapter: *:rd-*  (bibitem keys rd-*). Status: see ch04_rods/README.md.
 
 \framepart{Outline}
-\draftnote{Outline drafted 23 Nov 2026; details, sources and open questions in ch04\_rods/README.md.
-Spine (author's slides C05, slide 11): one column, three energies (no rotation, small rotations,
-large rotations), three bifurcation diagrams. Energy written $\mathcal{W}$. Prerequisite: a short
-section on the bifurcation of a 3D elastic body before this chapter (proposed in Chapter~\ref{ch:nc}).}
+A column is the first continuous structure that buckles, and the oldest: Euler solved it in
+1744. Chapter~\ref{ch:nc} gave the general tools for an elastic body: the principal branch,
+the critical point and its mode, and Koiter's coefficients written as variations
+(Section~\ref{sec:nc-bif}). This chapter applies them to a slender rod.
 
+The thread of the chapter is a single question. A straight column under an end load
+buckles at Euler's load. What happens next? The answer depends on how the rod is allowed
+to rotate, not on how it is allowed to stretch. Three energies give three different
+bifurcation diagrams (Figure~\ref{fig:rd-models}). With no rotation, the bar never buckles.
+With small rotations, it buckles at Euler's load and the buckled branch is flat: any
+amplitude is in equilibrium at the same load. With large rotations, the Euler elastica, the
+branch rises: the column is stable after buckling, but it gains very little load. A
+foundation under the rod changes the picture once more. It selects a wavelength, independent
+of the length, and it makes the post-buckling unstable.
+
+\paragraph{By the end of this chapter you should be able to:}
+\begin{itemize}
+  \item derive the energy of a rod from the strain of its fibres, and say which energy is
+        justified by the asymptotic analysis of a thin three-dimensional body;
+  \item compute Euler's load for the classical supports, use the effective length and the
+        slenderness, and tell when a column yields before it buckles;
+  \item predict the deflection of an imperfect column, read a Southwell plot and use the
+        secant formula;
+  \item solve the elastica with elliptic integrals, and compare the exact path with
+        Koiter's expansion;
+  \item find the critical load and the wavelength of a beam on an elastic foundation, and
+        explain why its post-buckling is unstable;
+  \item check a shooting code and a finite element code against the elastica.
+\end{itemize}
+
+\paragraph{Plan of the chapter.}
+Section~\ref{sec:rd-3d} goes from the three-dimensional body to the rod energy.
+Section~\ref{sec:rd-euler} treats small rotations: Euler's loads, the imperfect column and
+the design of real columns. Section~\ref{sec:rd-elastica} solves the elastica.
+Section~\ref{sec:rd-foundation} puts the rod on a foundation, and Section~\ref{sec:rd-twist}
+closes with a remark on twist and natural curvature. A summary, exercises with solutions
+(page~\pageref{sec:rd-exo}) and the references close the chapter. The theory follows
+Triantafyllidis~\cite{rd-triantafyllidis2011} and the author's lectures; the physical
+examples come from Audoly and Pomeau~\cite{rd-audoly2010}, the design practice from
+Hibbeler~\cite{rd-hibbeler2014}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch04_rods/figures/rd_models.pdf}
+  \caption{One column, three energies (Section~\ref{sec:rd-3d}). Load against the deflection at
+    mid-length, for a pinned column. Without rotations nothing happens. With small rotations
+    the column buckles at $P_c$ and at $4P_c$, and the branches are flat. With large rotations
+    (the elastica) the branches rise and the first one is stable. Solid: stable. Dashed:
+    unstable. Orange: critical points.}
+  \label{fig:rd-models}
+\end{figure}
+
+%======================================================================
 \section{From the three-dimensional body to the rod}\label{sec:rd-3d}
-\draftnote{Fibre strain $e = u' + \tfrac12 w'^2$ (rotation small but not negligible); Euler--Bernoulli kinematics,
-$e = u' + \tfrac12 w'^2 - z w''$; energy
-$\mathcal{W} = \tfrac12\int EA(u'+\tfrac12w'^2)^2 + \tfrac12\int EI\, w''^2 - \eta\,\ell$; equilibrium $N'=0$,
-$M'' - Nw'' = 0$. Gbox: the energy scale chooses the rod model. Why it works: Ciarlet's asymptotic method
-(Berm\'udez--Via\~no, Trabucho--Via\~no; Cimeti\`ere et al.\ for nonlinear rods) and $\Gamma$-convergence
-(Mora--M\"uller 2003: elastica; 2004: von K\'arm\'an rod). Cited, not proved.}
+\index{rod!energy}\index{Euler--Bernoulli kinematics}%
 
+\paragraph{The fibre.}
+Follow a short material fibre $\dd X$ along the axis of a straight rod
+(Figure~\ref{fig:rd-fibre}). The rod moves by $u(X)$ along the axis and $w(X)$ across it, so
+the fibre goes to $\dd x = (1 + u')\dd X$ along and $w'\dd X$ across. Its new length gives
+the Green--Lagrange strain~\eqref{eq:nc-green} of Chapter~\ref{ch:nc}, in one dimension:
+\begin{equation}\label{eq:rd-fibre}
+  e = \frac{\dd s^2 - \dd X^2}{2\dd X^2} = u' + \frac12\bigl(u'^2 + w'^2\bigr) .
+\end{equation}
+The rotation of the fibre is $\beta \approx -w'$. In a buckling problem the strain stays
+small, while the rotation is small but not negligible: $w'^2$ is as large as $u'$, while $u'^2$
+is much smaller. Keep the first and drop the second:
+\begin{equation}\label{eq:rd-strain-mid}
+  e = u' + \frac12\,w'^2 .
+\end{equation}
+
+\begin{figure}[ht]
+  \centering
+  \input{ch04_rods/figures/tikz/rd_fibre}
+  \caption{Euler--Bernoulli kinematics. The section stays plane and normal to the axis: it
+    rotates by $\beta = -w'$, and a fibre at height $z$ moves by $\bar u = u + z\beta$ along the axis
+    (author's lectures).}
+  \label{fig:rd-fibre}
+\end{figure}
+
+\paragraph{Euler--Bernoulli kinematics.}
+The cross-sections stay plane and normal to the axis. A point at height $z$ above the axis
+moves along it by $\bar u = u + z\beta = u - z\,w'$, and its strain is
+\begin{equation}\label{eq:rd-strain}
+  e(x,z) = u' + \frac12\,w'^2 - z\,w'' .
+\end{equation}
+This is the Love--Kirchhoff hypothesis of plates, one dimension lower.
+
+\paragraph{The energy.}
+With $\sigma = E\,e$ the strain energy is $\displaystyle\frac12\int E\,e^2\dd V$. Integrate over the
+cross-section of area $A$, with the axis through its centroid so that $\displaystyle\int z\dd A = 0$,
+and $I = \displaystyle\int z^2\dd A$. The term in $z$ drops out, and for a compressive end load $P$
+\begin{equation}\label{eq:rd-energy}
+  \mathcal{W}(u,w;P) = \frac12\int_0^L EA\Bigl(u' + \frac12 w'^2\Bigr)^2\dd x
+  + \frac12\int_0^L EI\,w''^2\dd x + P\,u(L) .
+\end{equation}
+The first term stores axial stretching, the second bending; the last is the potential of
+the load, which pushes the end $x = L$ towards $x = 0$. The normal force and the moment are
+$N = EA(u' + \tfrac12 w'^2)$ and $M = EI\,w''$. Setting the first variation to zero gives the
+equilibrium of a short piece of the deformed rod (author's lectures):
+\begin{equation}\label{eq:rd-equil}
+  N' = 0, \qquad (EI\,w'')'' - N\,w'' = 0 .
+\end{equation}
+The normal force is constant, $N = -P$, and the second equation is linear in $w$.
+
+\paragraph{Three energies.}
+The energy~\eqref{eq:rd-energy} sits between two others. If the rod is not allowed to
+rotate, $w = 0$ and only $\tfrac12 EA\,u'^2$ remains: a bar. If the rotations are large but the
+axis does not stretch, the tangent makes an angle $\theta$ with the axis, the curvature is
+$\theta'$, and only bending remains: the elastica. The three models and their diagrams are in
+Figure~\ref{fig:rd-models}.
+
+\begin{gbox}{The scale of the energy chooses the rod model}\label{sec:rd-scales}
+\index{rod!models}\index{asymptotic analysis!rods}%
+For a rod of thickness $h \ll L$, with $\theta$ the angle of the tangent:
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+  \toprule
+  rotations & energy per unit length & behaviour \\
+  \midrule
+  none (bar) & $\tfrac12 EA\,u'^2$ & no bifurcation \\
+  small & $\tfrac12 EA\,(u' + \tfrac12 w'^2)^2 + \tfrac12 EI\,w''^2$ & Euler loads, flat branches \\
+  large (elastica) & $\tfrac12 EI\,\theta'^2$, inextensible & rising branches \\
+  \bottomrule
+\end{tabular}
+\end{center}
+Which one is right is decided by the size of the energy compared with $h$, not by the
+size of the strain.
+\end{gbox}
+
+\paragraph{Why it works.}
+Picture a rod squeezed by its ends. Stretching the axis costs $EA \propto h^2$, bending it
+costs $EI \propto h^4$. A thin rod therefore avoids stretching and bends: the axis keeps its
+length and the shape is set by bending alone. This picture is made precise by the
+asymptotic method of Ciarlet's school~\cite{rd-ciarlet1988}: scale the cross-section by
+$h$, expand the three-dimensional displacement in powers of $h$, and pass to the limit.
+For linear elasticity the limit is the Bernoulli--Navier beam~\cite{rd-bermudez1984,
+rd-trabucho1996}; for nonlinear elasticity, an asymptotic expansion gives the nonlinear
+rod equations~\cite{rd-cimetiere1988}. The strongest statements use $\Gamma$-convergence:
+the energies of the three-dimensional body converge to the energy of a rod. When the
+energy per unit volume is of order $h^2$, the limit is the inextensible rod with bending and
+torsion, large rotations included: the elastica in the plane~\cite{rd-mora2003}. When the
+energy is smaller, the rotations are small and the limit is the rod of the second line of
+the table, the analogue of the F\"oppl--von K\'arm\'an plate~\cite{rd-mora2004}. Audoly and
+Pomeau derive the bending energy from the elasticity of the cross-section with less
+machinery~\cite[Section~3.3]{rd-audoly2010}. We use the results and do not prove them.
+
+%======================================================================
 \section{Small rotations: Euler loads and design}\label{sec:rd-euler}
-\draftnote{Second variation, adjacent equilibrium $EI\,w'''' + P\,w'' = 0$; four supports
-($\pi^2EI/L^2$ times $1$, $2.046$, $4$, $1/4$); effective length and Euler hyperbola; flat secondary branches
-under a dead load; imperfect column, amplification $1/(P_c/P-1)$, secant formula and Southwell plot;
-design limits (Hibbeler Ch.~13).}
+\index{Euler column}\index{critical load!column}%
 
+\paragraph{The principal branch and the critical point.}
+The straight column is an equilibrium for every load: $w = 0$, $N = -P$, $u = -Px/(EA)$. We
+follow Section~\ref{sec:nc-bif}. On this branch the second variation of~\eqref{eq:rd-energy}
+in the directions $(\delta u_1,\delta w_1)$ and $(\delta u_2,\delta w_2)$ is
+\begin{equation}\label{eq:rd-second}
+  D_{\vu\vu}\mathcal{W}[\delta\vu_1,\delta\vu_2] = \int_0^L EA\,\delta u_1'\,\delta u_2'\dd x
+  + \int_0^L \bigl(EI\,\delta w_1''\,\delta w_2'' - P\,\delta w_1'\,\delta w_2'\bigr)\dd x .
+\end{equation}
+The axial part is positive: the column never buckles by shortening. The bending part
+vanishes for a mode $w$ when, after two integrations by parts,
+\begin{equation}\label{eq:rd-euler-eq}
+  EI\,w'''' + P\,w'' = 0,
+  \qquad
+  w = C_1\sin qx + C_2\cos qx + C_3\,x + C_4,
+  \qquad q^2 = \frac{P}{EI} .
+\end{equation}
+This is the equation of the \emph{adjacent equilibrium}: a deflected shape next to the
+straight one~\cite[Section~1.3]{rd-brush1975}. The end load does no work on a lateral mode, so the critical point is a
+bifurcation (Section~\ref{sec:nc-bif-test}). The four constants and the four boundary
+conditions give a $4\times 4$ system, singular only for special values of $qL$~\cite[Section~2.2, Table~2.1]{rd-brush1975}.
+
+\begin{figure}[ht]
+  \centering
+  \input{ch04_rods/figures/tikz/rd_supports}
+  \caption{The four classical columns, their first modes (blue), Euler's load and the
+    effective-length factor $K$, with $P_c = \pi^2EI/(KL)^2$. A pin has $w = w'' = 0$, a clamp
+    $w = w' = 0$, a free end $w'' = 0$ and $EI\,w''' + P\,w' = 0$ (author's lectures).}
+  \label{fig:rd-supports}
+\end{figure}
+
+\paragraph{Four columns.}
+\index{effective length}%
+Pinned at both ends, $w = w'' = 0$ at $x = 0$ and $L$ leave $\sin qL = 0$. Clamped at one end
+and pinned at the other, the condition is $\tan qL = qL$, with the root $qL = 4.4934$. The
+four cases of Figure~\ref{fig:rd-supports} give
+\begin{equation}\label{eq:rd-euler-loads}
+  P_c = \frac{\pi^2EI}{(KL)^2},
+  \qquad
+  K = 1,\ 0.699,\ 0.5,\ 2 .
+\end{equation}
+$KL$ is the \emph{effective length}: the distance between two points of zero moment of the
+mode, the length of the equivalent pinned column. Design codes round the clamped--pinned
+factor to $0.7$~\cite[Section~13.3]{rd-hibbeler2014}. Divide by the area: the critical stress
+is $\sigma_c = \pi^2E/(KL/r)^2$, with the radius of gyration $r = \sqrt{I/A}$. It depends only on
+the \emph{slenderness} $KL/r$. This is Euler's hyperbola.
+
+\begin{gbox}{Euler's load is a limit for slender columns only}\label{sec:rd-slender}
+\index{slenderness}%
+A column buckles elastically only if $\sigma_c$ is below the yield stress $\sigma_Y$:
+\begin{equation}\label{eq:rd-slender}
+  \frac{KL}{r} > \pi\sqrt{\frac{E}{\sigma_Y}} ,
+\end{equation}
+which is $88.9$ for a steel with $E = 200$~GPa and $\sigma_Y = 250$~MPa. Shorter columns
+yield first, and their design belongs to Chapter~\ref{ch:tw}.
+\end{gbox}
+
+\paragraph{Why it works.}
+The picture is Euler's hyperbola, which rises without bound as the slenderness decreases.
+It meets the horizontal line $\sigma = \sigma_Y$ at~\eqref{eq:rd-slender}. To the right, the
+column stays elastic until it buckles. To the left, the hyperbola promises stresses that
+the material cannot carry.
+
+\begin{example}[A steel tube]\label{ex:rd-tube}
+A circular hollow section of diameter $114.3$~mm and wall $6$~mm has $A = 20.4$~cm$^2$,
+$I = 300$~cm$^4$ and $r = 38.3$~mm. At a length of $4$~m and with $E = 200$~GPa:
+pinned, $L/r = 104$ and $P_c = 370$~kN, $\sigma_c = 181$~MPa, below yield; clamped and pinned,
+$KL/r = 73$ and the formula gives $370$~MPa, above $250$~MPa: the tube yields first; clamped and
+free, $P_c = 93$~kN. The same tube carries four times less as a flagpole than as a strut.
+\end{example}
+
+\paragraph{Why the branch is flat.}
+Load the column beyond $P_c$ and look for a buckled equilibrium. The normal force is still
+$N = -P$ by~\eqref{eq:rd-equil}, so the bending equation stays the linear
+equation~\eqref{eq:rd-euler-eq}. It has a solution only at $P = P_c$, and then with any amplitude:
+the branch is flat (Figure~\ref{fig:rd-models}, middle). In Koiter's terms $\eta_1 = \eta_2 = 0$.
+The flat branch says nothing about the post-buckling; it only says that this energy does not
+contain it. The information is in the large rotations, which the next section keeps, and the
+choice matters: Exercise~\ref{exo:rd-kinematics} shows that a plausible ``improved'' strain
+gives an unstable branch, while the exact kinematics give a stable one.
+
+\paragraph{The imperfect column.}
+\index{imperfection!column}%
+A real column is never straight: this is Brush and Almroth's ``slightly crooked
+column''~\cite[Section~1.4]{rd-brush1975}. Give it an initial bow $\bar w(x)$, with $\bar w = 0$ at the
+pins, and measure $w$ from it. The fibre strain gains the term $\bar w' w'$, and the bending
+equation becomes~\cite{rd-triantafyllidis2018}
+\begin{equation}\label{eq:rd-imperfect}
+  EI\,w'''' + P\,(w + \bar w)'' = 0 .
+\end{equation}
+Expand the bow in sines, $\bar w = \sum_n \bar a_n \sin(n\pi x/L)$, and call
+$P_n = n^2\pi^2EI/L^2$ the Euler loads. Each term answers on its own:
+\begin{equation}\label{eq:rd-amplification}
+  a_n = \bar a_n\,\frac{P}{P_n - P} .
+\end{equation}
+The first term dominates near $P_1 = P_c$: the added deflection is the initial bow times
+$P/(P_c - P)$, and it grows without bound at Euler's load (Figure~\ref{fig:rd-imperfect}, left).
+At half the critical load the bow has doubled; at $0.9\,P_c$ it has grown tenfold.
+
+\paragraph{Southwell's plot.}
+\index{Southwell plot}%
+Rewrite $a = \bar a\,P/(P_c - P)$ as $a/P = a/P_c + \bar a/P_c$. Plotted against $a$, the measured
+ratio $a/P$ lies on a straight line of slope $1/P_c$ (Figure~\ref{fig:rd-imperfect}, right). A
+test far below the critical load gives $P_c$, and the intercept gives the imperfection. This
+is Southwell's method, the static twin of the vibration measurement of Chapter~\ref{ch:st}.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch04_rods/figures/rd_imperfect.pdf}
+  \caption{The imperfect pinned column. Left: load against the added deflection for three
+    initial bows; the paths approach the perfect one (gray) and never cross $P_c$. Right: the
+    Southwell plot of five readings for $\bar a = 0.002\,L$: a straight line of slope $1/P_c$.}
+  \label{fig:rd-imperfect}
+\end{figure}
+
+\paragraph{The secant formula.}
+\index{secant formula}%
+An engineer asks a different question: at which load does the most stressed fibre yield?
+For a pinned column loaded with an eccentricity $e$, the largest moment is at mid-length, and
+the largest stress is~\cite[Eq.~(13--19)]{rd-hibbeler2014}
+\begin{equation}\label{eq:rd-secant}
+  \sigma_{\max} = \frac PA\Bigl[1 + \frac{e\,c}{r^2}\,\sec\Bigl(\frac{L}{2r}\sqrt{\frac{P}{EA}}\Bigr)\Bigr],
+\end{equation}
+with $c$ the distance from the axis to the extreme fibre. The secant is the amplification
+factor of~\eqref{eq:rd-amplification} for an eccentric load, and it diverges at $P_c$. For
+the tube of Example~\ref{ex:rd-tube}, pinned, with $e = 10$~mm, the first fibre yields at
+$232$~kN, that is $0.63\,P_c$: the eccentricity costs more than a third of Euler's load.
+Real columns combine imperfections, residual stresses and plasticity; their design curves
+are the subject of Chapter~\ref{ch:tw}.
+
+%======================================================================
 \section{Large rotations: the Euler elastica}\label{sec:rd-elastica}
-\draftnote{$EI\theta'' + P\sin\theta = 0$ and the pendulum analogy (Audoly--Pomeau Ch.~3, Triantafyllidis BA-1);
-closed form with $k=\sin(\theta_0/2)$, $P/P_c = (2K(k)/\pi)^2$; table of shapes; Koiter by Box~2.2,
-$P/P_c = 1 + \theta_0^2/8$: stable-symmetric but weak; higher modes unstable.}
+\index{elastica}%
 
+\paragraph{The energy.}
+Keep the rotations large and forget the stretching. A pinned column of length $L$ is then
+described by the angle $\theta(s)$ of its tangent, as a function of the arc length $s$. The
+end moves in by $\displaystyle\int_0^L (1 - \cos\theta)\dd s$, so
+\begin{equation}\label{eq:rd-elastica-energy}
+  \mathcal{W}(\theta,P) = \int_0^L \Bigl[\frac12 EI\,\theta'^2 - P\,(1 - \cos\theta)\Bigr]\dd s .
+\end{equation}
+This is the energy of Section~\ref{sec:nc-bif}. The pins carry no moment, so $\theta' = 0$ at
+both ends, the natural condition. The first variation gives
+\begin{equation}\label{eq:rd-elastica-eq}
+  EI\,\theta'' + P\sin\theta = 0 .
+\end{equation}
+
+\paragraph{The pendulum.}
+\index{Kirchhoff's kinetic analogy}%
+Read $s$ as time. Then~\eqref{eq:rd-elastica-eq} is the equation of a pendulum, with $\theta$
+its angle from the vertical (Figure~\ref{fig:rd-pendulum}). This is Kirchhoff's kinetic
+analogy~\cite[Section~3.8]{rd-audoly2010}. A buckled column is half an oscillation: it leaves
+one pin with the end rotation $\theta_0$ and no curvature, the pendulum at the end of its swing,
+and reaches the other pin with $-\theta_0$. Euler's load is the small-amplitude limit. A
+pendulum swinging wider takes longer; a column bent further needs a larger load to fit the
+same length.
+
+\begin{figure}[ht]
+  \centering
+  \input{ch04_rods/figures/tikz/rd_pendulum}
+  \caption{Kirchhoff's kinetic analogy. The angle of the tangent along the elastica obeys the
+    equation of a pendulum in time. The buckled pinned column is half a swing.}
+  \label{fig:rd-pendulum}
+\end{figure}
+
+\paragraph{The exact solution.}
+Multiply~\eqref{eq:rd-elastica-eq} by $\theta'$ and integrate: the ``energy of the pendulum'' is
+conserved,
+\begin{equation}\label{eq:rd-first-integral}
+  \frac12 EI\,\theta'^2 = P\,(\cos\theta - \cos\theta_0) .
+\end{equation}
+Separate the variables and substitute $\sin(\theta/2) = k\sin\phi$, with
+$k = \sin(\theta_0/2)$~\cite[pp.~85--89]{rd-triantafyllidis2011}. Half a swing is two quarter periods
+$K(k)$, the complete elliptic integral of the first kind, so $L\sqrt{P/EI} = 2K(k)$:
+\begin{equation}\label{eq:rd-elastica-exact}
+  \frac{P}{P_c} = \Bigl(\frac{2K(k)}{\pi}\Bigr)^2,
+  \qquad
+  \frac{w_{\max}}{L} = \frac{k}{K(k)},
+  \qquad
+  \frac{\Delta}{L} = 2 - \frac{2E(k)}{K(k)} .
+\end{equation}
+$w_{\max}$ is the deflection at mid-length, $\Delta$ the end shortening, and $E(k)$ the
+complete integral of the second kind. Table~\ref{tab:rd-elastica} and
+Figure~\ref{fig:rd-elastica} show the path and the shapes. At $\theta_0 = 130.7^\circ$ the ends
+meet, at $P = 2.18\,P_c$; beyond, the moving end passes the fixed one, which a test allows only if
+the two supports are offset out of the plane.
+
+\begin{table}[ht]
+\centering
+\caption{The pinned elastica: exact load, Koiter's expansion, mid-length deflection and end
+  shortening, from~\eqref{eq:rd-elastica-exact}. The shooting code of
+  Exercise~\ref{exo:rd-computer-shooting} reproduces every exact value.}
+\label{tab:rd-elastica}
+\begin{tabular}{@{}rcccc@{}}
+  \toprule
+  $\theta_0$ & $P/P_c$ exact & $1 + \theta_0^2/8$ & $w_{\max}/L$ & $\Delta/L$ \\
+  \midrule
+  $10^\circ$ & $1.0038$ & $1.0038$ & $0.055$ & $0.008$ \\
+  $20^\circ$ & $1.0154$ & $1.0152$ & $0.110$ & $0.030$ \\
+  $40^\circ$ & $1.0637$ & $1.0609$ & $0.211$ & $0.119$ \\
+  $60^\circ$ & $1.1517$ & $1.1371$ & $0.297$ & $0.259$ \\
+  $90^\circ$ & $1.3932$ & $1.3084$ & $0.381$ & $0.543$ \\
+  $120^\circ$ & $1.8848$ & $1.5483$ & $0.402$ & $0.877$ \\
+  $130.71^\circ$ & $2.1834$ & $1.6505$ & $0.392$ & $1.000$ \\
+  $150^\circ$ & $3.1054$ & $1.8567$ & $0.349$ & $1.222$ \\
+  \bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch04_rods/figures/rd_elastica.pdf}
+  \caption{The pinned elastica. Left: load against end rotation, exact (blue), Koiter's
+    expansion (green) and shooting (dots). Right: shapes for $\theta_0 = 20^\circ$, $60^\circ$,
+    $90^\circ$, $131^\circ$ (the ends touch, orange) and $160^\circ$.}
+  \label{fig:rd-elastica}
+\end{figure}
+
+\begin{gbox}{The elastica is stable after buckling, but its reserve of strength is tiny}\label{sec:rd-reserve}
+\index{post-buckling!elastica}%
+Near the critical load, $P/P_c = 1 + \theta_0^2/8 + \dots$: a stable symmetric point. At one per
+cent above $P_c$ the column is already bent by $\theta_0 = 16^\circ$, with a deflection of
+$9\,\%$ of its length. For design, Euler's load is the strength of the column.
+\end{gbox}
+
+\paragraph{Why it works.}
+Expand $K(k) = \tfrac\pi2\bigl(1 + \tfrac14 k^2 + \dots\bigr)$ in~\eqref{eq:rd-elastica-exact}: $P/P_c =
+1 + \tfrac12 k^2 + \dots$, and $k \approx \theta_0/2$. Koiter's coefficients of
+Section~\ref{sec:nc-koiter-var}, computed for the elastica in~\eqref{eq:nc-elastica-koiter},
+give the same coefficient without the elliptic functions. The branch rises, so it is stable
+(Section~\ref{sec:ld-koitercoef}), but it rises with the square of the rotation: a visible
+deflection costs almost no load. Plates behave differently, as Chapter~\ref{ch:pl} will show.
+The branches from the higher Euler loads, $n^2P_c$, start where the straight column has already
+lost its stability, and they are unstable.
+
+\paragraph{A rod standing up.}
+Audoly and Pomeau work the elastica out on a rod clamped at its foot and carrying a weight at
+its top~\cite[Appendix~A]{rd-audoly2010}. The clamped--free rod of length $L$ is half of the
+pinned rod of length $2L$: its critical load is $\pi^2EI/(4L^2)$, the path is the same
+function~\eqref{eq:rd-elastica-exact} of the tip rotation, and the analysis near the threshold
+gives the square-root growth of a supercritical pitchfork (Exercise~\ref{exo:rd-standing}).
+Pushing the top sideways breaks the symmetry, and the pitchfork unfolds into the cusp of
+Chapter~\ref{ch:st}.
+
+%======================================================================
 \section{Beams on an elastic foundation: wavelength selection}\label{sec:rd-foundation}
-\draftnote{$EI\,w'''' + P\,w'' + k\,w = 0$; $P_c = 2\sqrt{kEI}$, wavelength $2\pi(EI/k)^{1/4}$ independent of
-the length; finite length and mode jumps; rails, pipelines, film on substrate. With the elastica the periodic
-branch is unstable, $P/P_c \approx 1 - A^2/8$ (to confirm); localisation cited.}
+\index{elastic foundation}\index{wavelength selection}%
 
+\paragraph{The model.}
+Rest the beam on a bed of springs, $k$ per unit length (a Winkler foundation,
+Figure~\ref{fig:rd-foundation-sketch}; Brush and Almroth~\cite[Section~2.2d]{rd-brush1975},
+Alfutov~\cite[Section~3.3]{rd-alfutov2000}). The foundation adds $\displaystyle\frac12\int k\,w^2\dd x$ to the
+energy and $k\,w$ to the bending equation:
+\begin{equation}\label{eq:rd-foundation-eq}
+  EI\,w'''' + P\,w'' + k\,w = 0 .
+\end{equation}
+Try a wave, $w = \sin qx$. It is a solution when
+\begin{equation}\label{eq:rd-Pq}
+  P(q) = EI\,q^2 + \frac{k}{q^2} .
+\end{equation}
+Short waves cost bending, long waves cost the foundation (Figure~\ref{fig:rd-foundation},
+left). The minimum is at
+\begin{equation}\label{eq:rd-foundation-crit}
+  q_c = \Bigl(\frac{k}{EI}\Bigr)^{1/4},
+  \qquad
+  P_c = 2\sqrt{k\,EI} .
+\end{equation}
+
+\begin{figure}[ht]
+  \centering
+  \input{ch04_rods/figures/tikz/rd_foundation_sketch}
+  \caption{A beam on a Winkler foundation under an end load. It buckles into a wave whose
+    length is set by $EI$ and $k$.}
+  \label{fig:rd-foundation-sketch}
+\end{figure}
+
+\begin{gbox}{A foundation selects the wavelength, independently of the length}\label{sec:rd-wavelength}
+\index{wavelength selection}%
+A long beam on a foundation buckles at $P_c = 2\sqrt{kEI}$ into a wave of length
+$2\pi(EI/k)^{1/4}$, set by the stiffnesses and not by the length. A finite pinned beam takes the
+number of half-waves $n$ closest to that wavelength, and jumps from $n$ to $n + 1$ half-waves
+at the lengths $L = \sqrt{n(n+1)}\,\pi/q_c$.
+\end{gbox}
+
+\paragraph{Why it works.}
+The competition is the picture: bending pushes $P(q)$ up for short waves, the foundation for
+long ones, and the minimum sits where the two costs are equal, $EIq^2 = k/q^2$. A pinned
+beam of length $L$ can only take $q = n\pi/L$, which gives a family of parabolas in $L$, one for
+each $n$ (Figure~\ref{fig:rd-foundation}, right). The lowest one is a festoon: two neighbours
+cross where $P_n = P_{n+1}$, which gives the lengths of the box. As $L$ grows, the festoon
+touches $P_c$ more and more often, and the infinite beam picks $q_c$.
+
+Two cautions come from Alfutov~\cite[pp.~104--106]{rd-alfutov2000}. A single sine, the first mode
+of the free column, is not a safe guess here: the lowest load may belong to any $n$, and one
+must search the whole family. And the limit $2\sqrt{kEI}$ holds when both ends are held
+laterally; if one end may move sideways, the critical load of a long beam tends to the
+smaller value $\sqrt{kEI}$.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch04_rods/figures/rd_foundation.pdf}
+  \caption{The beam on a foundation. Left: the load of a wave against its wavenumber,
+    bending plus foundation. Right: the first critical load of a pinned beam of length $L$;
+    each parabola is one number of half-waves, and the mode jumps at the orange points.}
+  \label{fig:rd-foundation}
+\end{figure}
+
+\paragraph{Where foundations appear.}
+A rail on its sleepers and ballast, a pipeline buried in soil, a stiff skin on a soft core, a
+thin film on a soft substrate: in each the surrounding medium acts as a foundation, and the
+wavelength is chosen by the competition of~\eqref{eq:rd-Pq}. For a thin sheet the same
+balance gives the wavelength of wrinkles, $\lambda \propto (B/K)^{1/4}$ with $B$ the bending
+stiffness and $K$ the stiffness of the ``foundation'', whatever its origin~\cite{rd-cerda2003}.
+Chapter~\ref{ch:pl} returns to wrinkling. The numbers matter: a rail resting on a vertical
+foundation would need a temperature rise of more than $1000$~K to buckle vertically
+(Exercise~\ref{exo:rd-rail}). Track buckles sideways, where the lateral resistance is far smaller.
+
+\paragraph{Post-buckling on a foundation.}
+\index{post-buckling!elastic foundation}%
+Keep the large rotations of the elastica and add the foundation. The springs act per unit
+length of the ground, $\dd x = \cos\theta\dd s$, so in the arc length the energy is
+\begin{equation}\label{eq:rd-foundation-energy}
+  \mathcal{W} = \int \Bigl[\frac12 EI\,\theta'^2 + \frac12 k\,w^2\cos\theta - P\,(1 - \cos\theta)\Bigr]\dd s,
+  \qquad w' = \sin\theta .
+\end{equation}
+A Ritz approximation with two harmonics, $w = A\cos q_cs + B\cos 3q_cs$, gives the path near the
+critical load. In units $EI = k = 1$ (so $q_c = 1$):
+\begin{equation}\label{eq:rd-foundation-path}
+  \frac{P}{P_c} = \frac{8 + A^2}{8 + 3A^2} \approx 1 - \frac{A^2}{4},
+  \qquad\text{against}\qquad
+  \frac{P}{P_c} = \frac{8 + 4A^2}{8 + 3A^2} \approx 1 + \frac{A^2}{8}
+\end{equation}
+for the free elastica in the same variables. More harmonics change nothing at this order.
+
+\begin{gbox}{On a linear foundation the elastica becomes unstable after buckling}\label{sec:rd-foundation-unstable}
+\index{imperfection sensitivity!elastic foundation}%
+The same rod that is stable symmetric alone is unstable symmetric on a linear foundation:
+$\eta_2 < 0$. It is sensitive to imperfections, with the two-thirds law of
+Section~\ref{sec:ld-powerlaws}.
+\end{gbox}
+
+\paragraph{Why it works.}
+On the free column the bending energy grows faster than the load can feed it: the curvature
+$\theta'$ is larger than $w''$ by the factor $1 + \tfrac12 w'^2$. On the foundation half the energy is
+in the springs, and the springs gain nothing from the large rotations: on the contrary, a
+tilted rod covers less ground, $\cos\theta < 1$, and the foundation softens. The balance turns
+negative. The unstable periodic path is not the end of the story: a long strut prefers to
+buckle in a localised packet of waves, as Hunt, Wadee and Shiacolas
+showed~\cite{rd-hunt1993}. Cylindrical shells, which behave like a beam on a foundation
+(Chapter~\ref{ch:cy}), owe much of their imperfection sensitivity to the same mechanism.
+
+%======================================================================
 \section{Twist and natural curvature}\label{sec:rd-twist}
-\draftnote{A remark only (author, 23 Nov 2026); the full treatment is in Chapter~8: Kirchhoff rod in 3D,
-Greenhill's shaft, localised helix, naturally curved rods.}
+\index{rod!twist}\index{Kirchhoff rod}%
 
+\paragraph{A remark.}
+This chapter stayed in the plane. A rod in space bends about two axes and twists, and its
+energy per unit length is $\tfrac12(EI_1\kappa_1^2 + EI_2\kappa_2^2 + GJ\tau^2)$, with two curvatures
+and the twist $\tau$. Its equilibrium equations, the Kirchhoff equations, still have a kinetic
+analogy, now with the spinning top~\cite[Sections~3.6--3.8]{rd-audoly2010}. Twist brings new
+instabilities: a shaft under torque buckles into a helix (Greenhill's problem), and a long
+twisted rod forms a localised loop, the localised helix of Audoly and
+Pomeau~\cite[Section~3.9]{rd-audoly2010}, familiar from telephone cords and garden hoses. A rod
+that is curved at rest, or a strip curved across its width, stores energy as it is
+straightened, and can snap between two shapes. These are the tape springs and deployable
+structures of Chapter~\ref{ch:sh}, where twist and natural curvature are treated in full.
+
+%======================================================================
 \framepart{Summary}
 \begin{gbox*}
 \begin{itemize}
-  \item \textbf{To be written.} \draftnote{Rotations decide the post-buckling; Euler loads and effective length;
-  the elastica is stable but weak; a foundation picks the wavelength and is unstable; trust a code after the elastica.}
+  \item \textbf{Rotations decide.} Three energies, one column: no rotation, no buckling; small
+        rotations, Euler's load and a flat branch; large rotations, the rising branch of the
+        elastica. Asymptotic analysis of the thin body selects the model by the size of the
+        energy.
+  \item \textbf{Euler's loads.} $P_c = \pi^2EI/(KL)^2$ with $K = 1$, $0.699$, $0.5$, $2$ for
+        pinned, clamped--pinned, clamped and clamped--free columns. Elastic buckling only for
+        $KL/r > \pi\sqrt{E/\sigma_Y}$.
+  \item \textbf{Imperfections.} A bow is amplified by $P/(P_c - P)$; Southwell's plot gives $P_c$
+        and the bow from tests far below it; the secant formula gives the load of first yield.
+  \item \textbf{The elastica.} $EI\theta'' + P\sin\theta = 0$ is a pendulum in space;
+        $P/P_c = (2K(k)/\pi)^2 = 1 + \theta_0^2/8 + \dots$: stable, but one per cent of load buys a
+        deflection of $9\,\%$ of the length.
+  \item \textbf{Foundation.} $P_c = 2\sqrt{kEI}$ and the wavelength $2\pi(EI/k)^{1/4}$, independent
+        of the length; mode jumps at $L = \sqrt{n(n+1)}\,\pi/q_c$. With large rotations the
+        post-buckling is unstable, $P/P_c \approx 1 - A^2/4$.
+  \item \textbf{Codes.} Shooting and finite elements are trusted after they reproduce the elastica.
 \end{itemize}
 \end{gbox*}
 
+%======================================================================
 \framepart{Exercises}\label{sec:rd-exo}
 \framesub{Short questions}
-\draftnote{Effective lengths, flat branch, Southwell, pendulum analogy, rail wavelength, $h^2$ against $h^4$,
-yield or buckle (SI units).}
+
+\exercise{Effective length}\label{exo:rd-efflength}
+\index{effective length}%
+A column of a frame is clamped in its foundation and pinned to a stiff beam that cannot sway.
+By how much does its critical load exceed that of the same column pinned at both ends? What if
+the beam can sway freely?
+\begin{solution}
+Clamped--pinned: $K = 0.699$, so $P_c$ is $1/0.699^2 = 2.05$ times the pinned value. If the top
+can sway, the column is clamped and free at the top: $K = 2$, a quarter of the pinned value,
+eight times less than without sway.
+\end{solution}
+
+\exercise{A flat branch}\label{exo:rd-flat}
+\index{post-buckling!small rotations}%
+Why does the energy~\eqref{eq:rd-energy} predict that a pinned column carries $P_c$ at every
+amplitude? Is that a property of real columns?
+\begin{solution}
+Under a dead load the normal force is $N = -P$ by~\eqref{eq:rd-equil}, and the bending equation is
+linear in $w$: it has solutions only at $P = P_c$, with any amplitude. It is a property of the
+model: the energy keeps rotations only to the first order, and the post-buckling lives in the
+next order. The elastica gives $P/P_c = 1 + \theta_0^2/8$.
+\end{solution}
+
+\exercise{Southwell from three readings}\label{exo:rd-southwell}
+\index{Southwell plot}%
+A pinned strut deflects at mid-length by $1.0$, $2.25$ and $6.0$~mm under $50$, $75$ and $100$~kN.
+Estimate its critical load and its initial bow.
+\begin{solution}
+$a/P = 0.020$, $0.030$, $0.060$~mm/kN against $a = 1.0$, $2.25$, $6.0$~mm: a straight line of slope
+$(0.060 - 0.020)/5.0 = 0.008$~kN$^{-1}$, so $P_c = 125$~kN. At $a = 1$~mm, $0.020 = 0.008 + \bar a/125$
+gives $\bar a = 1.5$~mm. None of the loads exceeded $80\,\%$ of $P_c$.
+\end{solution}
+
+\exercise{The pendulum}\label{exo:rd-pendulum}
+\index{Kirchhoff's kinetic analogy}%
+In the analogy between the elastica and the pendulum, what corresponds to the length of the
+column, to Euler's load and to the end rotation? Why does the load rise with the amplitude?
+\begin{solution}
+The length is half a period of the pendulum, $P/EI$ is $g/\ell$, the end rotation is the
+amplitude of the swing. A wider swing takes longer, so to fit half a swing into the same length
+$L$ the ``gravity'' $P/EI$ must grow.
+\end{solution}
+
+\exercise{Ten per cent more}\label{exo:rd-ten}
+\index{elastica}%
+How far is a pinned elastica bent at $P = 1.1\,P_c$? Use Table~\ref{tab:rd-elastica} or the
+expansion.
+\begin{solution}
+$1 + \theta_0^2/8 = 1.1$ gives $\theta_0 \approx 0.89$~rad $= 51^\circ$; the exact solution gives
+$49.5^\circ$, between the rows $40^\circ$ and $60^\circ$ of the table, and a deflection of $0.25\,L$, a
+quarter of the length. A column ``ten per cent above Euler'' is a wreck.
+\end{solution}
+
+\exercise{Why rails do not buckle vertically}\label{exo:rd-rail}
+\index{elastic foundation}%
+A UIC~60 rail has $E = 210$~GPa, $I = 3055$~cm$^4$ for vertical bending, $A = 76.7$~cm$^2$ and
+$\alpha = 12\times10^{-6}$~K$^{-1}$; take a vertical foundation modulus $k = 30$~MN/m$^2$. Compute
+$P_c$, the wavelength, and the temperature rise of a fully restrained rail that reaches $P_c$.
+\begin{solution}
+$P_c = 2\sqrt{kEI} = 27.7$~MN, wavelength $2\pi(EI/k)^{1/4} = 4.3$~m. A restrained rail carries
+$EA\alpha\,\Delta T = 19.3$~kN per kelvin, so $\Delta T = 1440$~K. Vertical buckling is impossible; track
+buckles laterally, where the resistance of the ballast is far smaller and frictional.
+\end{solution}
+
+\exercise{Bend or stretch?}\label{exo:rd-bend}
+\index{rod!models}%
+A rod of thickness $h$ and length $L$ must shorten by $\Delta$. Compare the energy of shortening
+it uniformly with that of bending it into a half sine wave with the same end shortening. Which
+wins for a thin rod?
+\begin{solution}
+Shortening: $\tfrac12 EA\,\Delta^2/L$, with $EA \propto h$ per unit width. Bending: the amplitude $a$
+of $a\sin(\pi x/L)$ gives $\Delta = \pi^2a^2/(4L)$ and costs $\tfrac14 EI\,\pi^4a^2/L^3 = EI\pi^2\Delta/L^2$, with
+$EI \propto h^3$. The ratio bending/stretching is $\propto (h/L)^2(L/\Delta)$: bending wins as soon as
+$\Delta/L \gg (h/L)^2$, which for a thin rod is almost always.
+\end{solution}
+
+\exercise{Yield or buckle?}\label{exo:rd-yield}
+\index{slenderness}%
+For the tube of Example~\ref{ex:rd-tube}, at which length does a pinned column stop buckling
+elastically? Take $\sigma_Y = 250$~MPa.
+\begin{solution}
+$L/r = \pi\sqrt{E/\sigma_Y} = 88.9$, so $L = 88.9 \times 38.3$~mm $= 3.40$~m. Below, the tube yields
+before Euler's load and the design curves of Chapter~\ref{ch:tw} apply.
+\end{solution}
+
 \framesub{Problems}
-\draftnote{Triantafyllidis H3, H4; clamped--free elastica; finite beam on a foundation; secant-formula design (Hibbeler).}
+
+\exercise{The kinematics decide the post-buckling}\label{exo:rd-kinematics}
+\index{post-buckling!kinematics}%
+A pinned beam of length $L$ carries an axial force $P$ (after Triantafyllidis, homework~3). Its
+energy is $\displaystyle\frac12\int EA\,e^2 + \frac12\int EI\,\kappa^2 + P\,u(L)$ with three choices: (a)~$e = u' + \tfrac12w'^2$,
+$\kappa = -w''$; (b)~$e = u' + \tfrac12(u'^2 + w'^2)$, $\kappa = -w''$; (c)~the exact stretch and curvature.
+For each, find the critical load and the first term of the post-buckling path in the
+inextensible limit $EA \to \infty$.
+\begin{solution}
+All three give $P_c = \pi^2EI/L^2$ with the mode $\sin(\pi x/L)$; they differ after it. Write $a_0$ for
+the slope at the pins. (a)~The axial equation gives $N = -P$ and the bending equation is linear: the
+branch is flat, $P = P_c$ for every amplitude. (b)~The axial equation is now $(N(1 + u'))' = 0$, so
+$N = -P/(1 + u')$, and inextensibility $e = 0$ gives $1 + u' = \sqrt{1 - w'^2}$. The bending equation
+for $\varphi = w'$ becomes $EI\varphi'' + P\varphi/\sqrt{1 - \varphi^2} = 0$; projecting on the mode gives
+$P/P_c = 1 - \tfrac38 a_0^2$: \emph{unstable}, a wrong prediction from a plausible correction.
+(c)~The exact kinematics give the elastica, $P/P_c = 1 + \tfrac18 a_0^2$. Shooting confirms
+$-0.375$ and $+0.125$. The moral is Figure~\ref{fig:rd-models}: the post-buckling of a column is
+in the rotations, and they must be treated consistently.
+\lstinputlisting[firstline=4]{ch04_rods/code/python/ex_kinematics.py}
+\end{solution}
+
+\exercise{The wavy column}\label{exo:rd-wavy}
+\index{imperfection!column}%
+After Triantafyllidis (homework~4), a pinned beam has the stress-free shape
+\[
+  \bar w(x) = \sum_n \bar a_n\sin\frac{n\pi x}{L} .
+\]
+Take $e = u' + \tfrac12 w'^2 + \bar w'w'$ and $\kappa = -w''$, with $w$ measured from the
+initial shape. (a)~Derive~\eqref{eq:rd-imperfect}. (b)~Find the amplitudes $a_n$ of $w$. (c)~Which
+component of the imperfection matters most near $P_c$?
+\begin{solution}
+(a)~The axial equation gives $N = -P$; the bending equation is $EIw'''' - N(w + \bar w)'' = 0$.
+(b)~Term by term, $EI(n\pi/L)^4a_n - P(n\pi/L)^2(a_n + \bar a_n) = 0$, so $a_n = \bar a_nP/(P_n - P)$.
+(c)~Only $n = 1$ diverges at $P_c$; the higher components are amplified by $P_c/(n^2P_c - P_c)
+= 1/(n^2 - 1)$ at most. The component of the imperfection along the mode is the one that counts
+(Section~\ref{sec:nc-imperfect-switch}).
+\end{solution}
+
+\exercise{A rod standing up}\label{exo:rd-standing}
+\index{elastica}%
+A vertical rod of length $L$, clamped at its foot, carries a weight $P$ at its free top
+(Audoly and Pomeau, Appendix~A). (a)~Show that it is half of a pinned elastica of length $2L$, and
+give its critical load. (b)~Give the load and the sway of the top for a tip rotation $\theta_0$.
+(c)~Near the threshold, how does $\theta_0$ grow with $P - P_c$?
+\begin{solution}
+(a)~The pinned elastica of length $2L$ is symmetric about its middle, where the tangent is
+parallel to the load and the moment is largest: cut there and clamp. $P_c = \pi^2EI/(2L)^2$.
+(b)~$P/P_c = (2K(k)/\pi)^2$ with $k = \sin(\theta_0/2)$, the same function; the sway of the top is
+the mid deflection of the long column, $2Lk/K(k)$. (c)~$P/P_c \approx 1 + \theta_0^2/8$ gives
+$\theta_0 \approx \sqrt{8(P - P_c)/P_c}$: the square root of a supercritical pitchfork, as in Audoly and
+Pomeau's equation~(A.21).
+\end{solution}
+
+\exercise{A beam on a foundation of finite length}\label{exo:rd-festoon}
+\index{wavelength selection}%
+A pinned beam of length $L$ rests on a foundation with $q_c = (k/EI)^{1/4}$. (a)~Show that
+$P_n/P_c = \tfrac12(m^2 + 1/m^2)$ with $m = n\pi/(q_cL)$. (b)~How many half-waves for $L = 3\pi/q_c$, and at
+which load? (c)~What happens for $L = \sqrt6\,\pi/q_c$?
+\begin{solution}
+(a)~Put $q = n\pi/L$ in~\eqref{eq:rd-Pq} and divide by $2\sqrt{kEI}$. (b)~$n = 3$ gives $m = 1$ and
+$P = P_c$ exactly: the length holds three of the preferred half-waves. (c)~$P_2 = P_3$ there: the two
+modes have the same critical load, a compound point, and any small change of length decides
+between them.
+\end{solution}
+
+\exercise{Design of a strut with the secant formula}\label{exo:rd-secant}
+\index{secant formula}%
+The tube of Example~\ref{ex:rd-tube}, $4$~m long and pinned, carries a load with an
+eccentricity $e$. Find the load of first yield for $e = 0$, $2$, $10$ and $20$~mm, and compare with
+$P_c$ and with the squash load $\sigma_YA$.
+\begin{solution}
+$P_c = 370$~kN, $\sigma_YA = 510$~kN. With~\eqref{eq:rd-secant}: $e = 0$ gives $P_c$ (the perfect
+column buckles before it yields); $e = 2$~mm, $314$~kN $= 0.85\,P_c$; $e = 10$~mm, $232$~kN $= 0.63\,P_c$;
+$e = 20$~mm, $185$~kN $= 0.50\,P_c$. Even a small eccentricity matters, and its effect is largest for columns of
+intermediate slenderness, where yield and buckling compete.
+\lstinputlisting[firstline=4]{ch04_rods/code/python/ex_columns.py}
+\end{solution}
+
 \framesub{Computer exercises}
-\draftnote{Elastica by shooting and continuation (Python); elliptic solution (Mathematica); FEniCS and Cast3M
-against the closed form.}
+
+\exercise{Computer: the elastica by shooting}\label{exo:rd-computer-shooting}
+\index{shooting method}%
+Integrate $\theta'' = -P\sin\theta$ from a pin, with $\theta(0) = \theta_0$ and $\theta'(0) = 0$, and adjust $P$ until
+$\theta'(L) = 0$. Compare with~\eqref{eq:rd-elastica-exact}. Then follow the branch with the
+pseudo-arclength code of Chapter~\ref{ch:st}, the unknowns being $(\theta_0, P)$.
+\begin{solution}
+In units $EI = L = 1$ the shot lands with the exact load to all printed digits:
+$P/P_c = 1.003818$ at $10^\circ$, $1.393204$ at $90^\circ$, $3.105362$ at $150^\circ$. The continuation
+follows $161$ points up to $\theta_0 = 141^\circ$ and agrees with the exact path to $2\times10^{-11}$.
+Writing the energy as a sum over $N$ segments instead, as Audoly and
+Pomeau do~\cite[Section~A.2]{rd-audoly2010}, gives the planar version of the discrete elastic
+rods used in computer graphics~\cite{rd-bergou2008}. The
+ends touch at $130.71^\circ$, $P = 2.1834\,P_c$; one per cent above $P_c$ is reached at
+$\theta_0 = 16.2^\circ$ with $w/L = 0.089$.
+\lstinputlisting[firstline=4]{ch04_rods/code/python/elastica.py}
+\end{solution}
+
+\exercise{Computer: the foundation}\label{exo:rd-computer-foundation}
+\index{elastic foundation}%
+Compute the mode jumps of a finite beam on a foundation (Alfutov~\cite[Fig.~3.13]{rd-alfutov2000}) and the post-buckling of the elastica
+with and without the foundation by a two-harmonic Ritz approximation.
+\begin{solution}
+Jumps at $L q_c/\pi = \sqrt2$, $\sqrt6$, $\sqrt{12}$, $\sqrt{20}$. Free: $P/P_c = 4(A^2 + 2)/(3A^2 + 8)$;
+foundation: $(A^2 + 8)/(3A^2 + 8)$. A run with four extra harmonics and the full (not expanded)
+energy gives the same coefficient $-1/4$.
+\lstinputlisting[firstline=4]{ch04_rods/code/python/ex_foundation.py}
+\end{solution}
+
+\exercise{Computer: the elastica in FEniCS and Cast3M}\label{exo:rd-computer-fe}
+\index{finite elements!elastica}%
+Compute the elastica with a finite element code in two ways: (a)~a one-dimensional rod in the
+angle $\theta$, (b)~a thin two-dimensional strip in plane strain. Compare $P/P_c$ against the tip or
+mid-length rotation with~\eqref{eq:rd-elastica-exact}.
+\begin{solution}
+The inputs are in the exercise session of this chapter. The one-dimensional model is the
+energy~\eqref{eq:rd-elastica-energy} discretised by linear elements; it must reproduce the table
+to the accuracy of the mesh. The strip must reproduce it to $O(h^2/L^2)$, the error of the rod
+model itself: a direct check of Section~\ref{sec:rd-3d}. Trust the code only after it does
+(Section~\ref{sec:nc-trust}).
+\end{solution}
 
 \begin{chapterbib}{99}
 \bibitem{rd-audoly2010} B.~Audoly and Y.~Pomeau, \emph{Elasticity and Geometry: From Hair Curls to the Non-linear Response of Shells}, Oxford University Press, 2010.
-\bibitem{rd-timoshenko1961} S.~P.~Timoshenko and J.~M.~Gere, \emph{Theory of Elastic Stability}, 2nd ed., McGraw-Hill, New York, 1961.
-\bibitem{rd-bergou2008} M.~Bergou, M.~Wardetzky, S.~Robinson, B.~Audoly and E.~Grinspun, Discrete elastic rods, \emph{ACM Transactions on Graphics} 27 (2008) 63.
-\bibitem{rd-reis2015} P.~M.~Reis, A perspective on the revival of structural (in)stability with novel opportunities for function: from buckliphobia to buckliphilia, \emph{Journal of Applied Mechanics} 82 (2015) 111001.
 \bibitem{rd-triantafyllidis2011} N.~Triantafyllidis, \emph{Stability of Solids: from Structures to Materials}, lecture notes MEC563, \'Ecole polytechnique, Palaiseau, 2011.
+\bibitem{rd-triantafyllidis2018} N.~Triantafyllidis, \emph{Stability of Solids: from Structures to Materials}, lecture slides and homeworks MEC553 (Lectures~3--4, homeworks~3--4), \'Ecole polytechnique, Palaiseau, 2018.
+\bibitem{rd-hibbeler2014} R.~C.~Hibbeler, \emph{Mechanics of Materials}, 9th ed., Pearson, Boston, 2014, Chapter~13.
+\bibitem{rd-brush1975} D.~O.~Brush and B.~O.~Almroth, \emph{Buckling of Bars, Plates, and Shells}, McGraw-Hill, New York, 1975.
+\bibitem{rd-alfutov2000} N.~A.~Alfutov, \emph{Stability of Elastic Structures}, Springer, Berlin, 2000.
+\bibitem{rd-ciarlet1988} P.~G.~Ciarlet, \emph{Mathematical Elasticity, Vol.~I: Three-Dimensional Elasticity}, North-Holland, Amsterdam, 1988.
+\bibitem{rd-bermudez1984} A.~Berm\'udez and J.~M.~Via\~no, Une justification des \'equations de la thermo\'elasticit\'e des poutres \`a section variable par des m\'ethodes asymptotiques, \emph{RAIRO Analyse num\'erique} 18 (1984) 347--376.
+\bibitem{rd-trabucho1996} L.~Trabucho and J.~M.~Via\~no, Mathematical modelling of rods, in P.~G.~Ciarlet and J.-L.~Lions (eds.), \emph{Handbook of Numerical Analysis}, Vol.~IV, North-Holland, Amsterdam, 1996, 487--974.
+\bibitem{rd-cimetiere1988} A.~Cimeti\`ere, G.~Geymonat, H.~Le~Dret, A.~Raoult and Z.~Tutek, Asymptotic theory and analysis for displacements and stress distribution in nonlinear elastic straight slender rods, \emph{Journal of Elasticity} 19 (1988) 111--161.
+\bibitem{rd-mora2003} M.~G.~Mora and S.~M\"uller, Derivation of the nonlinear bending-torsion theory for inextensible rods by $\Gamma$-convergence, \emph{Calculus of Variations and Partial Differential Equations} 18 (2003) 287--305.
+\bibitem{rd-mora2004} M.~G.~Mora and S.~M\"uller, A nonlinear model for inextensible rods as a low energy $\Gamma$-limit of three-dimensional nonlinear elasticity, \emph{Annales de l'Institut Henri Poincar\'e (C) Analyse non lin\'eaire} 21 (2004) 271--293.
+\bibitem{rd-cerda2003} E.~Cerda and L.~Mahadevan, Geometry and physics of wrinkling, \emph{Physical Review Letters} 90 (2003) 074302.
+\bibitem{rd-hunt1993} G.~W.~Hunt, M.~K.~Wadee and N.~Shiacolas, Localized elasticae for the strut on the linear foundation, \emph{Journal of Applied Mechanics} 60 (1993) 1033--1038.
+\bibitem{rd-bergou2008} M.~Bergou, M.~Wardetzky, S.~Robinson, B.~Audoly and E.~Grinspun, Discrete elastic rods, \emph{ACM Transactions on Graphics} 27 (2008) 63.
 \end{chapterbib}

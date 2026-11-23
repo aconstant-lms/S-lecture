@@ -1,0 +1,27 @@
+% rd_pendulum.tex -- Chapter 4: Kirchhoff's kinetic analogy, elastica and pendulum.
+\begin{tikzpicture}[>=Stealth,scale=1.0]
+  % the elastica (half wave): theta(s) the angle of the tangent
+  \draw[gray,thin] (0,0) -- (4.2,0);
+  \draw[cu,line width=1.6pt] (0,0) .. controls (0.9,1.35) and (3.3,1.35) .. (4.2,0);
+  \draw[->,line width=1.1pt,cphi] (-0.9,0) -- (-0.08,0) node[midway,above] {$P$};
+  \draw[->,line width=1.1pt,cphi] (5.1,0) -- (4.28,0) node[midway,above] {$P$};
+  \coordinate (Q) at (0.55,0.6);
+  \fill (Q) circle (1.4pt);
+  \draw[dashed,gray] (Q) -- +(1.2,0);
+  \draw[thick,->] (Q) -- +(0.62,0.78);
+  \draw[->] ($(Q)+(0.8,0)$) arc (0:51:0.8); \node[font=\small] at ($(Q)+(1.25,0.3)$) {$\theta(s)$};
+  \node[font=\small] at (2.1,-0.55) {$EI\,\theta'' + P\sin\theta = 0$};
+  \node[font=\small,cu] at (2.1,1.5) {elastica};
+  % the pendulum
+  \begin{scope}[xshift=7.6cm,yshift=1.3cm]
+    \fill[pattern=north east lines] (-0.6,0) rectangle (0.6,0.15);
+    \draw[thick] (-0.6,0) -- (0.6,0);
+    \draw[gray,dashed] (0,0) -- (0,-1.9);
+    \draw[thick] (0,0) -- ({1.7*sin(32)},{-1.7*cos(32)});
+    \fill[cu] ({1.7*sin(32)},{-1.7*cos(32)}) circle (3.5pt);
+    \draw[->] (0,-0.75) arc (-90:-58:0.75); \node[font=\footnotesize] at (0.27,-1.08) {$\theta(t)$};
+    \node[font=\small] at (0.2,-2.45) {$m\ell\,\ddot\theta + mg\sin\theta = 0$};
+    \node[font=\small,cu] at (1.6,0.35) {pendulum};
+  \end{scope}
+  \draw[<->,gray] (5.4,0.6) -- (6.5,0.6) node[midway,above,font=\footnotesize] {$s \leftrightarrow t$};
+\end{tikzpicture}

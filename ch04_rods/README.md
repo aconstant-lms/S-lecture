@@ -1,154 +1,98 @@
 # Chapter 4: Rods: the elastica and beyond
 
 Label prefix `rd` (`sec:rd-*`, `eq:rd-*`, `fig:rd-*`, `exo:rd-*`, bibitem keys `rd-*`).
-Status: **outline agreed (23 Nov 2026)**, decisions below. No text yet. Next: the 3D bifurcation section (Ch. 3),
-then §4.1–4.2.
+Status: **complete draft (23 Nov 2026)**. Lecture text, exercises with solutions, the 2 h session with answers and
+instructor notes, figures and codes. The Mathematica, FEniCSx and Cast3M inputs have not been run (marked
+`\untested` in the instructor manual). Slides: not started.
 
-## Spine of the chapter (from the author's slides C05 "Poutres", slide 11)
-One column, three energies, three bifurcation diagrams. The rotations, not the strains, decide the post-buckling:
+## Spine (author's slides C05 "Poutres", slide 11)
+One column, three energies, three bifurcation diagrams (`fig:rd-models`): no rotation (bar, no bifurcation),
+small rotations (Euler loads, flat branches), large rotations (elastica, rising branches). The rotations, not the
+strains, decide the post-buckling. Prerequisite: Ch. 3 `sec:nc-bif` (bifurcation of an elastic body, Koiter by
+variations, the elastica as worked example).
 
-| rotations | energy per unit length | diagram |
-|---|---|---|
-| none (bar) | ½ EA u'² | one straight branch, no bifurcation |
-| small (von Kármán rod) | ½ EA (u' + ½w'²)² + ½ EI w''² | Euler loads, flat secondary branches (amplitude undetermined) |
-| large (elastica) | ½ EI θ'² (inextensible) | rising branches, stable post-buckling |
+## Content
+1. `sec:rd-3d` From the 3D body to the rod. Fibre strain e = u' + ½(u'² + w'²) → u' + ½w'² (slide 8); Euler–Bernoulli
+   kinematics e = u' + ½w'² − zw'' (slide 9, `fig:rd-fibre` TikZ); energy 𝒲 = ½∫EA(u'+½w'²)² + ½∫EIw''² + P u(L)
+   (slide 16); N' = 0, (EIw'')'' − Nw'' = 0 (slide 12). Gbox `sec:rd-scales` (table of the three energies). Why it works:
+   EA ∝ h², EI ∝ h⁴; Ciarlet's asymptotic method (Bermúdez–Viaño 1984, Trabucho–Viaño 1996, Cimetière et al. 1988);
+   Γ-convergence (Mora–Müller 2003: energy/volume ~ h², inextensible bending–torsion rod; 2004: lower energy, von Kármán
+   rod); Audoly–Pomeau §3.3. Cited, not proved.
+2. `sec:rd-euler` Small rotations. Second variation on the principal branch, adjacent equilibrium (B&A §1.3), four
+   supports (`fig:rd-supports` TikZ, B&A Table 2.1): K = 1, 0.699, 0.5, 2; effective length (Hibbeler §13.3, K = 0.7);
+   Euler hyperbola; gbox `sec:rd-slender` (KL/r > π√(E/σ_Y) = 88.9). Example `ex:rd-tube` (CHS 114.3 × 6, 4 m, SI):
+   370 kN pinned, 370 MPa > yield clamped–pinned, 93 kN flagpole. Why the branch is flat (N = −P, linear equation).
+   Imperfect column (B&A §1.4, Triantafyllidis H4): a_n = ā_n P/(P_n − P); Southwell plot; secant formula
+   (Hibbeler Eq. 13-19): first yield at 232 kN = 0.63 P_c for e = 10 mm. `fig:rd-imperfect`.
+3. `sec:rd-elastica` Large rotations. 𝒲(θ,P), EIθ'' + P sinθ = 0, Kirchhoff's kinetic analogy (`fig:rd-pendulum` TikZ,
+   A&P §3.8); exact P/P_c = (2K(k)/π)², w/L = k/K, Δ/L = 2 − 2E/K (Triantafyllidis BA-1); `tab:rd-elastica`,
+   `fig:rd-elastica`; ends touch at 130.71°, 2.1834 P_c. Gbox `sec:rd-reserve`: 1 % above P_c at θ₀ = 16°, w = 0.089 L.
+   A rod standing up (A&P App. A).
+4. `sec:rd-foundation` Foundation (B&A §2.2d, Alfutov §3.3). P(q) = EIq² + k/q², q_c = (k/EI)^{1/4}, P_c = 2√(kEI); gbox
+   `sec:rd-wavelength`; festoon and mode jumps at L q_c/π = √(n(n+1)) (`fig:rd-foundation`, `fig:rd-foundation-sketch`);
+   Alfutov's two cautions (search all n; √(kEI) if one end may sway); rails, pipelines, wrinkling (Cerda–Mahadevan 2003).
+   Post-buckling with the elastica: P/P_c = (8 + A²)/(8 + 3A²) ≈ 1 − A²/4 against (8 + 4A²)/(8 + 3A²) ≈ 1 + A²/8 free.
+   Gbox `sec:rd-foundation-unstable`; localisation (Hunt, Wadee & Shiacolas 1993).
+5. `sec:rd-twist` A remark: Kirchhoff rod in 3D, spinning top, Greenhill, localised helix; full treatment in Ch. 8.
 
-The chapter derives the three energies from the 3D energy of Chapter 3 (Ciarlet's asymptotic justification),
-then treats each one: Euler loads and design (small rotations), the elastica in closed form (large rotations),
-and the foundation, which picks a wavelength and turns the post-buckling unstable.
+Exercises: 8 short questions (effective length, flat branch, Southwell, pendulum, ten per cent more, rails, bend or
+stretch, yield or buckle); 5 problems (the kinematics decide the post-buckling = H3 Problem 1, the wavy column = H4,
+a rod standing up = A&P App. A, finite beam on a foundation, secant design); 3 computer exercises (shooting and
+continuation, foundation, FEniCS and Cast3M).
 
-Notation (author, 23 Nov 2026): the energy is written **𝒲** (`\mathcal{W}`), as in the author's slides, not ℰ.
-Load parameter η (book convention), the 2D fibre displacements u, w, the rotation θ (= −β of the slides).
+## Checked numbers (all from the Python codes)
+- Elastica: shooting = exact to all digits; continuation (Ch. 1 `arclength.py`) 161 points to 141°, error 2e-11.
+- H3 kinematics (inextensible limit, shooting): small rotations 0, "improved" strain e = u' + ½(u'² + w'²): −3/8 (unstable),
+  exact: +1/8.
+- Foundation coefficient −1/4: two-harmonic Ritz on the quartic energy, confirmed with four extra harmonics and the full
+  energy (A = 0.02 gives 0.2500). Springs act per unit base length (dx = cos θ ds); with ds instead one gets −1/8:
+  a wrong model, noted here because it is an easy mistake.
 
-## Prerequisite: bifurcation of a 3D elastic body (written 23 Nov 2026)
-Chapter 3, Section `sec:nc-bif` "Bifurcation of an elastic body" (about 3 pages, so it stays in Ch. 3): principal branch,
-critical point, the test ℓ(¹u) = 0 (bifurcation) or ≠ 0 (limit point), 3D linear buckling, and Koiter's coefficients by
-variations (`sec:nc-koiter-var`), with the elastica as its worked example (η = η_c(1 + ξ²/4)). Chapter 4 cites it and
-compares with the exact elliptic solution in §4.3 rather than repeating the Koiter computation.
-
-## Outline
-**Outline frame.** Objectives: derive a rod energy from 3D and say when it is right; compute Euler loads for the four
-classical supports and use effective lengths; solve the elastica with elliptic integrals and check Koiter's η₂;
-explain wavelength selection on a foundation; validate a Python shooting code and an FE code against the closed form.
-
-**4.1 From the three-dimensional body to the rod** (`sec:rd-3d`)
-- The fibre (slide 8): ds² = 1 + 2u' + u'² + w'², e = u' + ½(u'² + w'²); rotation β "small but not negligible" → e = u' + ½w'².
-- Love–Kirchhoff / Euler–Bernoulli kinematics (slide 9): ū = u + zβ, β = −w', e = u' + ½w'² − zw''.
-- Energy (slide 16): 𝒲(u, w; η) = ½∫EA(u' + ½w'²)² + ½∫EI w''² − η ℓ. Equilibrium N' = 0, M'' − Nw'' = 0 (slide 12).
-- gbox "The energy scale chooses the rod model". Why it works: Ciarlet's method. Scale the cross-section by h,
-  expand in h: linear rods (Bermúdez & Viaño 1984; Trabucho & Viaño 1996, Handbook of Numerical Analysis IV);
-  nonlinear rods (Cimetière, Geymonat, Le Dret, Raoult & Tutek 1988); Γ-convergence: energy ~h⁴ gives the
-  inextensible bending–torsion rod, the elastica (Mora & Müller 2003); lower energy gives the von Kármán-like rod
-  (Mora & Müller 2004). Ciarlet, *Mathematical Elasticity* I (1988) for the method (plates: Ciarlet & Destuynder 1979).
-  Stated, cited, not proved (Kielhöfer style: cite, don't follow).
-
-**4.2 Small rotations: Euler loads and design** (`sec:rd-euler`)
-- Second variation (slide 16) on the principal branch ⁰u = −(P/EA)x, ⁰w = 0: EI w'''' + P w'' = 0 (slide 17,
-  adjacent equilibrium), q² = P/EI, w = C₁ sin qx + C₂ cos qx + C₃x + C₄.
-- Four supports (slide 19): pinned–pinned π²EI/L², pinned–clamped 2.046π²EI/L², clamped–clamped 4π²EI/L²,
-  clamped–free π²EI/4L². Effective length K L and the Euler hyperbola σ_c = π²E/(KL/r)² (Hibbeler §13.2–13.3).
-- Why the branches are flat (slide 11, middle): under a dead load N = −P along the branch, 𝒲 is quadratic in w.
-- The imperfect column (slides 20–21): w = w̄/(P_c/P − 1); the secant formula as its design form (Hibbeler §13.4);
-  Southwell plot (links to the Ch. 2 power laws: here no maximum load, a stable-symmetric point).
-- Design box: slenderness, (KL/r)_c, where Euler stops and Chapter 5 (tangent modulus, column curves) starts.
-
-**4.3 Large rotations: the Euler elastica** (`sec:rd-elastica`)
-- 𝒲 = ½∫EI θ'² ds − P∫(1 − cos θ) ds; EI θ'' + P sin θ = 0: Kirchhoff's kinetic analogy with the pendulum
-  (Audoly & Pomeau Ch. 3; Triantafyllidis BA-1 pp. 85–89; Timoshenko & Gere §2.7).
-- Closed form: k = sin(θ₀/2), P/P_c = (2K(k)/π)², x(s), w(s) with Jacobi functions; midspan deflection and end
-  shortening. Table: θ₀ = 30°, 60°, 90°, ≈130.7° (ends touch), 180°.
-- Koiter: already done in Ch. 3 `sec:nc-bif` (η = η_c(1 + α²/8)); here compare with the exact solution
-  (and the two-term Ritz P/P_c = (8 + 4A²)/(8 + 3A²), checked 23 Nov).
-  gbox "The elastica is stable-symmetric: the column carries more load after buckling, but very little".
-  Engineering reading: 1 % more load at θ₀ ≈ 16°; post-buckling strength of columns is negligible, unlike plates (Ch. 6).
-- Higher modes are unstable (sketch); clamped–free elastica (Euler 1744) as an exercise.
-- Mathematica: elliptic functions, series of K(k), the five shapes. Physical example: a ruler, a strip, hair (A&P Ch. 4).
-
-**4.4 Beams on an elastic foundation: wavelength selection** (`sec:rd-foundation`)
-- EI w'''' + P w'' + k w = 0. P(q) = EI q² + k/q², minimum at q_c = (k/EI)^{1/4}, P_c = 2√(kEI): the wavelength
-  2π(EI/k)^{1/4} is set by the material, not by the length. Finite length: mode number n jumps, festoon of P_n(L)
-  curves (Timoshenko & Gere §2.10).
-- Examples: thermal buckling of rails, upheaval of buried pipelines, a stiff film on a soft substrate (forward to Ch. 6, 9).
-- Post-buckling with the elastica on a linear foundation: P/P_c ≈ 1 − A²/8, **unstable** (checked 23 Nov with a
-  two-harmonic Ritz; to be confirmed with Box 2.2 and Hunt et al.). gbox "A foundation selects the wavelength and makes
-  the post-buckling unstable". Localisation and amplitude modulation, cited only (Potier-Ferry 1983; Hunt, Bolt &
-  Thompson 1989; Tvergaard & Needleman 1980).
-
-**4.5 Twist and natural curvature** (`sec:rd-twist`), short or moved (open question 3)
-- Kirchhoff rod in 3D: frame, curvatures and twist, ½EI(κ₁² + κ₂²) + ½GJτ²; Greenhill's twisted shaft;
-  the localised helix (A&P Ch. 3); naturally curved rods → tape springs (Ch. 8).
-
-**Summary** (gbox*): rotations decide post-buckling; Euler loads and effective length; elastica stable but weak;
-foundation picks the wavelength and is unstable; a code is trusted after the elastica.
-
-## Exercises
-- Short questions: effective lengths of a frame member; why the von Kármán branch is flat; Southwell from three
-  readings; the pendulum analogy; θ₀ for 10 % above P_c; rail wavelength with real numbers; why a thin rod bends rather
-  than stretches (h² vs h⁴); which column fails by yielding (Hibbeler, SI units).
-- Problems: the kinematics decide the post-buckling (H3 Problem 1, slide 11); thermal buckling of a bimetallic beam
-  (H3 Problem 2); the wavy imperfect beam (H4);
-  the clamped–free elastica; finite beam on a foundation and mode switching; design of a steel and an aluminium
-  column with the secant formula (Hibbeler §13.4, Examples converted to SI).
-- Computer: elastica by shooting in Python (`solve_ivp` + root finding, then continuation with
-  `ch01_bifurcation/code/python/arclength.py`); Mathematica elliptic solution and series; FEniCS and Cast3M
-  (geometrically nonlinear beam, imperfection in the first mode, as in Ch. 3, `sec:nc-switch`) against the closed form;
-  discrete elastic rods (Bergou et al. 2008), optional.
-- 2 h session: (a) Euler loads and Koiter by hand; (b) shooting and continuation in Python; (c) FEniCS / Cast3M
-  comparison on P/P_c(θ₀).
+## Files
+- `notes/ch04_rods.tex`. Figures: `figures/rd_models.pdf`, `rd_elastica.pdf`, `rd_foundation.pdf`, `rd_imperfect.pdf` from
+  `code/figures/fig_ch4.py`; TikZ sketches `figures/tikz/rd_fibre.tex`, `rd_supports.tex`, `rd_pendulum.tex`,
+  `rd_foundation_sketch.tex`.
+- `code/python/elastica.py` (exact, shooting, continuation), `ex_columns.py` (supports, imperfection, Southwell, secant,
+  SI tube), `ex_foundation.py` (festoon, Ritz post-buckling, rail), `ex_kinematics.py` (H3, three strain measures).
+- `code/mathematica/elastica.wl` (elliptic solution, series, shapes, Koiter by integrals). **Not run.**
+- `code/fenics/elastica_rod_fenicsx.py` (1D rod in θ, clamped–sliding, load control from the mode) and
+  `elastica_strip_fenicsx.py` (plane-strain SVK strip 1 × 0.01, clamped, shortened, reaction vs elastica after removing
+  the axial shortening). dolfinx 0.9 API. **Not run.**
+- `code/cast3m/elastica_poutre.dgibi` (standing rod, `poutre`, `flambage`, `pasapas` large rotations) and
+  `elastica_strip.dgibi` (`qua8` plane strain, imposed shortening). **Not run.**
+- `exercises/ch04_session.tex`: (a) Euler's columns by hand, (b) shooting and continuation with Algorithm 4.1,
+  (c) FEniCS / Cast3M. Listed in `preamble/manual_chapters.tex`.
 
 ## Decisions and open questions
-1. (author, 23 Nov 2026) The 3D bifurcation section goes in Chapter 3; if it grows too long, it becomes a chapter
-   of its own between the present Chapters 3 and 4.
-2. (author, 23 Nov 2026) The energy is 𝒲 (`\mathcal{W}`) in the whole book. Switched from ℰ on 23 Nov in Ch. 2–3,
-   the sessions, `preamble/notation.tex` and the notation list. Ch. 1 keeps plain W (Lyapunov).
-3. (author, 23 Nov 2026) Twist and natural curvature: a remark at the end of this chapter; the full treatment
-   in Chapter 8 (tape springs). §4.5 becomes a short remark.
-4. (author, 23 Nov 2026) FEniCS and Cast3M: both a 1D rod model (geometrically exact beam; Cast3M POUT with
-   `pasapas` 'GRANDS_DEPLACEMENTS') and a thin 2D strip (plane strain), each against the elastica. The 2D strip
-   also illustrates §4.1: the rod is the thin limit of the 2D body.
-5. The slides use λ for the load; the book keeps η (decision of 21 Nov).
-6. Figures (CLAUDE.md, 23 Nov): TikZ sketches in `figures/tikz/` for the fibre kinematics, the four supports, the
-   elastica shapes, the beam on a foundation; plots from `code/figures/` for the three diagrams of slide 11,
-   P/P_c(θ₀) exact vs Koiter vs codes, and P(q) on a foundation.
+1. (author, 23 Nov 2026) The 3D bifurcation section is in Ch. 3 (`sec:nc-bif`, about 3 pages). Done.
+2. (author, 23 Nov 2026) Energy 𝒲 in the whole book. Done in Ch. 2–4.
+3. (author, 23 Nov 2026) Twist and natural curvature: a remark here (`sec:rd-twist`), full treatment in Ch. 8.
+4. (author, 23 Nov 2026) FEniCS and Cast3M: 1D rod and 2D strip, both against the elastica. Written, not run.
+5. (author, 23 Nov 2026) Timoshenko & Gere is not available: the foundation follows Alfutov §3.3 and Brush & Almroth
+   §2.2d; Brush & Almroth §1.3–1.4 and §2.2 for the engineering view of columns. Notation kept as in the book (EI, k, w),
+   which is also Brush & Almroth's; Alfutov writes EJ, κ, v.
+6. Open (notation): `k` is both the elliptic modulus sin(θ₀/2) (§4.3, as in Triantafyllidis and A&P) and the foundation
+   stiffness (§4.4, as in B&A); `K` is both the effective-length factor and the elliptic integral K(k). Both pairs are
+   standard in their fields and live in different sections; rename one (e.g. foundation `k_f`) if the author prefers.
+7. Open: H3 Problem 2 (bimetallic Al/Cu beam, thermal buckling, LSK with u₂) is not used yet; candidate for Ch. 5
+   (real materials) or a second problem here.
+8. Open: the stability of the higher elastica branches is stated, not shown (Maddocks 1984 would be the reference).
+9. Slides use λ for the load; the book keeps η, and P for a physical end load (as in Ch. 3).
 
 ## Sources
-- Author's slides C04 "Rappel, rôle des rotations, bifurcation en déformation finie" (29 Jan 2026, 28 p.): 𝒲, D_u𝒲,
-  D_uu𝒲, limit vs bifurcation (pp. 9, 21–28); inverted pendulum and mechanisms (pp. 2–10). Uploaded 23 Nov.
-- Author's slides C05 "Poutres" (29 Jan 2026, 22 p., handwritten): fibre strain (8), kinematics (9), three rod models (11),
-  equilibrium (12), energy and second variation (16), adjacent equilibrium (17), four supports (19), imperfection (20–21).
-- Hibbeler, *Mechanics of Materials*, 9th ed. (Pearson, 2014), Ch. 13 "Buckling of Columns", book pp. 661–720
-  (PDF page = book page + 25): §13.1 critical load (rigid bar + spring), §13.2 ideal pinned column and slenderness,
-  §13.3 other supports and effective length, §13.4 secant formula, §13.5 inelastic buckling (Ch. 5), §13.6–13.7
-  design for concentric and eccentric loading (steel, 2014-T6 aluminium, timber; Ch. 5). US units: convert to SI.
-- Audoly & Pomeau (2010), uploaded 23 Nov (PDF page = book page + 11):
-  App. A "Calculus of variations: a worked example", book pp. 546–557: the elastica clamped at the base with a weight
-  on top. A.2 energy as a Riemann sum (the discrete rod of the computer exercise), A.3 Euler–Lagrange and the natural
-  condition θ'(L) = 0, A.4 a constraint by a Lagrange multiplier, A.5 linear stability (L_c² = π²EI/4Mg),
-  A.6 exact solution, expansion ψ²(L) ≈ 32(L − L_c)/(√2π) (supercritical), pendulum analogy, and the constrained
-  elastica as a cusp (links to Ch. 1). Source of §4.3 and of a problem. Ch. 3 rods: §3.3 bending energy from 3D
-  (p. 63, a physical companion to Ciarlet), §3.7 inextensibility and validity of Kirchhoff (p. 90), §3.8 kinetic
-  analogy (p. 92) with the planar elastica in §3.8.2, §3.9 localized helix (p. 96, the remark of §4.5).
-  Ch. 8: §8.5 Euler column as an exact solution (p. 265), §8.7 its stability (p. 282), for Ch. 6.
-- Triantafyllidis, MEC563 notes (2011), uploaded 23 Nov (PDF page = book page): BA-1 elastica pp. 85–89. Clamped
-  ends sliding without rotation (the λ_c = EI(π/L)² of θ(0) = θ(L) = 0), 𝒲(θ, λ) = ∫[½EIθ'² − λ(1 − cos θ)],
-  stability of the principal branch by Fourier series (BA-1.5–1.7), exact solution sin(θ/2) = k sn(μs),
-  μL = 2K(k), λ/λ_c = 1 + ½k² + … (BA-1.13); LSK: 𝒲,uλ¹u = 0 (bifurcation), 𝒲,uuu = 0 (λ₁ = 0), λ₂ from
-  AC-3.14, ξ = √2 k (BA-1.23). Section AC (continuum LSK, pp. 46–82) is the source of the 3D section in Ch. 3.
-- Triantafyllidis MEC553 slides (2018), uploaded 23 Nov: L3 (30 slides) functionals and derivatives (2–6), LSK simple
-  mode, bifurcation vs limit point, expansions and stability (7–23), the elastica example (24–30); L4 (38 slides) the
-  same review (1–25), then imperfect structures in the continuum: illustration (27–28), LSK with an imperfection,
-  level sets to avoid fractional expansions (29–33), stability and load drop (34–38). L3 is behind Ch. 3 `sec:nc-bif`;
-  L4 26–38 for the imperfect column of §4.2.
-- Triantafyllidis homeworks (2018), uploaded 23 Nov:
-  H3 Problem 1: simply supported beam, axial force, three kinematics: e = v' + ½w'² gives a flat branch (λ₂ = 0);
-  e = v' + ½v'² + ½w'² with k = −w'' (is λ₂ > 0?); the exact stretch and curvature. **This is the author's slide 11
-  as an exercise**: the Problem "The kinematics decide the post-buckling" of this chapter.
-  H3 Problem 2: bimetallic (Al/Cu) beam clamped at both ends, uniform temperature rise; principal solution, critical
-  Δθ, exact bifurcated solution and LSK (λ₁ = 0, u₂, λ₂). Problem "Thermal buckling of a bimetallic beam" (rails link).
-  H4 Problem 1: simply supported beam with a wavy initial imperfection w̄(x); amplification of each Fourier
-  coefficient, w_n = w̄_n λ/(λ_n − λ), unbounded at Euler's load. Problem for §4.2 (Southwell, secant formula).
-- Still to upload: Timoshenko & Gere Ch. 2 (supports, beam on a foundation §2.10).
-- References to check before the chapterbib: Bermúdez & Viaño, RAIRO Anal. Numér. 18 (1984); Trabucho & Viaño (1996);
-  Cimetière et al., J. Elasticity 19 (1988) 111–161; Mora & Müller, Calc. Var. PDE 18 (2003) 287–305;
-  Mora & Müller, Ann. IHP Anal. Non Linéaire 21 (2004) 271–293; Ciarlet (1988); Potier-Ferry (1983);
-  Hunt, Bolt & Thompson (1989).
+- Author's slides C04 "Rappel, rôle des rotations, bifurcation en déformation finie" (29 Jan 2026) and C05 "Poutres"
+  (29 Jan 2026, handwritten: fibre strain 8, kinematics 9, three models 11, equilibrium 12, second variation 16, adjacent
+  equilibrium 17, four supports 19, imperfection 20–21).
+- Triantafyllidis MEC563 notes (2011): BA-1 elastica pp. 85–89; AC (LSK continuum) pp. 46–82 for Ch. 3. MEC553 (2018):
+  L3 slides 7–30, L4 slides 26–38; homeworks H3 (Problem 1 used, Problem 2 open) and H4 (used).
+- Audoly & Pomeau (2010), PDF = book + 11: App. A pp. 546–557 (elastica, Riemann sum, standing rod, cusp); §3.3 p. 63
+  (bending energy from 3D); §3.6–3.9 pp. 82–102 (Kirchhoff equations, spinning top, localised helix); §8.5, §8.7 for Ch. 6.
+- Hibbeler, *Mechanics of Materials*, 9th ed. (2014), Ch. 13, PDF = book + 25: Eqs. 13-5, 13-6 (Euler), 13-10 to 13-12 and
+  Fig. 13-10 (effective length), 13-19 (secant formula); §13.5–13.7 for Ch. 5.
+- Brush & Almroth (1975), PDF = book + 13: §1.3 adjacent equilibrium p. 11, §1.4 slightly crooked column p. 13, §2.2
+  flexural instability and Table 2.1, §2.2d column on an elastic foundation pp. 35–36, §2.5 beam columns, §2.6 failure of
+  slender bars (tangent modulus, CRC guide) for Ch. 5; §4.6 ring on an elastic foundation for Ch. 7.
+- Alfutov, *Stability of Elastic Structures* (Springer, 2000), PDF = book + 10: §3.3 columns on elastic foundations and
+  elastic supports, pp. 103–107 (Eq. 3.33, Fig. 3.13, the √(κEJ) limit with a free end).
+- Checked references: Bermúdez & Viaño (1984), Trabucho & Viaño (Handbook IV, 487–974; zbMATH lists 1995, the volume is
+  dated 1996), Cimetière et al. (1988), Mora & Müller (2003, 2004), Cerda & Mahadevan (2003), Hunt, Wadee & Shiacolas (1993).

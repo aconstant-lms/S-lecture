@@ -1,0 +1,43 @@
+* elastica_strip.dgibi -- Chapter 4: a thin strip in plane strain, clamped at both ends and shortened.
+* Printed in the book from line 4 on. Run: castem25 elastica_strip.dgibi
+* L = 1, h = 0.01, E = 1, nu = 0.3: P_c = 4 pi^2 EI/L^2 with EI = E h^3/(12 (1 - nu^2)) per unit width.
+opti dime 2 elem qua8 mode plan defo echo 0;
+l = 1.;  h = 0.01;  nu = 0.3;
+pa = 0. (-0.5 * h);  pb = l (-0.5 * h);  pcc = l (0.5 * h);  pd = 0. (0.5 * h);
+bas = droi 400 pa pb;  dro = droi 2 pb pcc;  hau = droi 400 pcc pd;  gau = droi 2 pd pa;
+str = daller bas dro hau gau;
+*
+mod = mode str mecanique elastique;
+mat = mate mod 'YOUN' 1. 'NU' nu;
+ei  = (h ** 3) / (12. * (1. - (nu ** 2)));
+pc  = 4. * (pi ** 2) * ei;
+*
+* --- clamped left edge; right edge: UY = 0, UX imposed (it shortens the strip) -----------
+bl  = (bloq 'DEPL' gau) et (bloq 'UY' dro);
+blx = bloq 'UX' dro;
+dx  = depi blx -1.;
+ev  = evol manu 't' (prog 0. 1.) 'ux' (prog 0. 0.3);
+* a tiny lateral force at mid-length, in the direction of the mode
+pm  = str poin proc ((0.5 * l) (0.5 * h));
+fy  = forc 'FY' 1.e-9 pm;
+evf = evol manu 't' (prog 0. 1.) 'f' (prog 1. 1.);
+tab = table;
+tab . 'MODELE' = mod;
+tab . 'CARACTERISTIQUES' = mat;
+tab . 'BLOCAGES_MECANIQUES' = bl et blx;
+tab . 'CHARGEMENT' = (char 'DIMP' dx ev) et (char 'MECA' fy evf);
+tab . 'GRANDS_DEPLACEMENTS' = vrai;
+tab . 'TEMPS_CALCULES' = (prog 0. pas 0.0002 0.01) et (prog 0.02 pas 0.02 1.);
+pasapas tab;
+*
+* --- reaction on the right edge against the end shortening, divided by P_c -------------
+n = (dime tab . 'TEMPS') - 1;
+ld = prog;  lp = prog;
+repeter bt n;
+  i  = &bt;
+  ld = ld et (prog (0.3 * (tab . 'TEMPS' . i)));
+  lp = lp et (prog (-1. * (resu (redu (tab . 'REACTIONS' . i) dro)) . 'FX' / pc));
+fin bt;
+dess (evol manu 'Delta/L' ld 'P/Pc' lp);
+mess 'check: P/Pc = (2K/pi)^2 at Delta/L = 2 - 2E/K (plus the axial shortening P/(E h))';
+fin;

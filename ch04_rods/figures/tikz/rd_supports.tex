@@ -1,0 +1,37 @@
+% rd_supports.tex -- Chapter 4: the four classical columns, their first modes and effective lengths.
+\begin{tikzpicture}[>=Stealth,x=3.0cm,y=0.55cm]
+  \foreach \row/\name/\fac/\K in {0/pinned--pinned/1/1,
+                                  1/clamped--pinned/2.046/0.699,
+                                  2/clamped--clamped/4/0.5,
+                                  3/clamped--free/0.25/2}{
+    \begin{scope}[yshift=-\row*2.1cm]
+      \draw[gray!70,thin] (0,0) -- (1,0);
+      % modes (normalised to unit height)
+      \ifnum\row=0 \draw[cu,line width=1.4pt,domain=0:1,samples=60] plot (\x,{sin(180*\x)}); \fi
+      \ifnum\row=1 \draw[cu,line width=1.4pt,domain=0:1,samples=80]
+          plot (\x,{(sin(deg(4.4934*\x)) - 4.4934*cos(deg(4.4934*\x)) - 4.4934*\x + 4.4934)/6.2832}); \fi
+      \ifnum\row=2 \draw[cu,line width=1.4pt,domain=0:1,samples=60] plot (\x,{(1-cos(360*\x))/2}); \fi
+      \ifnum\row=3 \draw[cu,line width=1.4pt,domain=0:1,samples=60] plot (\x,{1-cos(90*\x)}); \fi
+      % left support
+      \ifnum\row=0
+        \draw[thick] (0,0) -- (-0.04,-0.5) -- (0.04,-0.5) -- cycle; \fill[white] (0,0) circle (1.6pt); \draw (0,0) circle (1.6pt);
+      \else
+        \fill[pattern=north east lines] (-0.05,-0.8) rectangle (0,0.8); \draw[thick] (0,-0.8) -- (0,0.8);
+      \fi
+      % right support and load
+      \ifnum\row=3
+        \draw[->,line width=1.1pt,cphi] (1.22,1) -- (1.04,1);
+      \else
+        \ifnum\row=2
+          \fill[pattern=north east lines] (1,-0.8) rectangle (1.05,0.8); \draw[thick] (1,-0.8) -- (1,0.8);
+        \else
+          \draw[thick] (1,0) -- (1.04,-0.5) -- (0.96,-0.5) -- cycle; \fill[white] (1,0) circle (1.6pt); \draw (1,0) circle (1.6pt);
+          \draw[thick] (0.94,-0.62) -- (1.06,-0.62);
+        \fi
+        \draw[->,line width=1.1pt,cphi] (1.3,0) -- (1.08,0);
+      \fi
+      \node[cphi] at (1.36,0.45) {$P$};
+      \node[anchor=west,font=\small] at (1.5,0.6) {\name};
+      \node[anchor=west,font=\small] at (1.5,-0.5) {$P_c = \ifnum\row=0\else\fac\,\fi\pi^2EI/L^2,\ K = \K$};
+    \end{scope}}
+\end{tikzpicture}

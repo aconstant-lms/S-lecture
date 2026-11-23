@@ -1,0 +1,52 @@
+* elastica_poutre.dgibi -- Chapter 4: the standing rod (clamped at the foot, free at the top) with beam elements.
+* Printed in the book from line 4 on. Run: castem25 elastica_poutre.dgibi
+* EI = 1, L = 1: P_c = pi^2/4. Linear buckling by flambage, then the post-buckling path by pasapas (large rotations).
+opti dime 2 elem seg2 mode plan contraintes echo 0;
+p0 = 0. 0.;  p1 = 0. 1.;
+rod = droi 100 p0 p1;
+*
+* --- model: Euler--Bernoulli beams, E = 1, A = 1000 (nearly inextensible), I = 1 ---------
+mod = mode rod mecanique elastique poutre;
+mat = mate mod 'YOUN' 1. 'NU' 0.3;
+car = cara mod 'SECT' 1000. 'INRZ' 1.;
+bl  = bloq 'DEPL' 'ROTA' p0;
+pc  = (pi ** 2) / 4.;
+*
+* --- 1. linear buckling under a unit axial load at the top: expect eta = pi^2/4 = 2.4674 --
+fref = forc 'FY' -1. p1;
+kt   = (rigi mod (mat et car)) et bl;
+u0   = reso kt fref;
+sig0 = sigm mod (mat et car) u0;
+etab = table;
+etab . 'OBJM' = mod;   etab . 'CLIM' = bl;
+etab . 'MATE' = mat;   etab . 'CARA' = car;
+etab . 'SIG1' = sig0;
+etab . 'LAM1' = 0.1;   etab . 'LAM2' = 50.;  etab . 'NMOD' = 2;
+stab = flambage etab;
+mess 'linear buckling: eta = ' (stab . 1 . 'LAMB') '   closed form ' pc;
+*
+* --- 2. post-buckling: axial load up to 2 P_c, with a tiny lateral force at the top -------
+f2  = (forc 'FY' (-2. * pc) p1) et (forc 'FX' (2.e-4 * pc) p1);
+ev  = evol manu 't' (prog 0. 1.) 'f' (prog 0. 1.);
+tab = table;
+tab . 'MODELE' = mod;
+tab . 'CARACTERISTIQUES' = mat et car;
+tab . 'BLOCAGES_MECANIQUES' = bl;
+tab . 'CHARGEMENT' = char 'MECA' f2 ev;
+tab . 'GRANDS_DEPLACEMENTS' = vrai;
+tab . 'GRANDES_ROTATIONS' = vrai;
+tab . 'TEMPS_CALCULES' = (prog 0. pas 0.05 0.45) et (prog 0.46 pas 0.01 1.);
+pasapas tab;
+*
+* --- tip rotation against P/P_c; compare with P/P_c = (2 K(k)/pi)^2, k = sin(theta0/2) ----
+n = (dime tab . 'TEMPS') - 1;
+lp = prog;  lt = prog;
+repeter bt n;
+  i  = &bt;
+  t  = tab . 'TEMPS' . i;
+  lp = lp et (prog (2. * t));
+  lt = lt et (prog (abs (extr (tab . 'DEPLACEMENTS' . i) 'RZ' p1)));
+fin bt;
+dess (evol manu 'tip rotation' lt 'P/Pc' lp);
+mess 'check: at P = 1.3932 P_c the tip rotation must be pi/2 (Table of the chapter)';
+fin;

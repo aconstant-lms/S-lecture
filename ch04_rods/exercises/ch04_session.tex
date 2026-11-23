@@ -1,0 +1,156 @@
+%======================================================================
+%  Exercise session, Chapter 4 (2 h). Printed by exercise_sheets.tex
+%  (questions only) and instructor_manual.tex (answers, instructor notes).
+%  Codes in ../code/{python,mathematica,fenics,cast3m}.
+%======================================================================
+\clearpage
+\renewcommand{\sessionchapter}{Chapter 4 -- Rods: the elastica and beyond}
+\setcounter{spart}{0}
+\setcounter{algorithm}{0}\renewcommand{\thealgorithm}{4.\arabic{algorithm}}
+\ifanswers
+\sessiontitle{Chapter 4 -- Columns and the elastica: session sheet with answers}
+  {Notes: Chapter~\ref{B-ch:rd}. Codes: Python (NumPy, SciPy), Mathematica, FEniCSx, Cast3M.}
+\else
+\sessiontitle{Chapter 4 -- Columns and the elastica: session sheet}
+  {Notes: Chapter~\ref{B-ch:rd}. Codes: Python (NumPy, SciPy), Mathematica, FEniCSx, Cast3M.}
+\fi
+
+\noindent
+One column, three tools, one closed form. In part~a you find Euler's loads by hand and read a
+test with Southwell's plot. In part~b you solve the elastica by shooting in Python, and follow
+its branch by continuation. In part~c you compute the same elastica with finite elements, once
+as a rod and once as a thin strip, and check both against the table below. Bring the notes:
+Sections~\ref{B-sec:rd-euler} and~\ref{B-sec:rd-elastica}.
+
+\begin{center}
+\begin{tabular}{@{}lccccc@{}}
+  \toprule
+  end rotation $\theta_0$ & $20^\circ$ & $60^\circ$ & $90^\circ$ & $120^\circ$ & $150^\circ$ \\
+  \midrule
+  $P/P_c$ (elastica) & $1.0154$ & $1.1517$ & $1.3932$ & $1.8848$ & $3.1054$ \\
+  $1 + \theta_0^2/8$ (Koiter) & $1.0152$ & $1.1371$ & $1.3084$ & $1.5483$ & $1.8567$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{instructor}
+Timing: part~a 35~min, part~b 45~min, part~c 40~min. Part~b is the heart of the session: every
+student should leave with a shooting code that reproduces the table. In part~c, half the room
+can run FEniCS and the other half Cast3M.
+\untested{The Mathematica file \texttt{elastica.wl}, the FEniCSx scripts \texttt{elastica\_rod\_fenicsx.py}
+and \texttt{elastica\_strip\_fenicsx.py}, and the Cast3M inputs \texttt{elastica\_poutre.dgibi} and
+\texttt{elastica\_strip.dgibi} have not been run (no installation in the build environment): run them
+once before the session. The Python codes were run and give the numbers quoted here.}
+\end{instructor}
+
+%======================================================================
+\spart{Euler's columns by hand}
+
+\q Write the general solution of $EI\,w'''' + P\,w'' = 0$. For a column clamped at $x = 0$ and
+pinned at $x = L$, write the four boundary conditions and show that the critical load solves
+$\tan qL = qL$. Give $P_c$ and the effective-length factor $K$.
+\begin{answer}
+$w = C_1\sin qx + C_2\cos qx + C_3x + C_4$, $q^2 = P/EI$. Clamp: $w(0) = 0$, $w'(0) = 0$; pin:
+$w(L) = 0$, $w''(L) = 0$. The first two give $C_4 = -C_2$, $C_3 = -qC_1$; $w''(L) = 0$ gives
+$C_2 = -C_1\tan qL$; then $w(L) = 0$ gives $\sin qL - qL\cos qL = 0$. Smallest root
+$qL = 4.4934$: $P_c = 20.19\,EI/L^2 = 2.046\,\pi^2EI/L^2$, $K = \pi/4.4934 = 0.699$.
+\end{answer}
+
+\q A steel column ($E = 200$~GPa, $\sigma_Y = 250$~MPa) of radius of gyration $r = 38.3$~mm is
+$4$~m long. For the four classical supports, give $KL/r$ and say whether it buckles elastically.
+\begin{answer}
+The limit is $\pi\sqrt{E/\sigma_Y} = 88.9$. Pinned: $104$, elastic. Clamped--pinned: $73$, yields first.
+Clamped: $52$, yields first. Clamped--free: $209$, elastic, with a quarter of the pinned load.
+\end{answer}
+
+\q A pinned strut is tested at $40$, $60$, $80$ and $90$~kN; the added mid-length deflections are
+$0.60$, $1.35$, $3.60$ and $8.10$~mm. Draw Southwell's plot and find $P_c$ and the initial bow.
+Why is the plot better than reading the load at which the deflection ``runs away''?
+\begin{answer}
+$a/P = 0.0150$, $0.0225$, $0.0450$, $0.0900$~mm/kN against $a$: a line of slope $0.010$~kN$^{-1}$, so
+$P_c = 100$~kN; the intercept $0.009$~mm/kN gives $\bar a = 0.9$~mm. The plot uses tests well below $P_c$
+and gives both numbers from a straight line; the ``runaway'' load depends on the imperfection and
+on when one stops the test.
+\end{answer}
+
+\begin{instructor}
+Ask what the flat branch of the small-rotation energy means before part~b: the answer
+(Exercise~\ref{B-exo:rd-flat}) motivates the elastica.
+\end{instructor}
+
+%======================================================================
+\spart{The elastica by shooting}
+
+\qc Write a function that integrates $\theta'' = -P\sin\theta$ on $[0,1]$ ($EI = L = 1$) from
+$\theta(0) = \theta_0$, $\theta'(0) = 0$, and returns $\theta'(1)$. For $\theta_0 = 90^\circ$, find the load
+$P > \pi^2$ for which $\theta'(1) = 0$ (Algorithm~\ref{alg:rd-shoot}). Compare with the table.
+\begin{answer}
+$P = 1.393204\,\pi^2$, the exact value to all digits for tolerances $10^{-11}$. The first root above
+$\pi^2$ must be bracketed: the residual also vanishes near $4\pi^2$, the second mode.
+\end{answer}
+
+\begin{algorithm}[ht]
+\caption{Shooting for the pinned elastica}\label{alg:rd-shoot}
+\begin{algorithmic}[1]
+\Require end rotation $\theta_0$; bracket $[P_a, P_b]$ with $\pi^2 < P_a$ and $P_b$ below the second root
+\Function{miss}{$P$}
+  \State integrate $\theta' = \omega$, $\omega' = -P\sin\theta$ from $(\theta,\omega) = (\theta_0, 0)$ at $s = 0$ to $s = 1$
+  \State \Return $\omega(1)$ \Comment{the moment at the far pin, divided by $EI$}
+\EndFunction
+\State find $P$ with \Call{miss}{$P$} $= 0$ in $[P_a, P_b]$ by bisection or Brent's method
+\State integrate $x' = \cos\theta$, $w' = \sin\theta$ for the shape
+\State \Return $P$, the shape, and $x(1)$ (end shortening $1 - x(1)$)
+\end{algorithmic}
+\end{algorithm}
+
+\qc Follow the branch with the pseudo-arclength code of Chapter~1, with the unknowns
+$(\theta_0, P)$ and the residual $\theta'(1)$, from $\theta_0 = 0.05$. Where do the ends touch?
+\begin{answer}
+$161$ steps of $0.1$ reach $\theta_0 = 141^\circ$ with an error below $2\times10^{-11}$ against
+$(2K(k)/\pi)^2$. The ends touch when $x(1) = 0$: $\theta_0 = 130.71^\circ$, $P = 2.1834\,\pi^2$. The
+listing is in Exercise~\ref{B-exo:rd-computer-shooting}.
+\end{answer}
+
+\qc Run \texttt{ex\_kinematics.py}. Which strain measure gives a flat branch, which an unstable one,
+which the elastica?
+\begin{answer}
+$e = u' + \tfrac12w'^2$: flat. $e = u' + \tfrac12(u'^2 + w'^2)$: $P/P_c = 1 - 0.375\,a_0^2$, unstable.
+Exact: $1 + 0.125\,a_0^2$. Exercise~\ref{B-exo:rd-kinematics}.
+\end{answer}
+
+%======================================================================
+\spart{The elastica in two finite element codes}
+
+\qc FEniCS, rod: discretise $\mathcal{W}(\theta,P)$ by linear elements on $[0,1]$ with $\theta = 0$ at
+both ends (clamped and sliding, $P_c = \pi^2$), and solve with Newton under load control from the
+mode. Compare the rotation at mid-length with the exact $\alpha$, $P/P_c = (2K(\sin\tfrac\alpha2)/\pi)^2$.
+\begin{answer}
+Expect $\alpha = 16.2^\circ$ at $1.01\,P_c$, $49.5^\circ$ at $1.1\,P_c$, $90^\circ$ at $1.393\,P_c$, and an error
+of order $h^2$ with $200$ elements. Newton started from the mode stays on the stable branch;
+started from $\theta = 0$ it stays on the unstable straight one. Script:
+\texttt{code/fenics/elastica\_rod\_fenicsx.py}.
+\end{answer}
+
+\qc FEniCS, strip: a plane-strain strip $1\times0.01$, Saint Venant--Kirchhoff, clamped at both ends
+and shortened by $\Delta$. Plot $P/P_c$ with $P_c = 4\pi^2EI/L^2$ against $\Delta/L$, and compare with the
+elastica after removing the axial shortening $PL/(EA)$.
+\begin{answer}
+Below $P_c$ the strip shortens elastically by up to $\Delta/L = 3.3\times10^{-4}$; then it buckles and
+follows the elastica, $P/P_c = (2K/\pi)^2$ at $\Delta/L = 2 - 2E/K$, to within $O(h^2/L^2)$. This is the
+three-dimensional (here two-dimensional) check of the rod model of Section~\ref{B-sec:rd-3d}. Script:
+\texttt{code/fenics/elastica\_strip\_fenicsx.py}.
+\end{answer}
+
+\qc Cast3M: the standing rod with \texttt{poutre} elements and \texttt{pasapas} with large rotations,
+\texttt{flambage} first. Then the strip with \texttt{qua8} elements in plane strain.
+\begin{answer}
+\texttt{flambage} must give $\pi^2/4 = 2.4674$. On the path the tip rotation must reach $90^\circ$ at
+$P = 1.3932\,P_c$. The strip must reproduce the FEniCS curve. Inputs: \texttt{code/cast3m/elastica\_poutre.dgibi}
+and \texttt{elastica\_strip.dgibi}.
+\end{answer}
+
+\begin{instructor}
+The message of part~c is the one of Section~\ref{B-sec:nc-trust}: a code is trusted after it has
+reproduced the elastica. A discrepancy in the strip larger than $h^2/L^2$ usually means a wrong
+reaction (internal force taken on the wrong dofs) or a missing axial shortening.
+\end{instructor}
