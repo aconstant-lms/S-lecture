@@ -66,6 +66,23 @@ CLAUDE.md flagged Ch. 5 as at risk of too little physics).
 5. From 3D (hub, 23 Nov 2026): Trabucho & Viaño (1996) and Viaño's later work justify Saint-Venant and Vlasov models;
    Freddi–Morassi–Paroni (2007) checked and added to the chapterbib.
 
+## Hibbeler, *Mechanics of Materials*, 9th ed. (2014), Ch. 13 (uploaded 23 Nov 2026; PDF page = book page + 25)
+- §13.5 Inelastic buckling, pp. 688–695 (PDF 713–720): short/intermediate/long columns; Eq. 13-20 tangent modulus
+  (Engesser 1889), Fig. 13-18; Shanley named in words only. Example 13.5: rod Ø30 mm, L = 600 mm, pinned, bilinear
+  σ–ε (150 MPa at 0.001, 270 MPa at 0.002): elastic guess 231 MPa > σ_pl, so E_t = 120 GPa, σ_cr = 185 MPa, P = 131 kN.
+  Prob. 13-70: tangent modulus from σ = 40 ksi at KL/r = 60.
+- §13.6 Concentric loading, pp. 696–705 (PDF 721–730): Fig. 13-20 tests vs the secant curves, "accidental"
+  ec/r² = 0.1–0.6. AISC (ASD): Euler with F.S. 23/12 (Eq. 13-21); (KL/r)_c = √(2π²E/σ_Y) because residual stresses
+  reach ½σ_Y (Eq. 13-22); the CRC parabola with a variable F.S. (Eq. 13-23). Aluminium 2014-T6, Eqs. 13-24–13-26;
+  timber (NFPA), Eqs. 13-27–13-29. Examples 13.6 (W10×100, A992, pinned), 13.7 (rod fixed at both ends, 18 kip),
+  13.8 (2014-T6 bar, 30 in., 12 kip, section b × 2b), 13.9 (timber board 5.5 × 1.5 in., 5 kip, longest L).
+- §13.7 Eccentric loading, pp. 707– (PDF 732–): Eq. 13-30 σ_max = P/A + Mc/I against σ_allow; Examples 13.10
+  (2014-T6, fixed–free), 13.11 (A-36 W6×20).
+- Problems that fit this chapter: 13-9 (four laced angles, 25 ft: a built-up column → Quebec, shear-soft column of Ch. 3);
+  13-11 (single angle about its weakest axis a–a: Hibbeler checks flexure only; our exercise adds the flexural–torsional
+  load). Hibbeler has no torsional or flexural–torsional buckling: §5.1–5.3 need other sources.
+- Units: Hibbeler mixes US and SI; the book converts to SI.
+
 ## Sources
 Bažant & Cedolin (thin-walled beams and elastoplastic buckling; chapter numbers to check on the file), Trahair (1993),
 Shanley (1947), Hutchinson (1974), Ziemian / SSRC guide (2010), Brush & Almroth §2.5–2.6, Bushnell §7, Hibbeler 9th ed.
