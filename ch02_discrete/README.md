@@ -7,11 +7,11 @@ Slides: not started.
 
 ## Content
 1. `sec:ld-lagrange` Energy and Lagrange's equations: column of two bars (Ziegler's geometry) under a dead
-   load, ℰ, K, M, Q; linearised motion; frequencies go to zero at P_c = (3 − √5)/2 · k/l.
+   load, 𝒲, K, M, Q; linearised motion; frequencies go to zero at P_c = (3 − √5)/2 · k/l.
 2. `sec:ld-hessian` Energy criterion (gbox), critical point and mode, limit vs bifurcation test
-   ¹uᵀℰ,uη (Chapter 1's wᵀf_r with w = v); Box 2.1.
-3. `sec:ld-koiter` Koiter: rigid T model (Triantafyllidis AB-1); general LSK expansion; κ', ℰ₃, ℰ₄;
-   η₁ = −ℰ₃/(2κ'), η₂ = −(ℰ₄ + 3ℰ,ijk ²uᵢ¹uⱼ¹uₖ)/(3κ'); Box 2.2; the three link models of Thompson & Hunt
+   ¹uᵀ𝒲,uη (Chapter 1's wᵀf_r with w = v); Box 2.1.
+3. `sec:ld-koiter` Koiter: rigid T model (Triantafyllidis AB-1); general LSK expansion; κ', 𝒲₃, 𝒲₄;
+   η₁ = −𝒲₃/(2κ'), η₂ = −(𝒲₄ + 3𝒲,ijk ²uᵢ¹uⱼ¹uₖ)/(3κ'); Box 2.2; the three link models of Thompson & Hunt
    §1.2 (η₂ = η_c/3, −η_c; η₁ = −¾η_c); gbox: passive coordinates can only lower η₂.
 4. `sec:ld-imperfect` Imperfections: imperfect T model; reduced equations; 1/2 and 2/3 laws (gbox);
    Figure: exact vs asymptotic curves.
@@ -39,7 +39,7 @@ imperfection curves + truss by continuation, Ziegler).
 
 ## Decisions and open questions
 - Notation (author, 21 Nov 2026, accepted): `\mat{u}`, `\mat{K}`, `\mat{M}`, T, `\mat{Q}`, ⁰u(η), ¹u, ξ, ²u,
-  η = η_c + η₁ξ + ½η₂ξ² (Triantafyllidis's Taylor convention), κ', ℰ₃, ℰ₄, imperfection ξ̄, maximum
+  η = η_c + η₁ξ + ½η₂ξ² (Triantafyllidis's Taylor convention), κ', 𝒲₃, 𝒲₄, imperfection ξ̄, maximum
   load η_m, flutter load P_f. In `preamble/notation.tex` and the notation list.
 - (author, 21 Nov 2026) The von Mises truss replaces the fishery as the fold example of Chapter 1
   (Example `ex:st-vonmises`, Figure `fig:st-vonmises`, Exercise `exo:st-vonmises`); the fishery is in

@@ -72,8 +72,8 @@ frame are shared. When a convention changes in one book, check whether it should
   (CUP 2007): σ = C : ε, data with superscript D (u^D, b^D, t^D on ∂Ω^u, ∂Ω^t), admissible sets 𝒦, 𝒮
   (`\Kad`, `\Sad`), potential energy 𝒰_p(u), residual stress σ_0, temperature θ, operators grad, div, curl.
 - Stability and Koiter/LSK asymptotics: Triantafyllidis's MEC563 notes, with **η** in place of his λ:
-  energy ℰ(u, η) with load parameter η, principal branch ⁰u(η), critical point (u_c, η_c), mode ¹u,
-  amplitude ξ, derivatives ℰ,uu, ℰ,uuu.
+  energy 𝒲(u, η) with load parameter η, principal branch ⁰u(η), critical point (u_c, η_c), mode ¹u,
+  amplitude ξ, derivatives 𝒲,uu, 𝒲,uuu.
 - Decided (author, 21 Nov 2026): the Hooke tensor is blackboard ℂ (`\bbC`), as in the NPM notes, not the bold
   C of the book; the load parameter is **η** (`\eta`) from Chapter 2 on. λ stays for growth rates (Chapter 1),
   Lagrange multipliers and the Lamé constant. Chapter 1 keeps its control parameter r and load P.
@@ -174,8 +174,8 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
   code `ch01_bifurcation/code/python/arclength.py` for n unknowns; Chapter 3 builds on it (FE, Riks/Crisfield).
   Matrix notation for ODE systems: `\mat{y}`, `\mat{J}`, `\mat{v}`, `\mat{w}`, `\mat{u}=(\mat{y},r)`, `\widehat{\mat{J}}`.
 - 2026-11-21 (Ch. 2 thread): Chapter 2 notation accepted: generalised coordinates `\mat{u}`, stiffness
-  `\mat{K} = ℰ,uu`, mass `\mat{M}`, ⁰u(η), ¹u, ξ, ²u; η = η_c + η₁ξ + ½η₂ξ² (Taylor convention of Triantafyllidis);
-  κ', ℰ₃, ℰ₄; imperfection amplitude ξ̄; maximum load η_m; flutter load P_f. Box 2.2 (Koiter's coefficients) and
+  `\mat{K} = 𝒲,uu`, mass `\mat{M}`, ⁰u(η), ¹u, ξ, ²u; η = η_c + η₁ξ + ½η₂ξ² (Taylor convention of Triantafyllidis);
+  κ', 𝒲₃, 𝒲₄; imperfection amplitude ξ̄; maximum load η_m; flutter load P_f. Box 2.2 (Koiter's coefficients) and
   `ch02_discrete/code/python/koiter_sympy.py` (n dof) are reused for the elastica, plates and shells.
 - 2026-11-21 (Ch. 2 thread, author): the von Mises truss replaces the fishery in Chapter 1 (fold example);
   the fishery moves to `ch01_bifurcation/extra/`.
@@ -184,13 +184,14 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
   minimisation, Riks arc-length, detection, branch switching; the Chapter 2 two-bar truss is its FEniCS/Cast3M test case.
   Hub: update the plan table, `README.md` and `ch00_intro/notes/overview.tex`.
 - 2026-11-21 (Ch. 3 thread): continuum notation of Ch. 3 (from the author's MEC563 L03 slides): Green–Lagrange
-  `\tens{e}(\vu) = \eps + ½\tens{q}(\vu,\vu)`, `\tens{q}(\vv,\vw)` = sym(gradᵀv grad w), variations D_u ℰ[v], D_uu ℰ[v,w];
+  `\tens{e}(\vu) = \eps + ½\tens{q}(\vu,\vu)`, `\tens{q}(\vv,\vw)` = sym(gradᵀv grad w), variations D_u 𝒲[v], D_uu 𝒲[v,w];
   FE: residual `\mat{r} = \mat{f}_int − η\mat{p}`, `\mat{K}_0`, `\mat{K}_\sigma` (Green-strain geometric stiffness, ∫σ̂:q),
   forms a, b, Rayleigh quotient R; arc-length weight ψ. Box 3.2 (linear buckling), Box 3.3 (arc-length by bordering)
   and `ch03_continuation/code/python/truss_fe.py` (bar elements, Riks/Crisfield, negative pivots, branch switching)
   can be reused by later chapters. Large-strain theory beyond St Venant–Kirchhoff stays for Ch. 9.
 - 2026-11-23 (Ch. 4 thread, author): the energy is written 𝒲 (`\mathcal{W}`) in the whole book, as in the author's
-  slides; hub to switch Ch. 2, Ch. 3, `preamble/notation.tex` and the notation list from ℰ (Ch. 1 keeps plain W).
+  slides. Done on 23 Nov in Ch. 2, Ch. 3 (notes and sessions), `preamble/notation.tex`, the notation list and the
+  READMEs (Ch. 1 keeps plain W for the Lyapunov function).
 - 2026-11-23 (Ch. 4 thread, author): a short section on the bifurcation of a 3D elastic body (principal branch,
   critical point, limit vs bifurcation, 3D linear buckling, Koiter's η₁, η₂ by variations) goes in Ch. 3; if too
   long, a chapter of its own between Ch. 3 and Ch. 4. Sources: author's C04 slides, Triantafyllidis notes AC.

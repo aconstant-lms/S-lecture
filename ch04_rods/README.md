@@ -103,8 +103,8 @@ foundation picks the wavelength and is unstable; a code is trusted after the ela
 ## Decisions and open questions
 1. (author, 23 Nov 2026) The 3D bifurcation section goes in Chapter 3; if it grows too long, it becomes a chapter
    of its own between the present Chapters 3 and 4.
-2. (author, 23 Nov 2026) The energy is 𝒲 (`\mathcal{W}`) in the whole book. Ch. 2, Ch. 3 and the notation list
-   still write ℰ; the switch is for the hub (one macro in `preamble/notation.tex`). Ch. 1 keeps plain W (Lyapunov).
+2. (author, 23 Nov 2026) The energy is 𝒲 (`\mathcal{W}`) in the whole book. Switched from ℰ on 23 Nov in Ch. 2–3,
+   the sessions, `preamble/notation.tex` and the notation list. Ch. 1 keeps plain W (Lyapunov).
 3. (author, 23 Nov 2026) Twist and natural curvature: a remark at the end of this chapter; the full treatment
    in Chapter 8 (tape springs). §4.5 becomes a short remark.
 4. (author, 23 Nov 2026) FEniCS and Cast3M: both a 1D rod model (geometrically exact beam; Cast3M POUT with

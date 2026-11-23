@@ -6,10 +6,10 @@
 \framepart{Outline}
 Chapters~\ref{ch:st} and~\ref{ch:ld} worked with a few unknowns, and every
 derivative was taken by hand. A real structure is a continuum. Its potential
-energy $\mathcal{E}(\vu,\eta)$ is an integral over the body, and the unknown is a
+energy $\mathcal{W}(\vu,\eta)$ is an integral over the body, and the unknown is a
 displacement field. This chapter turns the field into a column of numbers, and
 shows that nothing of Chapter~\ref{ch:ld} is lost on the way. The first variation of
-$\mathcal{E}$ is the weak form of equilibrium, the principle of virtual work. The
+$\mathcal{W}$ is the weak form of equilibrium, the principle of virtual work. The
 second variation is the stability operator. Finite elements replace the field by
 nodal values $\mat{u}$, and the two variations become the residual vector and the
 tangent stiffness matrix $\mat{K}$. The energy criterion, the critical point and the
@@ -74,7 +74,7 @@ $\tfrac12 EI\,w''^2$ per unit length. The ends approach each other by
 $\displaystyle\tfrac12\int_0^L w'^2\dd x$ (the arc is longer than its chord), so the load loses that much
 work times $P$. The potential energy is
 \begin{equation}\label{eq:nc-column-energy}
-  \mathcal{E}(w,P) = \frac12\int_0^L EI\,w''^2\dd x - \frac P2\int_0^L w'^2\dd x .
+  \mathcal{W}(w,P) = \frac12\int_0^L EI\,w''^2\dd x - \frac P2\int_0^L w'^2\dd x .
 \end{equation}
 The deflection must vanish at the ends: $w$ belongs to the set $\Kad_0$ of
 kinematically admissible fields with $w(0) = w(L) = 0$.
@@ -118,7 +118,7 @@ exactly the regime of buckling, and the one of Audoly and Pomeau~\cite[Section~2
 $\vb^D$ in $\Omega$ and $\vt^D$ on $\partial\Omega_t$ are multiplied by the load parameter
 $\eta$. The potential energy is
 \begin{equation}\label{eq:nc-energy}
-  \mathcal{E}(\vu,\eta) = \frac12\int_\Omega \tens{e}(\vu):\bbC:\tens{e}(\vu)\dd V
+  \mathcal{W}(\vu,\eta) = \frac12\int_\Omega \tens{e}(\vu):\bbC:\tens{e}(\vu)\dd V
   - \eta\,\ell(\vu),
   \qquad
   \ell(\vu) = \int_\Omega \vb^D\cdot\vu\dd V + \int_{\partial\Omega_t}\vt^D\cdot\vu\dd S .
@@ -128,14 +128,14 @@ $\eta$. The potential energy is
 The strain changes with $\vu$ by $\delta\tens{e} = \eps(\vv) + \tens{q}(\vu,\vv)$ in a direction
 $\vv \in \Kad_0$. The first variation is
 \begin{equation}\label{eq:nc-first}
-  D_{\vu}\mathcal{E}(\vu,\eta)[\vv] = \int_\Omega \sig : \bigl(\eps(\vv) + \tens{q}(\vu,\vv)\bigr)\dd V
+  D_{\vu}\mathcal{W}(\vu,\eta)[\vv] = \int_\Omega \sig : \bigl(\eps(\vv) + \tens{q}(\vu,\vv)\bigr)\dd V
   - \eta\,\ell(\vv) .
 \end{equation}
 Setting it to zero for all $\vv$ is the principle of virtual work in the reference
 configuration~\cite[Section~7.2]{nc-constantinescu2007}. Differentiate once more, in a
 second direction $\vw$:
 \begin{equation}\label{eq:nc-second}
-  D_{\vu\vu}\mathcal{E}(\vu,\eta)[\vv,\vw] =
+  D_{\vu\vu}\mathcal{W}(\vu,\eta)[\vv,\vw] =
   \int_\Omega \bigl(\eps(\vv) + \tens{q}(\vu,\vv)\bigr):\bbC:\bigl(\eps(\vw) + \tens{q}(\vu,\vw)\bigr)\dd V
   + \int_\Omega \sig : \tens{q}(\vv,\vw)\dd V .
 \end{equation}
@@ -147,16 +147,16 @@ reached. The second is new: the stress already present stiffens the body if it p
 
 \begin{gbox}{The weak form is the gradient of the energy, the stability operator is its Hessian}\label{sec:nc-weakgbox}
 \index{weak form}\index{stability!second variation}%
-An equilibrium $\vu$ satisfies $D_{\vu}\mathcal{E}(\vu,\eta)[\vv] = 0$ for all $\vv\in\Kad_0$.
+An equilibrium $\vu$ satisfies $D_{\vu}\mathcal{W}(\vu,\eta)[\vv] = 0$ for all $\vv\in\Kad_0$.
 It is stable if the second variation is positive,
-$D_{\vu\vu}\mathcal{E}(\vu,\eta)[\vv,\vv] > 0$ for all $\vv \neq \vect{0}$ in $\Kad_0$, and
+$D_{\vu\vu}\mathcal{W}(\vu,\eta)[\vv,\vv] > 0$ for all $\vv \neq \vect{0}$ in $\Kad_0$, and
 unstable if it is negative for some $\vv$.
 \end{gbox}
 
 \paragraph{Why it works.}
 The picture is the bowl of Section~\ref{sec:ld-energycrit}. Near $\vu$ the energy is
-$\mathcal{E}(\vu + \epsilon\vv) \approx \mathcal{E}(\vu) + \epsilon\,D_{\vu}\mathcal{E}[\vv]
-+ \tfrac12\epsilon^2 D_{\vu\vu}\mathcal{E}[\vv,\vv]$. The linear term vanishes at equilibrium,
+$\mathcal{W}(\vu + \epsilon\vv) \approx \mathcal{W}(\vu) + \epsilon\,D_{\vu}\mathcal{W}[\vv]
++ \tfrac12\epsilon^2 D_{\vu\vu}\mathcal{W}[\vv,\vv]$. The linear term vanishes at equilibrium,
 and the quadratic term decides whether every direction goes uphill. Only the
 unknown has changed, from a column to a field. In infinite dimensions a positive
 second variation needs some care (it should be bounded below by a norm of $\vv$), and
@@ -177,12 +177,12 @@ Write the displacement as a combination of shape functions $N_i(\vx)$ that vanis
 outside a few elements, with nodal values $u_i$:
 $\vu(\vx) \approx \sum_i N_i(\vx)\,u_i$. Collect the nodal values in the column
 $\mat{u}$. The energy~\eqref{eq:nc-energy} becomes a function
-$\mathcal{E}(\mat{u},\eta)$ of finitely many unknowns, the object of
+$\mathcal{W}(\mat{u},\eta)$ of finitely many unknowns, the object of
 Chapter~\ref{ch:ld}~\cite[slide~5]{nc-triantafyllidis2018}. Its gradient and its Hessian are
 \begin{equation}\label{eq:nc-discrete}
-  \mat{r}(\mat{u},\eta) = \mathcal{E}_{,\mat{u}} = \mat{f}_{\mathrm{int}}(\mat{u}) - \eta\,\mat{p},
+  \mat{r}(\mat{u},\eta) = \mathcal{W}_{,\mat{u}} = \mat{f}_{\mathrm{int}}(\mat{u}) - \eta\,\mat{p},
   \qquad
-  \mat{K}(\mat{u}) = \mathcal{E}_{,\mat{u}\mat{u}} ,
+  \mat{K}(\mat{u}) = \mathcal{W}_{,\mat{u}\mat{u}} ,
 \end{equation}
 the \emph{residual} (internal forces minus external forces, $\mat{p}$ the reference load
 vector) and the \emph{tangent stiffness}. Taking $\vv = N_i$ in~\eqref{eq:nc-first} gives the
@@ -198,7 +198,7 @@ current vector is $\vx = \vect{X} + \vu_j - \vu_i$. Its Green strain and its ene
 \begin{equation}\label{eq:nc-bar}
   \varepsilon = \frac{\vx\cdot\vx - L^2}{2L^2},
   \qquad
-  \mathcal{E}_e = \frac12\,EA\,L\,\varepsilon^2 .
+  \mathcal{W}_e = \frac12\,EA\,L\,\varepsilon^2 .
 \end{equation}
 With the normal force $N = EA\,\varepsilon$, the gradient with respect to $\vu_j$ is the
 force $N\vx/L$, and $-N\vx/L$ on node $i$. One more derivative gives the element
@@ -230,7 +230,7 @@ to round-off.
 \index{finite elements}%
 \begin{enumerate}
   \item Choose the shape functions; impose the essential boundary conditions on $\mat{u}$.
-  \item For each element, write the energy $\mathcal{E}_e$ in terms of its nodal values.
+  \item For each element, write the energy $\mathcal{W}_e$ in terms of its nodal values.
   \item Element forces: its gradient. Element tangent: its Hessian, material plus geometric.
   \item Assemble $\mat{f}_{\mathrm{int}}$ and $\mat{K}$; assemble the load vector $\mat{p}$.
   \item Check: a finite-difference derivative of $\mat{r}$ must reproduce $\mat{K}$.
@@ -577,7 +577,7 @@ solves the \emph{extended system} $\mat{r}(\mat{u},\eta) = \mat{0}$,
 $\mat{K}(\mat{u})\,\boldsymbol{\phi} = \mat{0}$, $\norm{\boldsymbol{\phi}} = 1$ by Newton's
 method~\cite{nc-wriggers1990} (Exercise~\ref{exo:nc-extended}). At the point, the
 eigenvector of the zero eigenvalue is the mode, and the test~\eqref{eq:ld-limit-test} of
-Chapter~\ref{ch:ld} classifies it: since $\mathcal{E}_{,\mat{u}\eta} = -\mat{p}$,
+Chapter~\ref{ch:ld} classifies it: since $\mathcal{W}_{,\mat{u}\eta} = -\mat{p}$,
 \begin{equation}\label{eq:nc-classify}
   {}^1\mat{u}\T\mat{p} \neq 0: \text{ limit point},
   \qquad
@@ -684,8 +684,8 @@ truss does not need it.}
   \item \textbf{Weak form and stability operator.} The first variation of the energy is the
         principle of virtual work; the second is the stability operator, with a material
         part and an initial-stress (geometric) part $\displaystyle\int_\Omega\sig:\tens{q}(\vv,\vw)\dd V$.
-  \item \textbf{Finite elements.} Interpolation turns $\mathcal{E}(\vu,\eta)$ into
-        $\mathcal{E}(\mat{u},\eta)$: residual $\mat{r} = \mat{f}_{\mathrm{int}} - \eta\mat{p}$,
+  \item \textbf{Finite elements.} Interpolation turns $\mathcal{W}(\vu,\eta)$ into
+        $\mathcal{W}(\mat{u},\eta)$: residual $\mat{r} = \mat{f}_{\mathrm{int}} - \eta\mat{p}$,
         tangent $\mat{K}$, and everything of Chapter~\ref{ch:ld} applies.
   \item \textbf{Linear buckling.} $(\mat{K}_0 + \eta\mat{K}_\sigma)\,{}^1\mat{u} = \mat{0}$. Reliable
         for bifurcation from a nearly linear state; for the truss it is $5.2$ times too high
@@ -814,7 +814,7 @@ $4\pi^2 = 39.4784$.
 $u = 0$. (c)~Derive~\eqref{eq:nc-truss-lba}. (d)~Show that the consistent linearisation gives
 $\eta = 2s^3/3$ for the vertical mode ($0.0833$ at $30^\circ$).
 \begin{solution}
-(a)~$\partial\varepsilon/\partial\vu_j = \vx/L^2$, so $\partial\mathcal{E}_e/\partial\vu_j = EAL\varepsilon\,\vx/L^2 = N\vx/L$;
+(a)~$\partial\varepsilon/\partial\vu_j = \vx/L^2$, so $\partial\mathcal{W}_e/\partial\vu_j = EAL\varepsilon\,\vx/L^2 = N\vx/L$;
 differentiating $N\vx/L$ again gives $(EA/L^3)\vx\vx\T + (N/L)\mat{I}$. (b)~With $\vx = (\pm c + u, s - v)$
 and $N = EA\varepsilon$, sum the apex blocks; on $u = 0$ the off-diagonal terms cancel and
 $K_{vv}/EA = 2(s - v)^2 + 2\varepsilon$, $K_{uu}/EA = 2c^2 + 2\varepsilon$, with $\varepsilon = \tfrac12(v^2 - 2vs)$,
@@ -829,17 +829,17 @@ Unknowns $(\mat{u},\boldsymbol{\phi},\eta)$, equations $\mat{r}(\mat{u},\eta) = 
 $\mat{K}(\mat{u})\boldsymbol{\phi} = \mat{0}$, $\mat{l}\T\boldsymbol{\phi} = 1$ for a fixed vector
 $\mat{l}$~\cite{nc-wriggers1990}. (a)~Write the Jacobian of Newton's method. (b)~Show that it is
 invertible at a limit point with $\boldsymbol{\phi}\T\mat{p} \neq 0$ and
-$\mathcal{E}_3 = \mathcal{E}_{,ijk}\phi_i\phi_j\phi_k \neq 0$. (c)~Show that it is singular at a
+$\mathcal{W}_3 = \mathcal{W}_{,ijk}\phi_i\phi_j\phi_k \neq 0$. (c)~Show that it is singular at a
 bifurcation point. What does a code do then?
 \begin{solution}
-(a)~$\begin{bmatrix} \mat{K} & \mat{0} & -\mat{p}\\ \mathcal{E}_{,\mat{u}\mat{u}\mat{u}}[\boldsymbol{\phi}] & \mat{K} & \mat{0}\\ \mat{0}\T & \mat{l}\T & 0\end{bmatrix}$
+(a)~$\begin{bmatrix} \mat{K} & \mat{0} & -\mat{p}\\ \mathcal{W}_{,\mat{u}\mat{u}\mat{u}}[\boldsymbol{\phi}] & \mat{K} & \mat{0}\\ \mat{0}\T & \mat{l}\T & 0\end{bmatrix}$
 (dead loads: $\mat{K}$ does not depend on $\eta$). (b)~Let $(\mat{a},\mat{b},c)$ be in the kernel.
 $\boldsymbol{\phi}\T$ times the first row gives $c\,\boldsymbol{\phi}\T\mat{p} = 0$, so $c = 0$ and $\mat{a} = \alpha\boldsymbol{\phi}$.
-$\boldsymbol{\phi}\T$ times the second row gives $\alpha\mathcal{E}_3 = 0$, so $\alpha = 0$; then
+$\boldsymbol{\phi}\T$ times the second row gives $\alpha\mathcal{W}_3 = 0$, so $\alpha = 0$; then
 $\mat{b} = \beta\boldsymbol{\phi}$ and the last row gives $\beta = 0$. (c)~If $\boldsymbol{\phi}\T\mat{p} = 0$,
 $\mat{K}\mat{a} = c\,\mat{p}$ is solvable for any $c$: $\mat{a} = c\,\dot{\mat{u}} + \alpha\boldsymbol{\phi}$ with
 $\dot{\mat{u}} = d\,{}^0\mat{u}/d\eta$. The second row is solvable if
-$c\,\kappa' + \alpha\,\mathcal{E}_3 = 0$, a one-parameter family: the kernel is not zero. Codes
+$c\,\kappa' + \alpha\,\mathcal{W}_3 = 0$, a one-parameter family: the kernel is not zero. Codes
 perturb the system (an imperfection, or a penalty term as in~\cite{nc-wriggers1990}).
 \end{solution}
 

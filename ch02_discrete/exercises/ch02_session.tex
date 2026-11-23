@@ -35,22 +35,22 @@ session.}
 %======================================================================
 \spart{The rigid T model by hand}
 The rigid T of Section~\ref{B-sec:ld-koiter} has the energy
-$\mathcal{E} = E(v^2 + \ell^2\theta^2) + \tfrac k2(L\theta)^2 + \tfrac m3(L\theta)^3
+$\mathcal{W} = E(v^2 + \ell^2\theta^2) + \tfrac k2(L\theta)^2 + \tfrac m3(L\theta)^3
 + \tfrac n4(L\theta)^4 - \eta(v + L\theta^2/2)$.
 
 \q Find the principal branch, the Hessian on it, the critical load and the mode.
 Is the critical point a limit point or a bifurcation point?
 \begin{answer}
-$\mathcal{E}_{,v} = 2Ev - \eta = 0$, $\mathcal{E}_{,\theta} = 0$ at $\theta = 0$: $v = \eta/(2E)$,
+$\mathcal{W}_{,v} = 2Ev - \eta = 0$, $\mathcal{W}_{,\theta} = 0$ at $\theta = 0$: $v = \eta/(2E)$,
 $\theta = 0$. $\mat{K} = \diag(2E,\ 2E\ell^2 + kL^2 - \eta L)$, singular at
 $\eta_c = (2E\ell^2 + kL^2)/L$ with ${}^1\mat{u} = (0,1)$.
-$\mathcal{E}_{,\mat{u}\eta} = (-1, -L\theta) = (-1,0)$ is orthogonal to the mode: bifurcation.
+$\mathcal{W}_{,\mat{u}\eta} = (-1, -L\theta) = (-1,0)$ is orthogonal to the mode: bifurcation.
 \end{answer}
 
-\q Compute $\kappa'$, $\mathcal{E}_3$, $\mathcal{E}_4$ and ${}^2\mat{u}$, then $\eta_1$ and
-$\eta_2$. Check against the exact path $\mathcal{E}_{,\theta} = 0$.
+\q Compute $\kappa'$, $\mathcal{W}_3$, $\mathcal{W}_4$ and ${}^2\mat{u}$, then $\eta_1$ and
+$\eta_2$. Check against the exact path $\mathcal{W}_{,\theta} = 0$.
 \begin{answer}
-$\kappa' = -L$, $\mathcal{E}_3 = 2mL^3$, $\mathcal{E}_4 = 6nL^4$; $\mathcal{E}_{,v\theta\theta} = 0$, so
+$\kappa' = -L$, $\mathcal{W}_3 = 2mL^3$, $\mathcal{W}_4 = 6nL^4$; $\mathcal{W}_{,v\theta\theta} = 0$, so
 ${}^2\mat{u} = \mat{0}$. $\eta_1 = mL^2$; if $m = 0$, $\eta_2 = 2nL^3$. Exact:
 $\eta = \eta_c + mL^2\theta + nL^3\theta^2$, the same (the expansion terminates).
 \end{answer}
@@ -67,7 +67,7 @@ law~\eqref{B-eq:ld-twothirds} with $\bar\xi = \delta$.
 %======================================================================
 \spart{Koiter's coefficients by computer algebra}
 
-\qc Program Box~2.2 for $n$ degrees of freedom: input $\mathcal{E}(\mat{u},\eta)$, the
+\qc Program Box~2.2 for $n$ degrees of freedom: input $\mathcal{W}(\mat{u},\eta)$, the
 critical state, $d\,{}^0\mat{u}/d\eta$ and the mode; output $\eta_1$, or $\eta_2$. Test it on
 the T model and on the three bars on springs of Section~\ref{B-sec:ld-koiter}.
 \begin{answer}

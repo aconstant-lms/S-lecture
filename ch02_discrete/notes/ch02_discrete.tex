@@ -7,12 +7,12 @@
 A structure with a few degrees of freedom is described by a column of
 generalised coordinates $\mat{u}$ and a load parameter $\eta$. When the loads are
 conservative, everything follows from one function, the potential energy
-$\mathcal{E}(\mat{u},\eta)$. Its gradient gives the equilibria. Its Hessian, the
-stiffness matrix $\mat{K} = \mathcal{E}_{,\mat{u}\mat{u}}$, decides their stability. A critical
+$\mathcal{W}(\mat{u},\eta)$. Its gradient gives the equilibria. Its Hessian, the
+stiffness matrix $\mat{K} = \mathcal{W}_{,\mat{u}\mat{u}}$, decides their stability. A critical
 point is the load at which $\mat{K}$ first gets a zero eigenvalue, and the
 eigenvector is the buckling mode. Chapter~\ref{ch:st} found the same facts for a
 differential equation; here the Jacobian is replaced by a symmetric matrix and the
-Lyapunov function by the energy. Koiter's idea is to expand $\mathcal{E}$ along the
+Lyapunov function by the energy. Koiter's idea is to expand $\mathcal{W}$ along the
 mode. Two Taylor coefficients then decide whether the structure keeps its
 load after buckling or loses it, and how much a small imperfection lowers its
 maximum load. We work with one and two degrees of freedom: rigid bars on springs,
@@ -67,7 +67,7 @@ springs store $\tfrac12 k\theta_1^2 + \tfrac12 k(\theta_2 - \theta_1)^2$. The to
 descends by $l(1 - \cos\theta_1) + l(1 - \cos\theta_2)$, and the dead load loses the
 work $P$ times this descent. The potential energy is
 \begin{equation}\label{eq:ld-chain-energy}
-  \mathcal{E}(\mat{u},P) = \frac12\,k\,\theta_1^2 + \frac12\,k\,(\theta_2 - \theta_1)^2
+  \mathcal{W}(\mat{u},P) = \frac12\,k\,\theta_1^2 + \frac12\,k\,(\theta_2 - \theta_1)^2
   - P\,l\,(2 - \cos\theta_1 - \cos\theta_2) .
 \end{equation}
 The straight column $\mat{u} = \mat{0}$ is an equilibrium for every $P$. Is it stable?
@@ -104,9 +104,9 @@ The straight column $\mat{u} = \mat{0}$ is an equilibrium for every $P$. Is it s
 \end{figure}
 
 \paragraph{Equilibrium and the Hessian.}
-An equilibrium makes $\mathcal{E}$ stationary: its gradient vanishes,
-$\mathcal{E}_{,\mat{u}} = \mat{0}$. The second derivatives form the Hessian, which we
-call the stiffness matrix $\mat{K} = \mathcal{E}_{,\mat{u}\mat{u}}$. At the straight column,
+An equilibrium makes $\mathcal{W}$ stationary: its gradient vanishes,
+$\mathcal{W}_{,\mat{u}} = \mat{0}$. The second derivatives form the Hessian, which we
+call the stiffness matrix $\mat{K} = \mathcal{W}_{,\mat{u}\mat{u}}$. At the straight column,
 with $\cos\theta \approx 1 - \theta^2/2$,
 \begin{equation}\label{eq:ld-chain-K}
   \mat{K}(P) = \begin{bmatrix} 2k - Pl & -k \\ -k & k - Pl \end{bmatrix} .
@@ -125,7 +125,7 @@ kinetic energy is
 Lagrange's equations of motion are
 \begin{equation}\label{eq:ld-lagrange}
   \frac{d}{dt}\frac{\partial T}{\partial\dot{\mat{u}}} - \frac{\partial T}{\partial\mat{u}}
-  + \mathcal{E}_{,\mat{u}} = \mat{Q},
+  + \mathcal{W}_{,\mat{u}} = \mat{Q},
 \end{equation}
 where $\mat{Q}$ collects the generalised forces that have no potential: dampers,
 and the follower load of Section~\ref{sec:ld-flutter}. Here $\mat{Q} = \mat{0}$.
@@ -163,16 +163,16 @@ energy is a stable equilibrium.
 
 \begin{gbox}{An equilibrium is stable while the stiffness matrix is positive definite}\label{sec:ld-energycrit}
 \index{stability!energy criterion}\index{stiffness matrix}%
-Let $\mat{u}^*$ be an equilibrium, $\mathcal{E}_{,\mat{u}}(\mat{u}^*,\eta) = \mat{0}$. If
-$\mat{K} = \mathcal{E}_{,\mat{u}\mat{u}}(\mat{u}^*,\eta)$ is positive definite, the
+Let $\mat{u}^*$ be an equilibrium, $\mathcal{W}_{,\mat{u}}(\mat{u}^*,\eta) = \mat{0}$. If
+$\mat{K} = \mathcal{W}_{,\mat{u}\mat{u}}(\mat{u}^*,\eta)$ is positive definite, the
 equilibrium is stable. If $\mat{K}$ has a negative eigenvalue, it is unstable.
 \end{gbox}
 
 \paragraph{Why it works.}
 Near $\mat{u}^*$ the energy is a bowl,
-$\mathcal{E} \approx \mathcal{E}^* + \tfrac12\,\mat{w}\T\mat{K}\mat{w}$. Positive definite
+$\mathcal{W} \approx \mathcal{W}^* + \tfrac12\,\mat{w}\T\mat{K}\mat{w}$. Positive definite
 means the bowl curves upward in every direction: $\mat{w}\T\mat{K}\mat{w} > 0$ for every
-$\mat{w} \neq \mat{0}$. The total energy $T + \mathcal{E}$ is conserved, and $T \ge 0$,
+$\mat{w} \neq \mat{0}$. The total energy $T + \mathcal{W}$ is conserved, and $T \ge 0$,
 so a motion that starts near the bottom with little kinetic energy cannot climb the
 walls: the total energy is a Lyapunov function (Section~\ref{sec:st-lyapdirect}).
 The frequencies say the same: $\omega^2 = \mat{x}\T\mat{K}\mat{x}/\mat{x}\T\mat{M}\mat{x}$,
@@ -204,26 +204,26 @@ both bars lean the same way and the upper one leans more, by the golden ratio.
 \index{limit point}\index{bifurcation point}%
 Chapter~\ref{ch:st} distinguished a fold from a branch point with the left null
 vector: $\mat{w}\T\mat{f}_r \neq 0$ or $= 0$. Here the equations are
-$\mathcal{E}_{,\mat{u}} = \mat{0}$, their Jacobian is the symmetric $\mat{K}$, so the
+$\mathcal{W}_{,\mat{u}} = \mat{0}$, their Jacobian is the symmetric $\mat{K}$, so the
 left and right null vectors are the same, ${}^1\mat{u}$. The test becomes
 \begin{equation}\label{eq:ld-limit-test}
-  {}^1\mat{u}\T\,\mathcal{E}_{,\mat{u}\eta}(\mat{u}_c,\eta_c)
+  {}^1\mat{u}\T\,\mathcal{W}_{,\mat{u}\eta}(\mat{u}_c,\eta_c)
   \;\begin{cases} \neq 0 & \text{limit point: the load passes a maximum,}\\
                  = 0 & \text{bifurcation point: a new branch crosses the principal one.}
   \end{cases}
 \end{equation}
-For the column, $\mathcal{E}_{,\mat{u}P} = -l\,(\sin\theta_1, \sin\theta_2)$ vanishes at
+For the column, $\mathcal{W}_{,\mat{u}P} = -l\,(\sin\theta_1, \sin\theta_2)$ vanishes at
 $\mat{u} = \mat{0}$: a bifurcation, as expected from the symmetry
 $\mat{u} \to -\mat{u}$. The von Mises truss of Section~\ref{sec:ld-snap} has a limit point.
 
 \begin{gbox}{Box 2.1\quad Critical points of a conservative system}\label{sec:ld-box-crit}
 \index{critical point}%
 \begin{enumerate}
-  \item Write $\mathcal{E}(\mat{u},\eta)$: strain energy minus the work of the loads.
-  \item Find the principal branch ${}^0\mat{u}(\eta)$ from $\mathcal{E}_{,\mat{u}} = \mat{0}$.
-  \item Compute $\mat{K}(\eta) = \mathcal{E}_{,\mat{u}\mat{u}}$ on it; find the first $\eta_c$
+  \item Write $\mathcal{W}(\mat{u},\eta)$: strain energy minus the work of the loads.
+  \item Find the principal branch ${}^0\mat{u}(\eta)$ from $\mathcal{W}_{,\mat{u}} = \mat{0}$.
+  \item Compute $\mat{K}(\eta) = \mathcal{W}_{,\mat{u}\mat{u}}$ on it; find the first $\eta_c$
         with $\det\mat{K} = 0$, and the unit null vector ${}^1\mat{u}$.
-  \item Test ${}^1\mat{u}\T\mathcal{E}_{,\mat{u}\eta}$: limit point if nonzero, bifurcation
+  \item Test ${}^1\mat{u}\T\mathcal{W}_{,\mat{u}\eta}$: limit point if nonzero, bifurcation
         point if zero.
   \item At a bifurcation point, go to Box~2.2 for the post-buckling path.
 \end{enumerate}
@@ -247,13 +247,13 @@ vertical load $\eta$ at $C$, and a horizontal nonlinear spring at $C$ resists wi
 the force $k d + m d^2 + n d^3$ for a displacement $d$. The degrees of freedom are
 the sinking $v$ of $O$ and the rotation $\theta$. To the order needed,
 \begin{equation}\label{eq:ld-tmodel}
-  \mathcal{E}(v,\theta,\eta) = E\bigl(v^2 + \ell^2\theta^2\bigr) + \frac k2 (L\theta)^2
+  \mathcal{W}(v,\theta,\eta) = E\bigl(v^2 + \ell^2\theta^2\bigr) + \frac k2 (L\theta)^2
   + \frac m3 (L\theta)^3 + \frac n4 (L\theta)^4 - \eta\Bigl(v + \frac{L\theta^2}2\Bigr).
 \end{equation}
 The principal branch is $v = \eta/(2E)$, $\theta = 0$. The Hessian there is diagonal,
 $\diag\bigl(2E,\ (\eta_c - \eta)L\bigr)$ with $\eta_c = (2E\ell^2 + kL^2)/L$. The mode is a
-pure rotation, ${}^1\mat{u} = (0,1)$, and $\mathcal{E}_{,\theta\eta} = -L\theta = 0$: a
-bifurcation. Off the straight branch, $\mathcal{E}_{,\theta} = 0$ gives
+pure rotation, ${}^1\mat{u} = (0,1)$, and $\mathcal{W}_{,\theta\eta} = -L\theta = 0$: a
+bifurcation. Off the straight branch, $\mathcal{W}_{,\theta} = 0$ gives
 \begin{equation}\label{eq:ld-tmodel-path}
   \eta = \eta_c + m L^2\,\theta + n L^3\,\theta^2 .
 \end{equation}
@@ -306,7 +306,7 @@ orthogonal to the mode,
   \eta = \eta_c + \eta_1\,\xi + \frac12\,\eta_2\,\xi^2 + \dots
 \end{equation}
 This is the Lyapunov--Schmidt reduction announced in Section~\ref{sec:st-reduction},
-applied to $\mathcal{E}_{,\mat{u}} = \mat{0}$~\cite{ld-triantafyllidis2011}. Three numbers
+applied to $\mathcal{W}_{,\mat{u}} = \mat{0}$~\cite{ld-triantafyllidis2011}. Three numbers
 carry the answer. With summation over repeated indices and all derivatives taken
 at the critical point, the first measures how fast the load removes stiffness in
 the mode, the other two are the cubic and quartic terms of the energy along it:
@@ -314,24 +314,24 @@ the mode, the other two are the cubic and quartic terms of the energy along it:
   \kappa' = {}^1u_i\,\frac{dK_{ij}}{d\eta}\,{}^1u_j ,
 \end{equation}
 \begin{equation}\label{eq:ld-E34}
-  \mathcal{E}_3 = \mathcal{E}_{,ijk}\,{}^1u_i\,{}^1u_j\,{}^1u_k ,
+  \mathcal{W}_3 = \mathcal{W}_{,ijk}\,{}^1u_i\,{}^1u_j\,{}^1u_k ,
   \qquad
-  \mathcal{E}_4 = \mathcal{E}_{,ijkl}\,{}^1u_i\,{}^1u_j\,{}^1u_k\,{}^1u_l .
+  \mathcal{W}_4 = \mathcal{W}_{,ijkl}\,{}^1u_i\,{}^1u_j\,{}^1u_k\,{}^1u_l .
 \end{equation}
 The derivative $d\mat{K}/d\eta$ is taken along the principal branch; when that branch
-is trivial it is simply $\mathcal{E}_{,\mat{u}\mat{u}\eta}$. On a stable principal
+is trivial it is simply $\mathcal{W}_{,\mat{u}\mat{u}\eta}$. On a stable principal
 branch the smallest eigenvalue decreases through zero, so $\kappa' < 0$.
 
 \begin{gbox}{Two coefficients decide the post-buckling: $\eta_1$, and if it vanishes, $\eta_2$}\label{sec:ld-koitercoef}
 \index{Koiter's analysis!coefficients}%
 \begin{equation}\label{eq:ld-eta1}
-  \eta_1 = -\frac{\mathcal{E}_3}{2\kappa'} .
+  \eta_1 = -\frac{\mathcal{W}_3}{2\kappa'} .
 \end{equation}
 If $\eta_1 \neq 0$ the point is \emph{asymmetric}. If $\eta_1 = 0$ (for instance by symmetry),
 \begin{equation}\label{eq:ld-eta2}
-  \eta_2 = -\frac{\mathcal{E}_4 + 3\,\mathcal{E}_{,ijk}\,{}^2u_i\,{}^1u_j\,{}^1u_k}{3\kappa'},
+  \eta_2 = -\frac{\mathcal{W}_4 + 3\,\mathcal{W}_{,ijk}\,{}^2u_i\,{}^1u_j\,{}^1u_k}{3\kappa'},
   \qquad
-  \mat{K}_c\,{}^2\mat{u} = -\bigl(\mathcal{E}_{,ijk}\,{}^1u_j\,{}^1u_k\bigr)_i,
+  \mat{K}_c\,{}^2\mat{u} = -\bigl(\mathcal{W}_{,ijk}\,{}^1u_j\,{}^1u_k\bigr)_i,
   \quad {}^2\mat{u}\perp{}^1\mat{u} .
 \end{equation}
 $\eta_2 > 0$: \emph{stable symmetric}; $\eta_2 < 0$: \emph{unstable symmetric}.
@@ -341,25 +341,25 @@ $\eta < \eta_c$ is unstable.
 
 \paragraph{Why it works.}
 Picture the energy along the mode at a load just above or below $\eta_c$. Projected
-on the mode, the equation $\mathcal{E}_{,\mat{u}} = \mat{0}$ becomes one equation for
+on the mode, the equation $\mathcal{W}_{,\mat{u}} = \mat{0}$ becomes one equation for
 $\xi$. Its linear term is $\kappa'(\eta - \eta_c)\,\xi$: the stiffness in the mode,
-zero at $\eta_c$. Its next term is $\tfrac12\mathcal{E}_3\,\xi^2$. Off the principal
+zero at $\eta_c$. Its next term is $\tfrac12\mathcal{W}_3\,\xi^2$. Off the principal
 branch we may divide by $\xi$:
 \begin{equation}\label{eq:ld-reduced}
-  \kappa'\,(\eta - \eta_c) + \frac12\,\mathcal{E}_3\,\xi
-  + \frac16\bigl(\mathcal{E}_4 + 3\,\mathcal{E}_{,ijk}\,{}^2u_i\,{}^1u_j\,{}^1u_k\bigr)\,\xi^2
+  \kappa'\,(\eta - \eta_c) + \frac12\,\mathcal{W}_3\,\xi
+  + \frac16\bigl(\mathcal{W}_4 + 3\,\mathcal{W}_{,ijk}\,{}^2u_i\,{}^1u_j\,{}^1u_k\bigr)\,\xi^2
   + \dots = 0 .
 \end{equation}
-The first two terms balance when $\mathcal{E}_3 \neq 0$, which
-gives~\eqref{eq:ld-eta1}. If $\mathcal{E}_3 = 0$ the first and third terms balance,
+The first two terms balance when $\mathcal{W}_3 \neq 0$, which
+gives~\eqref{eq:ld-eta1}. If $\mathcal{W}_3 = 0$ the first and third terms balance,
 which gives~\eqref{eq:ld-eta2}. The correction ${}^2\mat{u}$ enters because the mode
 alone is not an equilibrium: the cubic term pushes the other coordinates, which
 answer through $\mat{K}_c$, positive definite away from the mode. The stability of
 the buckled path follows from the sign of the smallest eigenvalue on it, which is
 $-\kappa'\eta_1\xi$ (asymmetric) or $-\kappa'\eta_2\xi^2$ (symmetric) to leading
 order~\cite[pp.~57--62]{ld-triantafyllidis2011}: positive where the load is above
-$\eta_c$. On the T model, $\kappa' = -L$, $\mathcal{E}_3 = 2mL^3$,
-$\mathcal{E}_4 = 6nL^4$ and ${}^2\mat{u} = \mat{0}$, so $\eta_1 = mL^2$ and $\eta_2 = 2nL^3$,
+$\eta_c$. On the T model, $\kappa' = -L$, $\mathcal{W}_3 = 2mL^3$,
+$\mathcal{W}_4 = 6nL^4$ and ${}^2\mat{u} = \mat{0}$, so $\eta_1 = mL^2$ and $\eta_2 = 2nL^3$,
 exactly the path~\eqref{eq:ld-tmodel-path}.
 
 \begin{gbox}{Box 2.2\quad Koiter's coefficients of a simple bifurcation point}\label{sec:ld-box-koiter}
@@ -367,12 +367,12 @@ exactly the path~\eqref{eq:ld-tmodel-path}.
 \begin{enumerate}
   \item From Box~2.1: $\eta_c$, $\mat{K}_c$, the unit mode ${}^1\mat{u}$, and
         $d\,{}^0\mat{u}/d\eta$ at $\eta_c$.
-  \item $\kappa' = {}^1\mat{u}\T\bigl(\mathcal{E}_{,\mat{u}\mat{u}\mat{u}}\,d\,{}^0\mat{u}/d\eta
-        + \mathcal{E}_{,\mat{u}\mat{u}\eta}\bigr){}^1\mat{u}$; check $\kappa' < 0$.
-  \item $\mathcal{E}_3$; if nonzero, $\eta_1 = -\mathcal{E}_3/(2\kappa')$. Stop.
-  \item Solve $\mat{K}_c\,{}^2\mat{u} = -\mathcal{E}_{,\mat{u}\mat{u}\mat{u}}[{}^1\mat{u},{}^1\mat{u}]$
+  \item $\kappa' = {}^1\mat{u}\T\bigl(\mathcal{W}_{,\mat{u}\mat{u}\mat{u}}\,d\,{}^0\mat{u}/d\eta
+        + \mathcal{W}_{,\mat{u}\mat{u}\eta}\bigr){}^1\mat{u}$; check $\kappa' < 0$.
+  \item $\mathcal{W}_3$; if nonzero, $\eta_1 = -\mathcal{W}_3/(2\kappa')$. Stop.
+  \item Solve $\mat{K}_c\,{}^2\mat{u} = -\mathcal{W}_{,\mat{u}\mat{u}\mat{u}}[{}^1\mat{u},{}^1\mat{u}]$
         with ${}^2\mat{u}\perp{}^1\mat{u}$ (a bordered system, since $\mat{K}_c$ is singular).
-  \item $\mathcal{E}_4$ and $\eta_2$ from~\eqref{eq:ld-eta2}.
+  \item $\mathcal{W}_4$ and $\eta_2$ from~\eqref{eq:ld-eta2}.
 \end{enumerate}
 \end{gbox}
 
@@ -380,12 +380,12 @@ exactly the path~\eqref{eq:ld-tmodel-path}.
 \index{buckling!rigid bar model}%
 Thompson and Hunt open their book with three one-degree-of-freedom links, one for each
 case~\cite[Section~1.2]{ld-thompson1973}: the hinged cantilever, the propped
-cantilever and the asymmetric model. The rigid bar of Example~\ref{ex:st-bar}, with $\mathcal{E} = \tfrac12 k\theta^2 - \eta L(1 - \cos\theta)$,
-has $\kappa' = -L$, $\mathcal{E}_3 = 0$, $\mathcal{E}_4 = \eta_c L = k$, so
+cantilever and the asymmetric model. The rigid bar of Example~\ref{ex:st-bar}, with $\mathcal{W} = \tfrac12 k\theta^2 - \eta L(1 - \cos\theta)$,
+has $\kappa' = -L$, $\mathcal{W}_3 = 0$, $\mathcal{W}_4 = \eta_c L = k$, so
 $\eta_2 = k/(3L) = \eta_c/3$: stable symmetric, $\eta \approx \eta_c(1 + \theta^2/6)$
 as found in Chapter~\ref{ch:st}. Replace the torsional spring by a horizontal spring
 of stiffness $k$ at the top, which stays horizontal (it slides on a far-away
-roller). Then $\mathcal{E} = \tfrac12 k L^2\sin^2\theta - \eta L(1 - \cos\theta)$, the
+roller). Then $\mathcal{W} = \tfrac12 k L^2\sin^2\theta - \eta L(1 - \cos\theta)$, the
 equilibria are $\eta = kL\cos\theta$, and $\eta_2 = -kL = -\eta_c$: unstable
 symmetric. Finally tie the top to the ground by a spring inclined at $45^\circ$,
 anchored at the distance $L$ from the foot (Thompson and Hunt measure the sway by
@@ -402,14 +402,14 @@ All three numbers are produced by the code of Exercise~\ref{exo:ld-computer-koit
 \paragraph{The second-order field matters.}
 \index{Koiter's analysis!passive coordinates}%
 In the T model ${}^2\mat{u} = \mat{0}$ because the Hessian is diagonal and
-$\mathcal{E}_{,v\theta\theta} = 0$. In general the cubic terms couple the mode to the
+$\mathcal{W}_{,v\theta\theta} = 0$. In general the cubic terms couple the mode to the
 other coordinates, and dropping ${}^2\mat{u}$ is a classical error. Its effect has a sign.
 
 \begin{gbox}{The coordinates that do not buckle can only lower $\eta_2$}\label{sec:ld-passive}
 \index{Koiter's analysis!passive coordinates}%
 With ${}^2\mat{u}$ from~\eqref{eq:ld-eta2},
-$\mathcal{E}_{,ijk}\,{}^2u_i\,{}^1u_j\,{}^1u_k = -\,{}^2\mat{u}\T\mat{K}_c\,{}^2\mat{u} \le 0$.
-The numerator of $\eta_2$ is smaller than $\mathcal{E}_4$, and since $\kappa' < 0$,
+$\mathcal{W}_{,ijk}\,{}^2u_i\,{}^1u_j\,{}^1u_k = -\,{}^2\mat{u}\T\mat{K}_c\,{}^2\mat{u} \le 0$.
+The numerator of $\eta_2$ is smaller than $\mathcal{W}_4$, and since $\kappa' < 0$,
 $\eta_2$ is smaller than the value computed from the mode alone.
 \end{gbox}
 
@@ -506,7 +506,7 @@ by $u$ as well as down by $v$ (Triantafyllidis's two-bar truss,
 $\varepsilon_{1,2} = \tfrac12(\ell_{1,2}^2/L^2 - 1)$,
 $\ell_{1,2}^2 = (L\cos\varphi \pm u)^2 + (L\sin\varphi - v)^2$,
 \begin{equation}\label{eq:ld-truss-energy}
-  \mathcal{E}(u,v,\eta) = \frac12\,EA\,L\,\bigl(\varepsilon_1^2 + \varepsilon_2^2\bigr) - \eta\,v .
+  \mathcal{W}(u,v,\eta) = \frac12\,EA\,L\,\bigl(\varepsilon_1^2 + \varepsilon_2^2\bigr) - \eta\,v .
 \end{equation}
 Write $s = \sin\varphi$ and $c = \cos\varphi$ and measure lengths in $L$.
 
@@ -524,7 +524,7 @@ branch is diagonal:
 \end{equation}
 The second entry vanishes at $v = s(1 \mp 1/\sqrt3)$, the limit points, with
 $\eta_{\max} = \tfrac{2}{3\sqrt3}\,EA\,s^3$. The mode is $(0,1)$ and
-$\mathcal{E}_{,v\eta} = -1 \neq 0$: test~\eqref{eq:ld-limit-test} confirms a limit point.
+$\mathcal{W}_{,v\eta} = -1 \neq 0$: test~\eqref{eq:ld-limit-test} confirms a limit point.
 
 \paragraph{A sideways bifurcation in steep trusses.}
 \index{bifurcation point}%
@@ -552,9 +552,9 @@ $\sin^2\varphi > 3/4$, $\varphi > 60^\circ$.
 \end{figure}
 
 \paragraph{Koiter at the sideways bifurcation.}
-The mode is $(1,0)$ and the symmetry $u \to -u$ gives $\mathcal{E}_3 = 0$. The quartic
-term alone, $\mathcal{E}_4 = 6EA$, is positive: frozen at $v = s - R$, the truss would
-look stable. But $\mathcal{E}_{,uuv} = 2EA\,(v - s) = -2R\,EA \neq 0$: swinging sideways
+The mode is $(1,0)$ and the symmetry $u \to -u$ gives $\mathcal{W}_3 = 0$. The quartic
+term alone, $\mathcal{W}_4 = 6EA$, is positive: frozen at $v = s - R$, the truss would
+look stable. But $\mathcal{W}_{,uuv} = 2EA\,(v - s) = -2R\,EA \neq 0$: swinging sideways
 pulls the apex down, ${}^2\mat{u} = (0, 2R/K_{vv})$, and the
 negative term of Section~\ref{sec:ld-passive} wins. Expanding the circle,
 $v \approx s - R + u^2/(2R)$ and $\eta \approx 2c^2R\,EA - (c^2/R)\,EA\,u^2$:
@@ -603,7 +603,7 @@ angles $u_1$, $u_2$ for which the tip moves sideways by $L\sin u_1$ and $L\sin u
 so that the tip descends by $L\bigl(1 - (1 - \sin^2u_1 - \sin^2u_2)^{1/2}\bigr)$. To
 fourth order,
 \begin{equation}\label{eq:ld-augusti}
-  \mathcal{E} = \frac12\,c_1u_1^2 + \frac12\,c_2u_2^2
+  \mathcal{W} = \frac12\,c_1u_1^2 + \frac12\,c_2u_2^2
   + PL\Bigl(-\frac{u_1^2 + u_2^2}{2} + \frac{u_1^4 + u_2^4}{24} - \frac{u_1^2u_2^2}{4}\Bigr).
 \end{equation}
 The critical loads of the two planes are $c_1/L$ and $c_2/L$. In each plane alone
@@ -614,7 +614,7 @@ than in either plane alone.
 
 \paragraph{Separate critical loads.}
 Let $c_1 < c_2$. The strut buckles in plane 1 on a stable rising path. On it the
-stiffness against $u_2$ is $\mathcal{E}_{,u_2u_2} = c_2 - PL - PLu_1^2/2$, which with
+stiffness against $u_2$ is $\mathcal{W}_{,u_2u_2} = c_2 - PL - PLu_1^2/2$, which with
 $u_1^2 = 6(1 - c_1/PL)$ vanishes at
 \begin{equation}\label{eq:ld-augusti-secondary}
   P^C = \frac{3c_1 + c_2}{4L} .
@@ -628,7 +628,7 @@ perfect strut is $P^C$, not $c_2/L$.
 \paragraph{Coincident critical loads.}
 Let $c_1 = c_2 = c$. In the $45^\circ$ plane, $u_1 = u_2 = u$,
 \begin{equation}\label{eq:ld-augusti-diag}
-  \mathcal{E} = c\,u^2 - PL\Bigl(u^2 + \frac{u^4}{6}\Bigr), \qquad
+  \mathcal{W} = c\,u^2 - PL\Bigl(u^2 + \frac{u^4}{6}\Bigr), \qquad
   PL = \frac{c}{1 + u^2/3} \approx c\Bigl(1 - \frac{u^2}{3}\Bigr):
 \end{equation}
 two stable modes have combined into an unstable one (Figure~\ref{fig:ld-augusti},
@@ -766,17 +766,17 @@ conveying fluid and brake squeal are physical relatives~\cite{ld-bazant1991,ld-n
 \begin{gbox*}
 \begin{itemize}
   \item \textbf{One function.} For conservative loads the potential energy
-        $\mathcal{E}(\mat{u},\eta)$ gives the equilibria ($\mathcal{E}_{,\mat{u}} = \mat{0}$)
-        and their stability (the Hessian $\mat{K} = \mathcal{E}_{,\mat{u}\mat{u}}$). Lagrange's
+        $\mathcal{W}(\mat{u},\eta)$ gives the equilibria ($\mathcal{W}_{,\mat{u}} = \mat{0}$)
+        and their stability (the Hessian $\mat{K} = \mathcal{W}_{,\mat{u}\mat{u}}$). Lagrange's
         equations add the kinetic energy: $\mat{M}\ddot{\mat{w}} + \mat{K}\mat{w} = \mat{0}$.
   \item \textbf{Energy criterion.} Stable while $\mat{K}$ is positive definite. The
         critical load is the first zero of $\det\mat{K}$ on the principal branch; the
         null vector is the mode; a frequency goes to zero there.
-  \item \textbf{Limit or bifurcation.} ${}^1\mat{u}\T\mathcal{E}_{,\mat{u}\eta} \neq 0$: a limit
+  \item \textbf{Limit or bifurcation.} ${}^1\mat{u}\T\mathcal{W}_{,\mat{u}\eta} \neq 0$: a limit
         point (snap-through). $= 0$: a bifurcation.
   \item \textbf{Koiter's coefficients.} $\eta = \eta_c + \eta_1\xi + \tfrac12\eta_2\xi^2$ with
-        $\eta_1 = -\mathcal{E}_3/(2\kappa')$ and, if $\eta_1 = 0$,
-        $\eta_2 = -(\mathcal{E}_4 + 3\mathcal{E}_{,ijk}{}^2u_i{}^1u_j{}^1u_k)/(3\kappa')$.
+        $\eta_1 = -\mathcal{W}_3/(2\kappa')$ and, if $\eta_1 = 0$,
+        $\eta_2 = -(\mathcal{W}_4 + 3\mathcal{W}_{,ijk}{}^2u_i{}^1u_j{}^1u_k)/(3\kappa')$.
         Asymmetric, stable symmetric, unstable symmetric.
   \item \textbf{Passive coordinates.} The coordinates that do not buckle can only
         lower $\eta_2$; ignoring them can turn an unstable point into a stable one.
@@ -814,10 +814,10 @@ $(1, -(1 + \sqrt2))$, normalised $(0.383, -0.924)$.
 Apply test~\eqref{eq:ld-limit-test} to the T model at $\eta_c$, and to the truss of
 Section~\ref{sec:ld-snap} with $\varphi = 30^\circ$ at its first critical point.
 \begin{solution}
-T model: mode $(0,1)$, $\mathcal{E}_{,\mat{u}\eta} = -(1, L\theta) = (-1, 0)$ at
+T model: mode $(0,1)$, $\mathcal{W}_{,\mat{u}\eta} = -(1, L\theta) = (-1, 0)$ at
 $\theta = 0$; the product is $0$: bifurcation. Truss at $30^\circ$: $K_{uu} > 0$ always
 (no sideways mode), $K_{vv} = 0$ at $v = s(1 - 1/\sqrt3)$, mode $(0,1)$,
-$\mathcal{E}_{,v\eta} = -1$: limit point.
+$\mathcal{W}_{,v\eta} = -1$: limit point.
 \end{solution}
 
 \exercise{Reading a test}\label{exo:ld-reading}
@@ -855,8 +855,8 @@ above $P_c = 0.382$; a third measurement closer to $P_c$ improves it.
 \index{Koiter's analysis!passive coordinates}%
 Prove the statement of Section~\ref{sec:ld-passive} in two lines.
 \begin{solution}
-Multiply $\mat{K}_c\,{}^2\mat{u} = -\mathcal{E}_{,\mat{u}\mat{u}\mat{u}}[{}^1\mat{u},{}^1\mat{u}]$ by
-${}^2\mat{u}\T$: $\mathcal{E}_{,ijk}\,{}^2u_i{}^1u_j{}^1u_k = -{}^2\mat{u}\T\mat{K}_c\,{}^2\mat{u} \le 0$,
+Multiply $\mat{K}_c\,{}^2\mat{u} = -\mathcal{W}_{,\mat{u}\mat{u}\mat{u}}[{}^1\mat{u},{}^1\mat{u}]$ by
+${}^2\mat{u}\T$: $\mathcal{W}_{,ijk}\,{}^2u_i{}^1u_j{}^1u_k = -{}^2\mat{u}\T\mat{K}_c\,{}^2\mat{u} \le 0$,
 since $\mat{K}_c$ is positive semi-definite. The numerator of $\eta_2$ decreases and
 $-1/(3\kappa') > 0$.
 \end{solution}
@@ -892,8 +892,8 @@ bifurcation is stable symmetric with $\eta_2 = 0.2\,P_c$ for the unit mode.
 \begin{solution}
 (a)~Equation~\eqref{eq:ld-chain-K}; $Pl/k = (3 \mp \sqrt5)/2 = 0.382$, $2.618$, modes
 $(1, 1.618)$ and $(1, -0.618)$. (b)~Above $0.382\,k/l$ the straight column already has a
-negative eigenvalue. (c)~The principal branch is trivial and $\mathcal{E}_{,\mat{u}\mat{u}P} = -l\,\mat{I}$,
-so $\kappa' = -l$; $\mathcal{E}_3 = 0$ by symmetry; $\mathcal{E}_4 = P_c l\,(u_1^4 + u_2^4)$
+negative eigenvalue. (c)~The principal branch is trivial and $\mathcal{W}_{,\mat{u}\mat{u}P} = -l\,\mat{I}$,
+so $\kappa' = -l$; $\mathcal{W}_3 = 0$ by symmetry; $\mathcal{W}_4 = P_c l\,(u_1^4 + u_2^4)$
 with the unit mode $(0.526, 0.851)$, and ${}^2\mat{u} = \mat{0}$. Then
 $\eta_2 = P_c\,(0.526^4 + 0.851^4)/3 = 0.200\,P_c$.
 \end{solution}
@@ -905,8 +905,8 @@ The bar with a horizontal spring is tilted by $\theta_0$ when the spring is rela
 (b)~Derive the two-thirds law from the expansion for small $\theta$, $\theta_0$.
 (c)~Compare with the exact maximum for $\theta_0 = 0.01$.
 \begin{solution}
-(a)~$\mathcal{E} = \tfrac12 kL^2(\sin\theta - \sin\theta_0)^2 - PL(\cos\theta_0 - \cos\theta)$,
-$\mathcal{E}_{,\theta} = 0$ gives $kL^2(\sin\theta - \sin\theta_0)\cos\theta = PL\sin\theta$, with $P_c = kL$.
+(a)~$\mathcal{W} = \tfrac12 kL^2(\sin\theta - \sin\theta_0)^2 - PL(\cos\theta_0 - \cos\theta)$,
+$\mathcal{W}_{,\theta} = 0$ gives $kL^2(\sin\theta - \sin\theta_0)\cos\theta = PL\sin\theta$, with $P_c = kL$.
 (b)~$P/P_c \approx 1 - \theta_0/\theta - \theta^2/2$; the maximum is at $\theta^3 = \theta_0$,
 where $P_m/P_c = 1 - \tfrac32\theta_0^{2/3}$, the law~\eqref{eq:ld-twothirds} with
 $\eta_2 = -\eta_c$, $\bar\xi = \theta_0$. (c)~Exact $0.9312$, law $0.9304$.
@@ -919,7 +919,7 @@ with Box~2.2; (c)~which tilt is dangerous, and how much does $\theta_0 = 0.01$ c
 \begin{solution}
 (a)~The spring of length $\ell(\theta)$, $\ell(0) = \sqrt2 L$, has
 $\ell'(0) = L/\sqrt2$: the lateral stiffness is $k\,\ell'(0)^2 = kL^2/2$ against $PL$.
-(b)~$\kappa' = -L$, $\mathcal{E}_3 = -\tfrac34kL^2$ (by the code), $\eta_1 = -\tfrac38kL$.
+(b)~$\kappa' = -L$, $\mathcal{W}_3 = -\tfrac34kL^2$ (by the code), $\eta_1 = -\tfrac38kL$.
 (c)~$\eta_1 < 0$: tilts away from the anchor ($\theta_0 > 0$) are dangerous. The law gives
 $1 - \sqrt{3\times0.01} = 0.827$, the exact maximum is $0.834$.
 \end{solution}
@@ -932,7 +932,7 @@ Hessian~\eqref{eq:ld-truss-K}; (b)~derive the circle~\eqref{eq:ld-truss-branch};
 (d)~derive $\eta_2$ and explain the sign change.
 \begin{solution}
 (a)~With $u = 0$, $\varepsilon_1 = \varepsilon_2 = \tfrac12(v^2 - 2vs)$, and
-$\mathcal{E}_{,v} = 0$ gives~\eqref{eq:ld-truss-principal}; the second derivatives
+$\mathcal{W}_{,v} = 0$ gives~\eqref{eq:ld-truss-principal}; the second derivatives
 give~\eqref{eq:ld-truss-K}. (b)~The horizontal equation is $u(\varepsilon_1 + \varepsilon_2) + c(\varepsilon_1 - \varepsilon_2) = 0$
 with $\varepsilon_1 - \varepsilon_2 = 2uc$; for $u \neq 0$ it gives
 $\varepsilon_1 + \varepsilon_2 = u^2 + v^2 - 2vs = -2c^2$, the circle; the vertical
