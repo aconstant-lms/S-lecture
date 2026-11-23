@@ -64,6 +64,7 @@ continuation, foundation, FEniCS and Cast3M).
   (c) FEniCS / Cast3M. Listed in `preamble/manual_chapters.tex`.
 
 ## Decisions and open questions
+- Balance (hub, 23 Nov 2026): from 3D ≈20 %, engineering ≈70 %, physical ≈10 % but scattered. Candidate: gather the rod standing up, the pendulum analogy and the localised helix into one boxed example; move the skin-on-soft-core / thin-film remark to Ch. 6 and keep a forward reference. See "Balance check" in CLAUDE.md.
 1. (author, 23 Nov 2026) The 3D bifurcation section is in Ch. 3 (`sec:nc-bif`, about 3 pages). Done.
 2. (author, 23 Nov 2026) Energy 𝒲 in the whole book. Done in Ch. 2–4.
 3. (author, 23 Nov 2026) Twist and natural curvature: a remark here (`sec:rd-twist`), full treatment in Ch. 8.

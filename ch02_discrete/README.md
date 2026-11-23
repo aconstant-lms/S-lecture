@@ -38,6 +38,7 @@ imperfection curves + truss by continuation, Ziegler).
   steep truss, (c) imperfection curves and Ziegler in Python. Listed in `preamble/manual_chapters.tex`.
 
 ## Decisions and open questions
+- Balance (hub, 23 Nov 2026): the chapter is all engineering models, no real structure is named. Candidate one-line pointers: von Mises truss → shallow arches and domes; Augusti → optimised stiffened panels (Bushnell §7); Ziegler → pipes conveying fluid. Physical snap-through box (popper, flytrap) goes to Ch. 8 with a forward reference. See "Balance check" in CLAUDE.md.
 - Notation (author, 21 Nov 2026, accepted): `\mat{u}`, `\mat{K}`, `\mat{M}`, T, `\mat{Q}`, ⁰u(η), ¹u, ξ, ²u,
   η = η_c + η₁ξ + ½η₂ξ² (Triantafyllidis's Taylor convention), κ', 𝒲₃, 𝒲₄, imperfection ξ̄, maximum
   load η_m, flutter load P_f. In `preamble/notation.tex` and the notation list.

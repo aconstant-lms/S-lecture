@@ -11,6 +11,7 @@ Status: skeleton (planned content only).
 - Exercises: continuation of the snap-through of a deployable structure.
 
 ## Decisions and open questions
+- Balance check (hub, 23 Nov 2026): the plan is physics-heavy; keep tanks, external pressure, nozzle divergent and space deployables (tape springs) as the core, bistable shells / kirigami / metamaterials as boxes (some may go to Ch. 9). Receives the physical snap-through box (popper, flytrap) announced in Ch. 2.
 - Balance (hub, 23 Nov 2026): engineering core (Bushnell, NASA) first; physical examples (snapping shells, tape springs, kirigami) as boxed examples. See "Balance" in CLAUDE.md.
 (Kept up to date by the chapter thread; anything that affects other chapters also goes into
 the course plan of `CLAUDE.md`.)

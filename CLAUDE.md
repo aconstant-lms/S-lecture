@@ -67,6 +67,28 @@ Every structural chapter has three layers, in this order and roughly these propo
 Chapter 9 closes the loop: Hill's 3D criterion recovers Euler for a slender bar and shows where reduced theories end;
 the running cylinder example compares a reduced model with a 3D FEniCS solid.
 
+### Balance check (hub, 23 Nov 2026; source lines of the chapter body, rough). To redo when examples move.
+| Ch | From 3D | Engineering core | Physical examples | Remarks |
+|---|---|---|---|---|
+| 1 | — | galloping, von Mises truss, rigid bar | logistic eq. (fishery in `extra/`) | method chapter, rule not applied |
+| 2 | — | ≈100 % (T model, trusses, Augusti, Ziegler) | none | add short pointers to real structures (below) |
+| 3 | ≈35 % (weak form, 3D bifurcation) | rubber bearing, truss | none | method chapter, fine |
+| 4 | ≈20 % | ≈70 % (Euler, design, rails, foundation) | ≈10 %, scattered | gather the A&P passages into one boxed example |
+| 5-9 | planned | planned | planned | Ch. 6 and 8 risk too much physics, Ch. 2, 5, 7 too little |
+Candidate moves and additions (decided in the chapter threads, examples may come later):
+- Ch. 2: real-structure pointers in one line each — von Mises truss → shallow arches and domes (snap-through);
+  Augusti → optimised stiffened panels (Bushnell §7, modal interaction); Ziegler → pipes conveying fluid.
+  A physical box (jumping popper, Venus flytrap snap) belongs to Ch. 8, with a forward reference from Ch. 2.
+- Ch. 4: "a rod standing up", the pendulum analogy and the localised helix (telephone cord) in one boxed example;
+  "a stiff skin on a soft core / thin film" moves to Ch. 6 (wrinkling), only the forward reference stays.
+- Ch. 6: engineering core = buckling and effective width of stiffened panels (aircraft skins, box girders);
+  wrinkling and d-cones as one or two boxes, not a full section.
+- Ch. 7: physical box = poking a soda can (Virot et al.), energy barrier; it ties back to the knockdown factors.
+- Ch. 8: engineering first (tanks and Bushnell's gallery, external pressure, nozzle divergent, space deployables:
+  tape springs); bistable shells, kirigami and metamaterials as boxes, part of them possibly in Ch. 9.
+- Ch. 9: Biot wrinkling and Bloch-wave instabilities of honeycombs (Triantafyllidis L7) carry the engineering
+  side; pattern transformation (Mullin et al.) as the box.
+
 ## Figures and sketches
 - Figures should be **nice, structured and inspirational**: a reader should grasp the mechanism from the picture
   before reading the formulas (Strang: the picture first). Every section with a new structure, load case or idea
