@@ -1,41 +1,60 @@
 %======================================================================
 \chapter{Rods: the elastica and beyond}\label{ch:rd}
 %======================================================================
-% Skeleton. Labels of this chapter: *:rd-*  (bibitem keys rd-*).
-% Planned content: see ch04_rods/README.md and the course plan in CLAUDE.md.
+% Outline (23 Nov 2026). Labels of this chapter: *:rd-*  (bibitem keys rd-*).
+% Planned content, sources and open questions: ch04_rods/README.md.
 
 \framepart{Outline}
-\draftnote{Chapter 4 is planned, not yet written. Planned content:}
-\begin{itemize}
-  \item \draftnote{Kirchhoff rods: geometry, internal forces and moments, the balance equations.}
-  \item \draftnote{The Euler elastica: closed form with elliptic integrals, stable post-buckling.}
-  \item \draftnote{Beams on an elastic foundation: wavelength selection.}
-  \item \draftnote{Twist, writhe and naturally curved rods (towards tape springs and deployables).}
-  \item \draftnote{Exercises: the elastica by shooting in Python, comparison Mathematica / FEniCS / Cast3M; discrete elastic rods.}
-\end{itemize}
+\draftnote{Outline drafted 23 Nov 2026; details, sources and open questions in ch04\_rods/README.md.
+Spine (author's slides C05, slide 11): one column, three energies (no rotation, small rotations,
+large rotations), three bifurcation diagrams. Energy written $\mathcal{W}$. Prerequisite: a short
+section on the bifurcation of a 3D elastic body before this chapter (proposed in Chapter~\ref{ch:nc}).}
 
-\section{Kirchhoff rods}\label{sec:rd-1}
-\draftnote{To be written.}
+\section{From the three-dimensional body to the rod}\label{sec:rd-3d}
+\draftnote{Fibre strain $e = u' + \tfrac12 w'^2$ (rotation small but not negligible); Euler--Bernoulli kinematics,
+$e = u' + \tfrac12 w'^2 - z w''$; energy
+$\mathcal{W} = \tfrac12\int EA(u'+\tfrac12w'^2)^2 + \tfrac12\int EI\, w''^2 - \eta\,\ell$; equilibrium $N'=0$,
+$M'' - Nw'' = 0$. Gbox: the energy scale chooses the rod model. Why it works: Ciarlet's asymptotic method
+(Berm\'udez--Via\~no, Trabucho--Via\~no; Cimeti\`ere et al.\ for nonlinear rods) and $\Gamma$-convergence
+(Mora--M\"uller 2003: elastica; 2004: von K\'arm\'an rod). Cited, not proved.}
 
-\section{The Euler elastica}\label{sec:rd-2}
-\draftnote{To be written.}
+\section{Small rotations: Euler loads and design}\label{sec:rd-euler}
+\draftnote{Second variation, adjacent equilibrium $EI\,w'''' + P\,w'' = 0$; four supports
+($\pi^2EI/L^2$ times $1$, $2.046$, $4$, $1/4$); effective length and Euler hyperbola; flat secondary branches
+under a dead load; imperfect column, amplification $1/(P_c/P-1)$, secant formula and Southwell plot;
+design limits (Hibbeler Ch.~13).}
 
-\section{Beams on an elastic foundation}\label{sec:rd-3}
-\draftnote{To be written.}
+\section{Large rotations: the Euler elastica}\label{sec:rd-elastica}
+\draftnote{$EI\theta'' + P\sin\theta = 0$ and the pendulum analogy (Audoly--Pomeau Ch.~3, Triantafyllidis BA-1);
+closed form with $k=\sin(\theta_0/2)$, $P/P_c = (2K(k)/\pi)^2$; table of shapes; Koiter by Box~2.2,
+$P/P_c = 1 + \theta_0^2/8$: stable-symmetric but weak; higher modes unstable.}
 
-\section{Twist and natural curvature}\label{sec:rd-4}
-\draftnote{To be written.}
+\section{Beams on an elastic foundation: wavelength selection}\label{sec:rd-foundation}
+\draftnote{$EI\,w'''' + P\,w'' + k\,w = 0$; $P_c = 2\sqrt{kEI}$, wavelength $2\pi(EI/k)^{1/4}$ independent of
+the length; finite length and mode jumps; rails, pipelines, film on substrate. With the elastica the periodic
+branch is unstable, $P/P_c \approx 1 - A^2/8$ (to confirm); localisation cited.}
+
+\section{Twist and natural curvature}\label{sec:rd-twist}
+\draftnote{Short, or moved to Chapter~8 (open): Kirchhoff rod in 3D, Greenhill's shaft, localised helix,
+naturally curved rods.}
 
 \framepart{Summary}
 \begin{gbox*}
 \begin{itemize}
-  \item \textbf{To be written.} \draftnote{take-home messages.}
+  \item \textbf{To be written.} \draftnote{Rotations decide the post-buckling; Euler loads and effective length;
+  the elastica is stable but weak; a foundation picks the wavelength and is unstable; trust a code after the elastica.}
 \end{itemize}
 \end{gbox*}
 
 \framepart{Exercises}\label{sec:rd-exo}
 \framesub{Short questions}
-\draftnote{To be written.}
+\draftnote{Effective lengths, flat branch, Southwell, pendulum analogy, rail wavelength, $h^2$ against $h^4$,
+yield or buckle (SI units).}
+\framesub{Problems}
+\draftnote{Triantafyllidis H3, H4; clamped--free elastica; finite beam on a foundation; secant-formula design (Hibbeler).}
+\framesub{Computer exercises}
+\draftnote{Elastica by shooting and continuation (Python); elliptic solution (Mathematica); FEniCS and Cast3M
+against the closed form.}
 
 \begin{chapterbib}{99}
 \bibitem{rd-audoly2010} B.~Audoly and Y.~Pomeau, \emph{Elasticity and Geometry: From Hair Curls to the Non-linear Response of Shells}, Oxford University Press, 2010.
