@@ -50,6 +50,23 @@ frame are shared. When a convention changes in one book, check whether it should
   Thompson & Hunt, Bažant & Cedolin, Brush & Almroth, Koiter, Guckenheimer & Holmes; design practice comes from
   Bushnell (1981) and NASA SP-8007; Audoly & Pomeau, Reis, Bertoldi, Hutchinson give physical examples and pictures.
 
+## Figures and sketches
+- Figures should be **nice, structured and inspirational**: a reader should grasp the mechanism from the picture
+  before reading the formulas (Strang: the picture first). Every section with a new structure, load case or idea
+  gets a sketch.
+- **Sketches in TikZ**: structures, supports, springs, loads, buckling modes, imperfections, geometry of rods,
+  plates and shells, energy landscapes, flow charts of the method. One file per sketch in
+  `<chNN>/figures/tikz/<p>_<name>.tex` (a bare `tikzpicture`), `\input` in the notes and reused in the slides.
+- **Plots** (bifurcation diagrams, equilibrium paths, knockdown curves, computed fields) from the chapter scripts
+  in `<chNN>/code/figures/` (matplotlib or pgfplots), never screenshots.
+- One visual language across the book: the shared styles and colours of `preamble/style.tex` (`cu` blue for the
+  kinematic side and stable branches, `cphi` green for the static side, gray dashed for unstable branches,
+  orange for critical points and jumps; `spring`, `arr`, ...). Same line widths, sans-serif labels at
+  `\small`, symbols as in the text. A style needed in several chapters is added to `preamble/style.tex`
+  (and noted under "Cross-chapter decisions"), not redefined locally.
+- Sketches stay clean: few labels, generous white space, no decoration that carries no meaning. Check every
+  figure in the compiled PDF (render the page and look at it) before committing.
+
 ## Notation sources (see SOURCES.md for details)
 - Continuum mechanics and elasticity: the author's book, Constantinescu & Korsunsky, *Elasticity with Mathematica*
   (CUP 2007): σ = C : ε, data with superscript D (u^D, b^D, t^D on ∂Ω^u, ∂Ω^t), admissible sets 𝒦, 𝒮
@@ -75,7 +92,8 @@ frame are shared. When a convention changes in one book, check whether it should
       notes/chNN_<name>.tex      the chapter of the book
       exercises/chNN_session.tex the 2 h exercise session (sheet + answers + instructor notes)
       slides/cNN_<name>.tex      Beamer deck, compiled from its own folder; FIG/ for slide-only pictures
-      figures/                   PDF figures of the notes (also used by the slides)
+      figures/                   PDF figures of the notes (also used by the slides);
+                                 figures/tikz/ the TikZ sketches (one .tex per sketch)
       code/python|mathematica|fenics|cast3m/   computer codes of the chapter
       code/figures/              scripts that produce figures/
       extra/                     material kept for later revisions (not compiled)
@@ -147,6 +165,8 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
 - 2026-11-21: editorial line structural engineering + physical examples; sources recorded in `SOURCES.md`;
   elasticity notation from Constantinescu & Korsunsky, LSK notation from Triantafyllidis.
 - 2026-11-21: Hooke tensor ℂ (blackboard, `\bbC`); load parameter η from Chapter 2 on (notation list updated).
+- 2026-11-23: figures: TikZ sketches in `<chNN>/figures/tikz/`, plots from scripts, one visual language
+  (section "Figures and sketches").
 - 2026-11-21 (Ch. 1 thread): Lyapunov stability, Jacobian eigenvalues and the Hopf bifurcation (galloping example)
   are introduced in Chapter 1; Chapter 2 reuses them (Ziegler, flutter) instead of introducing Hopf.
 - 2026-11-21 (Ch. 1 thread): Chapter 1 gives the ideas of continuation on one equation (natural parameter vs
