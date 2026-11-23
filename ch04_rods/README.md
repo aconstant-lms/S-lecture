@@ -20,17 +20,11 @@ and the foundation, which picks a wavelength and turns the post-buckling unstabl
 Notation (author, 23 Nov 2026): the energy is written **𝒲** (`\mathcal{W}`), as in the author's slides, not ℰ.
 Load parameter η (book convention), the 2D fibre displacements u, w, the rotation θ (= −β of the slides).
 
-## Prerequisite: bifurcation of a 3D elastic body (before this chapter)
-The author asks for a short 3D derivation of bifurcation theory *before* Chapter 4 (slides C04, pp. 9 and 21–28;
-Triantafyllidis notes A, LSK pp. 46–82, and MEC553 L3–L4). Chapter 3 §3.1 already has e = ε + ½q, D_u𝒲, D_uu𝒲 and
-the stability gbox, and §3.3 has (K₀ + ηK_σ)¹u = 0. What is still missing is short:
-1. principal branch ⁰u(η) from D_u𝒲 = 0, its tangent d⁰u/dη = −[𝒲,uu]⁻¹𝒲,uη (C04 eq. 25);
-2. critical point: D_uu𝒲[¹u, v] = 0 for all v; limit point if 𝒲,uη[¹u] ≠ 0, bifurcation point otherwise (C04 eq. 26);
-3. 3D linear buckling ∫ε(v):ℂ:ε(w) + η∫q(v,w):σ₀ = 0 (C04 eq. 28) and its FE form (eq. 29);
-4. Koiter's η₁, η₂ written with variations (Box 2.2 with sums replaced by D³𝒲, D⁴𝒲), so Chapter 4 can apply them
-   to the column and the elastica.
-Proposal: a new section in Chapter 3 between `sec:nc-weak` and `sec:nc-fe`, ~2 pages. Owned by the Ch. 3 thread / hub
-(see open question 1). Chapter 4 then starts from it.
+## Prerequisite: bifurcation of a 3D elastic body (written 23 Nov 2026)
+Chapter 3, Section `sec:nc-bif` "Bifurcation of an elastic body" (about 3 pages, so it stays in Ch. 3): principal branch,
+critical point, the test ℓ(¹u) = 0 (bifurcation) or ≠ 0 (limit point), 3D linear buckling, and Koiter's coefficients by
+variations (`sec:nc-koiter-var`), with the elastica as its worked example (η = η_c(1 + ξ²/4)). Chapter 4 cites it and
+compares with the exact elliptic solution in §4.3 rather than repeating the Koiter computation.
 
 ## Outline
 **Outline frame.** Objectives: derive a rod energy from 3D and say when it is right; compute Euler loads for the four
@@ -63,7 +57,8 @@ explain wavelength selection on a foundation; validate a Python shooting code an
   (Audoly & Pomeau Ch. 3; Triantafyllidis BA-1 pp. 85–89; Timoshenko & Gere §2.7).
 - Closed form: k = sin(θ₀/2), P/P_c = (2K(k)/π)², x(s), w(s) with Jacobi functions; midspan deflection and end
   shortening. Table: θ₀ = 30°, 60°, 90°, ≈130.7° (ends touch), 180°.
-- Koiter with Box 2.2: η₁ = 0, P/P_c = 1 + θ₀²/8 + … (checked 23 Nov with a two-term Ritz: P/P_c = (8 + 4A²)/(8 + 3A²)).
+- Koiter: already done in Ch. 3 `sec:nc-bif` (η = η_c(1 + α²/8)); here compare with the exact solution
+  (and the two-term Ritz P/P_c = (8 + 4A²)/(8 + 3A²), checked 23 Nov).
   gbox "The elastica is stable-symmetric: the column carries more load after buckling, but very little".
   Engineering reading: 1 % more load at θ₀ ≈ 16°; post-buckling strength of columns is negligible, unlike plates (Ch. 6).
 - Higher modes are unstable (sketch); clamped–free elastica (Euler 1744) as an exercise.
@@ -95,7 +90,7 @@ foundation picks the wavelength and is unstable; a code is trusted after the ela
   column with the secant formula (Hibbeler §13.4, Examples converted to SI).
 - Computer: elastica by shooting in Python (`solve_ivp` + root finding, then continuation with
   `ch01_bifurcation/code/python/arclength.py`); Mathematica elliptic solution and series; FEniCS and Cast3M
-  (geometrically nonlinear beam, imperfection in the first mode, as in Ch. 3 §3.7) against the closed form;
+  (geometrically nonlinear beam, imperfection in the first mode, as in Ch. 3, `sec:nc-switch`) against the closed form;
   discrete elastic rods (Bergou et al. 2008), optional.
 - 2 h session: (a) Euler loads and Koiter by hand; (b) shooting and continuation in Python; (c) FEniCS / Cast3M
   comparison on P/P_c(θ₀).

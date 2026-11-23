@@ -32,6 +32,8 @@ sign of an eigenvalue can mean.
 \begin{itemize}
   \item write the weak form of equilibrium and the second variation of the energy of an
         elastic body, and recognise the initial-stress (geometric) term;
+  \item find the critical point of a body, tell a limit point from a bifurcation by the work of the
+        loads on the mode, and write Koiter's coefficients as variations;
   \item derive the residual and the tangent stiffness of a finite element model from
         its energy, and split $\mat{K}$ into its material and geometric parts;
   \item set up linear buckling as the eigenproblem $(\mat{K}_0 + \eta\,\mat{K}_\sigma)\,{}^1\mat{u} = \mat{0}$,
@@ -47,7 +49,8 @@ sign of an eigenvalue can mean.
 
 \paragraph{Plan of the chapter.}
 Section~\ref{sec:nc-weak} goes from the energy of an elastic body to the weak form and
-the second variation. Section~\ref{sec:nc-fe} discretises them by finite elements.
+the second variation. Section~\ref{sec:nc-bif} states the critical point, the test between a
+limit point and a bifurcation, and Koiter's coefficients for a body. Section~\ref{sec:nc-fe} discretises them by finite elements.
 Section~\ref{sec:nc-lba} sets up linear buckling as an eigenproblem, and
 Section~\ref{sec:nc-rayleigh} reads that eigenproblem as a minimisation.
 Section~\ref{sec:nc-riks} follows nonlinear paths by arc-length continuation.
@@ -167,6 +170,195 @@ For the column, the axial stress before buckling is $\sigma = -P/A$ and the only
 component of $\tens{q}(\vv,\vv)$ it meets is $v_{k,1}v_{k,1} \approx w'^2$. The geometric
 term is $\displaystyle -P\int_0^L w'^2\dd x$, the second integral of~\eqref{eq:nc-column-energy}: the
 work of the load in the end shortening \emph{is} the initial-stress term.
+
+%======================================================================
+\section{Bifurcation of an elastic body}\label{sec:nc-bif}
+\index{bifurcation!elastic body}\index{Koiter's analysis!continuum}%
+
+Chapter~\ref{ch:ld} found the critical points and the post-buckling of a few
+generalised coordinates with Boxes~2.1 and~2.2. For a body the unknown is a field,
+and the partial derivatives $\mathcal{W}_{,ij}$, $\mathcal{W}_{,ijk}$ become the
+variations $D_{\vu\vu}\mathcal{W}$, $D^3_{\vu}\mathcal{W}$ of
+Section~\ref{sec:nc-weak}. The steps are the same. We follow Triantafyllidis's
+notes~\cite[Section~AC]{nc-triantafyllidis2011} and the author's lectures; the precise
+statements are in Kielh\"ofer~\cite[Sections~I.5--I.7]{nc-kielhofer2004}.
+
+\paragraph{A rod first.}
+\index{elastica}%
+An inextensible rod of length $L$ and bending stiffness $EI$ is clamped at $s = 0$. The
+other end keeps its slope but may slide sideways, and it is pushed along the axis by the
+load $\eta$. The unknown is the angle $\theta(s)$ of the tangent, with
+$\theta(0) = \theta(L) = 0$. The end approaches by $\displaystyle\int_0^L (1 - \cos\theta)\dd s$, so
+\begin{equation}\label{eq:nc-elastica-energy}
+  \mathcal{W}(\theta,\eta) = \int_0^L \Bigl[\frac12 EI\,\theta'^2 - \eta\,(1 - \cos\theta)\Bigr]\dd s .
+\end{equation}
+Each variation differentiates the integrand once more:
+\begin{equation}\label{eq:nc-elastica-var}
+  D_{\theta\theta}\mathcal{W}[v,w] = \int_0^L \bigl(EI\,v'w' - \eta\cos\theta\; v\,w\bigr)\dd s,
+  \qquad
+  D^3_{\theta}\mathcal{W}[v_1,v_2,v_3] = \int_0^L \eta\sin\theta\; v_1v_2v_3\dd s ,
+\end{equation}
+and $D^4_{\theta}\mathcal{W}[v_1,\dots,v_4] = \displaystyle\int_0^L \eta\cos\theta\; v_1v_2v_3v_4\dd s$.
+The straight rod $\theta = 0$ is an equilibrium for every load: it is the principal branch.
+On it the second variation is $\displaystyle\int_0^L (EI\,v'^2 - \eta\,v^2)\dd s$. Expand $v$ in the sines
+$\sin(n\pi s/L)$: the term $n$ is positive while $\eta < n^2\pi^2EI/L^2$. Stability is lost at
+\begin{equation}\label{eq:nc-elastica-crit}
+  \eta_c = \frac{\pi^2EI}{L^2},
+  \qquad
+  {}^1\theta = \sqrt2\,\sin\frac{\pi s}{L},
+\end{equation}
+with the mode normalised by $\displaystyle\frac1L\int_0^L {}^1\theta^2\dd s = 1$. Now the numbers of Box~2.2,
+each one an integral:
+\begin{itemize}
+  \item the load works on the mode through $-\displaystyle\int_0^L \sin(0)\,{}^1\theta\dd s = 0$: a bifurcation point;
+  \item $\kappa' = \dfrac{d}{d\eta}D_{\theta\theta}\mathcal{W}[{}^1\theta,{}^1\theta] = -\displaystyle\int_0^L {}^1\theta^2\dd s = -L$;
+  \item $\mathcal{W}_3 = D^3_\theta\mathcal{W}[{}^1\theta,{}^1\theta,{}^1\theta] = 0$, so $\eta_1 = 0$ and ${}^2\theta = 0$;
+  \item $\mathcal{W}_4 = \eta_c\displaystyle\int_0^L {}^1\theta^4\dd s = \frac32\,\eta_c L$.
+\end{itemize}
+Then $\eta_2 = -\mathcal{W}_4/(3\kappa') = \eta_c/2$ and
+\begin{equation}\label{eq:nc-elastica-koiter}
+  \eta = \eta_c\Bigl(1 + \frac{\xi^2}{4} + \dots\Bigr)
+  = \eta_c\Bigl(1 + \frac{\alpha^2}{8} + \dots\Bigr),
+\end{equation}
+where $\alpha = \theta(L/2) \approx \sqrt2\,\xi$ is the rotation at mid-length. The elastica is
+stable symmetric, like the rigid bar of Chapter~\ref{ch:st}, and it gains very little:
+one per cent of load at $\alpha \approx 16^\circ$. Chapter~\ref{ch:rd} finds the same
+expansion from the exact solution in elliptic functions~\cite[pp.~85--89]{nc-triantafyllidis2011}.
+
+\paragraph{The principal branch.}
+\index{principal branch}%
+For a body, the principal branch ${}^0\vu(\eta)$ starts at $\vu = \vect{0}$ for $\eta = 0$ and
+satisfies $D_{\vu}\mathcal{W}({}^0\vu(\eta),\eta)[\vv] = 0$ for all $\vv\in\Kad_0$. Differentiate
+this identity with respect to $\eta$:
+\begin{equation}\label{eq:nc-bif-tangent}
+  D_{\vu\vu}\mathcal{W}\Bigl[\frac{d\,{}^0\vu}{d\eta},\vv\Bigr] = -D_{\vu\eta}\mathcal{W}[\vv]
+  = \ell(\vv)
+  \qquad\text{for all } \vv \in \Kad_0 .
+\end{equation}
+The last equality holds for the dead loads of~\eqref{eq:nc-energy}. This is a linear
+problem for the tangent of the branch, with the stability operator as its matrix. While
+the operator is positive, the tangent exists and is unique, and the branch continues: the
+implicit function theorem of Section~\ref{sec:st-iftn}.
+
+\paragraph{The critical point.}
+\index{critical point}\index{buckling mode}%
+The critical load $\eta_c$ is the first load at which the stability operator has a zero
+eigenvalue: there is a mode ${}^1\vu \neq \vect{0}$ with
+\begin{equation}\label{eq:nc-bif-mode}
+  D_{\vu\vu}\mathcal{W}({}^0\vu(\eta_c),\eta_c)[{}^1\vu,\vv] = 0
+  \qquad\text{for all } \vv \in \Kad_0 ,
+  \qquad \scal{{}^1\vu}{{}^1\vu} = 1 .
+\end{equation}
+The inner product $\scal{\cdot}{\cdot}$ only fixes the scale of the mode; the $L^2$ product
+over $\Omega$ is the usual choice. Take $\vv = {}^1\vu$ in~\eqref{eq:nc-bif-tangent}. The left
+side vanishes by~\eqref{eq:nc-bif-mode}, and what remains decides everything.
+
+\begin{gbox}{A mode that does no work on the loads gives a bifurcation; a mode that does gives a limit point}\label{sec:nc-bif-test}
+\index{limit point}\index{bifurcation point}%
+At a critical point with a single mode ${}^1\vu$,
+\begin{equation}\label{eq:nc-bif-test}
+  D_{\vu\eta}\mathcal{W}_c[{}^1\vu] = -\ell({}^1\vu)
+  \;\begin{cases} \neq 0 & \text{limit point: the load passes a maximum,}\\
+                 = 0 & \text{bifurcation point: a second branch crosses the principal one.}
+  \end{cases}
+\end{equation}
+\end{gbox}
+
+\paragraph{Why it works.}
+Picture the branch arriving at the critical point. If it goes on smoothly in $\eta$, its
+tangent satisfies~\eqref{eq:nc-bif-tangent} at $\eta_c$, and with $\vv = {}^1\vu$ the left side is
+zero: so $\ell({}^1\vu) = 0$. If $\ell({}^1\vu) \neq 0$, no tangent with $d\eta \neq 0$ exists:
+the branch turns back in $\eta$, a fold. This is the test $\mat{w}\T\mat{f}_r$ of
+Chapter~\ref{ch:st} and~\eqref{eq:ld-limit-test} of Chapter~\ref{ch:ld}, with the mode as
+its own left null vector because the operator is symmetric. For the elastica the load
+works on $1 - \cos\theta$, which is quadratic in the mode: a bifurcation. For a shallow arch
+under a vertical load, the symmetric mode moves the load: a limit point.
+Section~\ref{sec:nc-detect} applies the test to a finite element model as
+${}^1\mat{u}\T\mat{p}$.
+
+\paragraph{Linear buckling of a body.}
+\index{linear buckling}%
+Suppose the prebuckling deformation is small: ${}^0\vu \approx \eta\,\hat\vu$ and the stress is
+$\eta\,\hat\sig$, where $\hat\vu$, $\hat\sig$ solve the linear problem for $\eta = 1$. In the
+second variation~\eqref{eq:nc-second}, drop the terms $\tens{q}({}^0\vu,\cdot)$ and keep the
+initial-stress term. The critical point~\eqref{eq:nc-bif-mode} becomes a linear eigenproblem
+for $(\eta_c,{}^1\vu)$:
+\begin{equation}\label{eq:nc-bif-lba}
+  \int_\Omega \eps({}^1\vu):\bbC:\eps(\vv)\dd V
+  + \eta\int_\Omega \hat\sig:\tens{q}({}^1\vu,\vv)\dd V = 0
+  \qquad\text{for all } \vv\in\Kad_0 .
+\end{equation}
+Section~\ref{sec:nc-lba} discretises it as $(\mat{K}_0 + \eta\,\mat{K}_\sigma)\,{}^1\mat{u} = \mat{0}$ and
+says when the assumption fails.
+
+\paragraph{The higher variations.}
+The Green--Lagrange strain~\eqref{eq:nc-green} is quadratic in $\vu$. Its first variation in
+the direction $\vv$ is $\delta\tens{e}(\vv) = \eps(\vv) + \tens{q}(\vu,\vv)$, its second is
+$\tens{q}(\vv_1,\vv_2)$, and its third is zero. So the energy of a Saint Venant--Kirchhoff
+body with dead loads is a polynomial of degree four in $\vu$, and its third and fourth
+variations are short:
+\begin{align}
+  D^3_{\vu}\mathcal{W}[\vv_1,\vv_2,\vv_3] &= \sum_{\text{3 pairs}}\int_\Omega
+     \tens{q}(\vv_1,\vv_2):\bbC:\delta\tens{e}(\vv_3)\dd V ,
+   \label{eq:nc-third}\\
+  D^4_{\vu}\mathcal{W}[\vv_1,\vv_2,\vv_3,\vv_4] &= \sum_{\text{3 pairings}}\int_\Omega
+     \tens{q}(\vv_1,\vv_2):\bbC:\tens{q}(\vv_3,\vv_4)\dd V .
+   \label{eq:nc-fourth}
+\end{align}
+The first sum runs over the three ways of choosing the pair of directions that enters
+$\tens{q}$, the third one entering $\delta\tens{e}$; the second sum runs over the three ways of
+splitting four directions into two pairs.
+
+\begin{gbox}{Koiter's coefficients of a body are those of Box~2.2, with variations in place of sums}\label{sec:nc-koiter-var}
+\index{Koiter's analysis!coefficients}%
+At a bifurcation point with a single mode ${}^1\vu$, all variations taken at
+$({}^0\vu(\eta_c),\eta_c)$:
+\begin{equation}\label{eq:nc-kappa}
+  \kappa' = D^3_{\vu}\mathcal{W}\Bigl[\frac{d\,{}^0\vu}{d\eta},{}^1\vu,{}^1\vu\Bigr]
+          + D_{\vu\vu\eta}\mathcal{W}[{}^1\vu,{}^1\vu],
+  \qquad
+  \mathcal{W}_3 = D^3_{\vu}\mathcal{W}[{}^1\vu,{}^1\vu,{}^1\vu],
+\end{equation}
+and $\eta_1 = -\mathcal{W}_3/(2\kappa')$. If $\mathcal{W}_3 = 0$, the second-order field
+${}^2\vu$, with $\scal{{}^2\vu}{{}^1\vu} = 0$, solves
+\begin{equation}\label{eq:nc-u2}
+  D_{\vu\vu}\mathcal{W}[{}^2\vu,\vv] = -D^3_{\vu}\mathcal{W}[{}^1\vu,{}^1\vu,\vv]
+  \qquad\text{for all } \vv\in\Kad_0 \text{ with } \scal{\vv}{{}^1\vu} = 0,
+\end{equation}
+and
+\begin{equation}\label{eq:nc-eta2}
+  \eta_2 = -\frac{\mathcal{W}_4 + 3\,D^3_{\vu}\mathcal{W}[{}^2\vu,{}^1\vu,{}^1\vu]}{3\kappa'},
+  \qquad
+  \mathcal{W}_4 = D^4_{\vu}\mathcal{W}[{}^1\vu,{}^1\vu,{}^1\vu,{}^1\vu] .
+\end{equation}
+The signs read as in Section~\ref{sec:ld-koitercoef}: $\eta_1 \neq 0$ asymmetric,
+$\eta_2 > 0$ stable symmetric, $\eta_2 < 0$ unstable symmetric.
+\end{gbox}
+
+\paragraph{Why it works.}
+\index{Lyapunov--Schmidt reduction}%
+Split the displacement near the critical point into the branch, the mode and the rest:
+$\vu = {}^0\vu(\eta) + \xi\,{}^1\vu + \vect{v}$, with $\scal{\vect{v}}{{}^1\vu} = 0$. Equilibrium
+splits in two. Tested with the directions orthogonal to the mode, it can be solved for
+$\vect{v}(\xi,\eta)$, because the stability operator is positive there; the first term is
+$\tfrac12\xi^2\,{}^2\vu$, from~\eqref{eq:nc-u2}. Tested with the mode itself, it becomes one
+equation for $\xi$ and $\eta$, the reduced equation~\eqref{eq:ld-reduced} of
+Chapter~\ref{ch:ld}, term by term~\cite[pp.~57--62]{nc-triantafyllidis2011}. Nothing in the
+argument used a finite number of unknowns, only that the operator is positive off the mode.
+For dead loads $D_{\vu\vu\eta}\mathcal{W} = 0$, and the loss of stiffness $\kappa'$ comes
+entirely from the change of the principal state. With a nearly linear prebuckling state,
+$d\,{}^0\vu/d\eta \approx \hat\vu$ and the leading term of~\eqref{eq:nc-third} is
+\begin{equation}\label{eq:nc-kappa-lba}
+  \kappa' \approx \int_\Omega \hat\sig:\tens{q}({}^1\vu,{}^1\vu)\dd V
+  \leftrightarrow {}^1\mat{u}\T\mat{K}_\sigma\,{}^1\mat{u},
+\end{equation}
+negative because the reference stress compresses the body along the mode. Linear buckling and
+Koiter's analysis use the same geometric stiffness: the first to find $\eta_c$, the second to
+measure how fast the mode loses stiffness.
+
+The rod models of Chapter~\ref{ch:rd} and the plates and shells of the later chapters are
+reductions of this energy. The three steps stay the same: principal branch, critical point
+with the test~\eqref{eq:nc-bif-test}, and Koiter's coefficients~\eqref{eq:nc-kappa}--\eqref{eq:nc-eta2}.
 
 %======================================================================
 \section{From fields to matrices: finite elements}\label{sec:nc-fe}
@@ -770,6 +962,20 @@ ${}^1\mat{u}\T\mat{p} = 0$ and a rising load: a bifurcation point. Switch branch
 or rerun with an imperfection in the shape of the mode to get the maximum load.
 \end{solution}
 
+\exercise{Does the mode work on the load?}\label{exo:nc-work}
+\index{limit point}\index{bifurcation point}%
+Classify the critical point with the test of Section~\ref{sec:nc-bif-test}: (a) a straight column
+under an axial end load, buckling sideways; (b) a shallow arch under a central vertical load,
+snapping in its symmetric mode; (c) the elastica~\eqref{eq:nc-elastica-energy}. For (c), what
+does $\kappa' = -L$ mean for the lowest eigenvalue of the stability operator?
+\begin{solution}
+(a) The mode is lateral, the load axial: $\ell({}^1\vu) = 0$, a bifurcation. (b) The symmetric mode
+moves the loaded point down: $\ell({}^1\vu) \neq 0$, a limit point. (c) The load works on
+$1 - \cos\theta$, quadratic in $\theta$, so $D_{\theta\eta}\mathcal{W}[{}^1\theta] = 0$ at $\theta = 0$:
+a bifurcation. The lowest eigenvalue, per unit of the norm, is $\beta(\eta) = L(\eta_c - \eta)$:
+it crosses zero with slope $\kappa' = -L$.
+\end{solution}
+
 \exercise{Why linear buckling misses a snap-through}\label{exo:nc-snap}
 \index{linear buckling!validity}%
 Explain in three lines why Box~3.2 gives $0.25$ for the $30^\circ$ truss whose true limit
@@ -917,6 +1123,7 @@ measure used by \texttt{pasapas} for bars, with the maximum $0.0481$.
 \end{solution}
 
 \begin{chapterbib}{99}
+\bibitem{nc-triantafyllidis2011} N.~Triantafyllidis, \emph{Stability of Solids: from Structures to Materials}, lecture notes MEC563, \'Ecole polytechnique, Palaiseau, 2011.
 \bibitem{nc-triantafyllidis2018} N.~Triantafyllidis, \emph{Stability of Solids: from Structures to Materials}, lecture slides MEC553, Lecture~6, \'Ecole polytechnique, Palaiseau, 2018.
 \bibitem{nc-constantinescu2007} A.~Constantinescu and A.~Korsunsky, \emph{Elasticity with Mathematica: An Introduction to Continuum Mechanics and Linear Elasticity}, Cambridge University Press, 2007.
 \bibitem{nc-audoly2010} B.~Audoly and Y.~Pomeau, \emph{Elasticity and Geometry: From Hair Curls to the Non-linear Response of Shells}, Oxford University Press, Oxford, 2010.
