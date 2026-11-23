@@ -17,7 +17,7 @@ inputs. Slides: not started.
    gives a bifurcation, otherwise a limit point. 3D linear buckling (author's C04 slides, eq. 28). Third and fourth
    variations of the Saint Venant–Kirchhoff body (sums over pairings of q). Gbox: Koiter's κ', 𝒲₃, ²u, η₁, η₂ by
    variations (Box 2.2 for a body); κ' ≈ ∫σ̂:q(¹u,¹u) links Koiter to linear buckling. Sources: Triantafyllidis notes
-   AC (pp. 46–62), Kielhöfer I.5–I.7. Short question `exo:nc-work`. About 3 pages: it stays in Ch. 3.
+   AC (pp. 46–62) and MEC553 L3 slides 7–30, Kielhöfer I.5–I.7. Short question `exo:nc-work`. About 3 pages: it stays in Ch. 3.
 2. `sec:nc-fe` From fields to matrices. Residual r = f_int − ηp, tangent K. Bar element with Green strain:
    k = (EA/L³)xxᵀ + (N/L)I. Example: the truss from two elements gives Ch. 2's Hessian. Box 3.1.
 3. `sec:nc-lba` Linear buckling (K₀ + ηK_σ)¹u = 0 (Triantafyllidis L6, slide 9). Box 3.2. Table on the truss:

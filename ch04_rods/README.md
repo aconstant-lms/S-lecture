@@ -85,7 +85,8 @@ foundation picks the wavelength and is unstable; a code is trusted after the ela
 - Short questions: effective lengths of a frame member; why the von Kármán branch is flat; Southwell from three
   readings; the pendulum analogy; θ₀ for 10 % above P_c; rail wavelength with real numbers; why a thin rod bends rather
   than stretches (h² vs h⁴); which column fails by yielding (Hibbeler, SI units).
-- Problems: simply supported beam under axial load, Koiter (Triantafyllidis H3); same with a wavy imperfection (H4);
+- Problems: the kinematics decide the post-buckling (H3 Problem 1, slide 11); thermal buckling of a bimetallic beam
+  (H3 Problem 2); the wavy imperfect beam (H4);
   the clamped–free elastica; finite beam on a foundation and mode switching; design of a steel and an aluminium
   column with the secant formula (Hibbeler §13.4, Examples converted to SI).
 - Computer: elastica by shooting in Python (`solve_ivp` + root finding, then continuation with
@@ -133,7 +134,20 @@ foundation picks the wavelength and is unstable; a code is trusted after the ela
   stability of the principal branch by Fourier series (BA-1.5–1.7), exact solution sin(θ/2) = k sn(μs),
   μL = 2K(k), λ/λ_c = 1 + ½k² + … (BA-1.13); LSK: 𝒲,uλ¹u = 0 (bifurcation), 𝒲,uuu = 0 (λ₁ = 0), λ₂ from
   AC-3.14, ξ = √2 k (BA-1.23). Section AC (continuum LSK, pp. 46–82) is the source of the 3D section in Ch. 3.
-- Still to upload: Triantafyllidis MEC553 L3–L4 slides and homeworks H3, H4; Timoshenko & Gere Ch. 2.
+- Triantafyllidis MEC553 slides (2018), uploaded 23 Nov: L3 (30 slides) functionals and derivatives (2–6), LSK simple
+  mode, bifurcation vs limit point, expansions and stability (7–23), the elastica example (24–30); L4 (38 slides) the
+  same review (1–25), then imperfect structures in the continuum: illustration (27–28), LSK with an imperfection,
+  level sets to avoid fractional expansions (29–33), stability and load drop (34–38). L3 is behind Ch. 3 `sec:nc-bif`;
+  L4 26–38 for the imperfect column of §4.2.
+- Triantafyllidis homeworks (2018), uploaded 23 Nov:
+  H3 Problem 1: simply supported beam, axial force, three kinematics: e = v' + ½w'² gives a flat branch (λ₂ = 0);
+  e = v' + ½v'² + ½w'² with k = −w'' (is λ₂ > 0?); the exact stretch and curvature. **This is the author's slide 11
+  as an exercise**: the Problem "The kinematics decide the post-buckling" of this chapter.
+  H3 Problem 2: bimetallic (Al/Cu) beam clamped at both ends, uniform temperature rise; principal solution, critical
+  Δθ, exact bifurcated solution and LSK (λ₁ = 0, u₂, λ₂). Problem "Thermal buckling of a bimetallic beam" (rails link).
+  H4 Problem 1: simply supported beam with a wavy initial imperfection w̄(x); amplification of each Fourier
+  coefficient, w_n = w̄_n λ/(λ_n − λ), unbounded at Euler's load. Problem for §4.2 (Southwell, secant formula).
+- Still to upload: Timoshenko & Gere Ch. 2 (supports, beam on a foundation §2.10).
 - References to check before the chapterbib: Bermúdez & Viaño, RAIRO Anal. Numér. 18 (1984); Trabucho & Viaño (1996);
   Cimetière et al., J. Elasticity 19 (1988) 111–161; Mora & Müller, Calc. Var. PDE 18 (2003) 287–305;
   Mora & Müller, Ann. IHP Anal. Non Linéaire 21 (2004) 271–293; Ciarlet (1988); Potier-Ferry (1983);
