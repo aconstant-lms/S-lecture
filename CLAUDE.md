@@ -209,7 +209,7 @@ checked against the closed form. A running example: the cylinder (1 dof model, r
 | 2 | `ch02_discrete` | `ld` | Discrete systems: energy and Lagrangian mechanics | Hessian, Koiter with 1-2 dof, von Mises truss, Augusti, Ziegler (flutter) |
 | 3 | `ch03_continuation` | `nc` | From continuum to discrete: numerical methods | weak forms, bifurcation of a 3D elastic body, linear buckling (eigenproblem, Rayleigh quotient), Riks arc-length, detection, branch switching, FEniCS/Cast3M |
 | 4 | `ch04_rods` | `rd` | Rods: the elastica and beyond | Kirchhoff rods, elastica, elastic foundation, twist and natural curvature |
-| 5 | `ch05_thinwalled` | `tw` | Thin-walled members and real materials | torsional and lateral-torsional buckling, cruciform column, Shanley, residual stresses, column curves (Eurocode 3), shell buckling under residual stresses |
+| 5 | `ch05_thinwalled` | `tw` | Rods II: thin-walled members and real materials | torsional and lateral-torsional buckling, cruciform column, Shanley, residual stresses, column curves (Eurocode 3), shell buckling under residual stresses |
 | 6 | `ch06_plates` | `pl` | Plates | Föppl-von Kármán, plate buckling, effective width, wrinkling, d-cones |
 | 7 | `ch07_cylinders` | `cy` | Cylindrical shells and imperfection sensitivity | classical load, Koiter, knockdown factors, rocket fuselage |
 | 8 | `ch08_shells` | `sh` | Shells in service: nozzles, prestress and deployable structures | external pressure, nozzle divergent, bistable shells, tape springs, kirigami |
@@ -315,6 +315,8 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
   Reusable: `ch05_thinwalled/code/python/ft_section.py` (thin-walled section constants, shear centre, Γ, the 3×3
   buckling eigenproblem), `shanley.py`, `fibre_column.py` (column curves). Ch. 6 may cite the cruciform as its first
   plate example (k = 0.425 + (b/a)², `sec:tw-cruciform`).
+- 2026-11-24 (Ch. 5 thread, author): Chapter 5 is titled "Rods II: thin-walled members and real materials" (folder and
+  prefix unchanged; plan tables, README, overview and notation list updated); ζ for the Ayrton–Perry imperfection confirmed.
 
 - 2026-11-24 (hub, author): external plan used for inspiration only; Eurocodes in Ch. 5-7; Quebec Bridge kept;
   Ch. 2-3 closer to examples; shell buckling under residual stresses in Ch. 5; project 1 h/session from Lecture 3;

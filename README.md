@@ -38,7 +38,7 @@ One folder per chapter, the same sub-folders everywhere:
 | 2 | `ch02_discrete` | Discrete systems: energy and Lagrangian mechanics |
 | 3 | `ch03_continuation` | From continuum to discrete: numerical methods |
 | 4 | `ch04_rods` | Rods: the elastica and beyond |
-| 5 | `ch05_thinwalled` | Thin-walled members and real materials |
+| 5 | `ch05_thinwalled` | Rods II: thin-walled members and real materials |
 | 6 | `ch06_plates` | Plates |
 | 7 | `ch07_cylinders` | Cylindrical shells and imperfection sensitivity |
 | 8 | `ch08_shells` | Shells in service: nozzles, prestress and deployable structures |

@@ -1,4 +1,4 @@
-# Chapter 5: Thin-walled members and real materials
+# Chapter 5: Rods II: thin-walled members and real materials
 
 Label prefix `tw` (`sec:tw-*`, `eq:tw-*`, `fig:tw-*`, `exo:tw-*`, bibitem keys `tw-*`).
 Status: **complete draft (24 Nov 2026)**. Lecture text (5 sections), summary, exercises with solutions (8 short
@@ -57,15 +57,16 @@ plus the two failure boxes.
 - (author, 24 Nov 2026) Eurocode 3 is taken: EN 1993-1-1 §6.3 column curves (already compared in `fibre_column.py`) and lateral-torsional buckling §6.3.2 (to add: M_cr, χ_LT); keep AISC as comparison.
 - (author, 24 Nov 2026) Add the buckling of a thin shell under residual internal stresses (eigenstrain, no external load: welding/forming stresses, rolled or quenched thin tube). Ch. 8 keeps prestress used on purpose. Ask the author for the papers.
 - Table-top: ruler cantilever loaded on its edge (LTB), paper cruciform, curled strip (residual stress).
-1. (to confirm by the author) Title "Rods II: thin-walled members and real materials"; folder and prefix unchanged.
-2. Notation (24 Nov): code symbols λ̄, χ, α kept (as Ch. 4 kept k and K); the Ayrton–Perry imperfection is **ζ**, not
+1. (author, 24 Nov 2026) Title "Rods II: thin-walled members and real materials"; folder and prefix unchanged.
+2. Notation (author, 24 Nov 2026, confirmed): code symbols λ̄, χ, α kept (as Ch. 4 kept k and K); the Ayrton–Perry imperfection is **ζ**, not
    the usual η, because η is the load parameter of the book.
 3. Sources (24 Nov): Fang & Winter (1965) read but not cited (rarely cited; it restates Chajes & Winter). §5.2 cites
    Chajes & Winter (1965) and AISC 360-22 §E4 (free); Trahair, SSRC, Bažant & Cedolin still not available and cited only
    for standard formulas. Hutchinson (2016, spheres) goes to Ch. 7–8 (SOURCES.md §4g).
-4. Draft notes left in the text: Dee Bridge and Marcy references; the constant 4.013 of the ruler (check in Trahair or
-   Timoshenko & Gere); the Quebec bow figures (19 → 57 mm, from S. Brady, Engineers Journal) against the Royal Commission
-   report; the Cast3M syntax (multifibre model, initial stresses in pasapas).
+4. Draft notes resolved 24 Nov: Dee Bridge → Petroski, Civil Engineering 64(4) (1994) 52–55; Marcy → ENR, 11 Oct 2002
+   (steel tub girders rolled to one side during the deck pour; no cause stated there); Quebec bow 19 → 57 mm → Brady,
+   Engineers Journal, 29 May 2019; ruler constant 4.013 confirmed (Harvey et al., Eng. Struct. preprint, cites Timoshenko
+   & Gere). Left: the Cast3M syntax (multifibre model, initial stresses in pasapas).
 5. FEniCS: not used in this chapter (shells come in Ch. 7); the Python fibre column is the closed-form check.
 6. The Hartford box says "four steel angles arranged in a cross"; whether they were bolted or welded is not in the
    sources read.
@@ -73,7 +74,11 @@ plus the two failure boxes.
 ## Sources
 Hutchinson (1974), Hibbeler 9th ed. Ch. 13 (PDF = book + 25), Chajes & Winter (1965), AISC 360-22 §E4, Freddi, Morassi &
 Paroni (2007), Huber & Beedle (1954), Gerard & Becker (1957) via Hutchinson, Duberg & Wilder (1952), Onat & Drucker (1953),
-Martin & Delatte (2001), Loomis et al. (1980), Pearson & Delatte (2006), Bushnell §7. Details: `SOURCES.md`.
+Martin & Delatte (2001), Loomis et al. (1980), Pearson & Delatte (2006), Petroski (1994), ENR (2002), Brady (2019), Bushnell §7.
+Photographs: none in the book. Magazine and press photos (ENR, STRUCTURE, Engineers Journal, LZA/AP for Hartford) are
+copyrighted and the repository is public; candidates that can be used are public-domain images (Quebec Bridge 1907,
+Library and Archives Canada / Wikimedia Commons; Dee Bridge 1847, Illustrated London News engraving), to be uploaded
+by the author. Details: `SOURCES.md`.
 
 ## Papers needed
 (ask the author to upload them; tick when received)

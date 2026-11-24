@@ -1,10 +1,8 @@
 %======================================================================
-\chapter{Thin-walled members and real materials}\label{ch:tw}
+\chapter{Rods II: thin-walled members and real materials}\label{ch:tw}
 %======================================================================
 % Outline drafted 23 Nov 2026. Labels of this chapter: *:tw-*  (bibitem keys tw-*).
-% Status and decisions: ch05_thinwalled/README.md. Proposed title (author to confirm):
-% "Rods II: thin-walled members and real materials".
-
+% Status and decisions: ch05_thinwalled/README.md. Title "Rods II" confirmed by the author, 24 Nov 2026.
 \framepart{Outline}
 Chapter~\ref{ch:rd} ended with two promises. Euler's load assumes that the cross-section
 does not twist and that the material stays elastic. Real steel members break both
@@ -201,12 +199,11 @@ I-beam under a uniform moment the critical moment is
   M_{cr} = \frac\pi L\sqrt{EI_zGJ}\,\sqrt{1 + \frac{\pi^2E\Gamma}{GJL^2}}
 \end{equation}
 \cite{tw-trahair1993,tw-ziemian2010}. For an HEB~300 it is $1940$~kN\,m over $4$~m and $698$~kN\,m over
-$8$~m. Bridges have failed this way: the Dee Bridge at Chester
-(1847), whose cast-iron girders were loaded eccentrically by their tie rods and twisted out of plane,
-and, much later, girder bridges that buckle during construction, before the deck that braces them is
-cast (the Marcy pedestrian bridge, New York, 2002).
-\draftnote{Dee Bridge (Petroski 1994) and Marcy (NYSDOT or FHWA investigation): check and add the
-references.}
+$8$~m. Bridges have failed this way. The Dee Bridge at Chester fell under a train in 1847; its cast-iron
+girders were compressed by eccentric tie rods, and their top flanges buckled out of
+plane~\cite{tw-petroski1994}. Steel girders are most exposed during construction, before the deck that
+braces them has hardened: in 2002 the steel tub girders of the Marcy pedestrian bridge (New York) rolled to
+one side during the pour of the deck~\cite{tw-enr2002}.
 
 \begin{gbox}{Box: a ruler on its edge}\label{sec:tw-ruler}
 \index{lateral--torsional buckling!ruler}%
@@ -214,15 +211,14 @@ Clamp a ruler at one end, on its edge, so that it is stiff in the vertical plane
 the free end. Long before it bends down, it kicks sideways and twists. A cantilever of length $L$ with
 a load at the centroid of its tip buckles at
 \[
-  P_{cr} = 4.013\,\frac{\sqrt{EI_zGJ}}{L^2} .
+  P_{cr} = 4.013\,\frac{\sqrt{EI_zGJ}}{L^2}
 \]
+\cite{tw-trahair1993}, a classical result of Prandtl and Michell.
 For a steel ruler $30\times1$~mm, $300$~mm long, that is $29$~N; for an acrylic one, $0.44$~N, a few coins.
 Halve the length and the load is four times larger: the $1/L^2$ of Euler, with $\sqrt{EI_zGJ}$ in place of
 $EI$. The same mechanism, the same formula up to the constant, governs a steel girder before its deck
 is cast.
 \end{gbox}
-\draftnote{The constant 4.013 (Prandtl, Michell) is quoted from memory; check against Trahair or
-Timoshenko \& Gere.}
 
 \begin{figure}[ht]
   \centering
@@ -617,14 +613,12 @@ On 29 August 1907 the south half of the Quebec Bridge, then the longest cantilev
 fell into the St Lawrence during construction, killing about seventy-five workers. The collapse started
 with the buckling of a lower compression chord of the anchor arm, member A9L~\cite{tw-pearson2006}. The
 chord was built up of four ribs of riveted plates tied together by light latticing, and the inquiry blamed
-the latticing, too weak to make the ribs act as one column~\cite{tw-pearson2006}. A built-up column with weak
+the latticing, too weak to make the ribs act as one column~\cite{tw-pearson2006,tw-brady2019}. A built-up column with weak
 lacing is a shear-soft column: Engesser's correction of Chapter~\ref{ch:nc} lowers its load. In the two
-weeks before the collapse the bow of the chord was watched as it grew from about $19$ to $57$~mm. Under a
+weeks before the collapse the bow of the chord was watched as it grew from $19$ to $57$~mm~\cite{tw-brady2019}. Under a
 nearly constant load, a growing deflection is the signal of Southwell's plot (Chapter~\ref{ch:rd}): the
 column was close to its limit.
 \end{gbox}
-\draftnote{The bow figures (19 to 57 mm) come from S. Brady, Engineers Journal (Ireland), not yet in the
-references; check against the Royal Commission report (1908) or Pearson and Delatte.}
 
 %======================================================================
 \framepart{Summary}
@@ -851,5 +845,8 @@ stresses in \texttt{pasapas} are to be checked on the author's version.}
 \bibitem{tw-freddi2007} L.~Freddi, A.~Morassi and R.~Paroni, Thin-walled beams: a derivation of Vlassov theory via $\Gamma$-convergence, \emph{Journal of Elasticity} 86 (2007) 263--296.
 \bibitem{tw-loomis1980} R.~S.~Loomis, R.~H.~Loomis, R.~W.~Loomis and R.~W.~Loomis, Torsional buckling study of Hartford Coliseum, \emph{Journal of the Structural Division (ASCE)} 106 (1980) 211--231.
 \bibitem{tw-martin2001} R.~Martin and N.~Delatte, Another look at Hartford Civic Center Coliseum collapse, \emph{Journal of Performance of Constructed Facilities} 15 (2001) 31--36.
+\bibitem{tw-petroski1994} H.~Petroski, Success syndrome: the collapse of the Dee Bridge, \emph{Civil Engineering (ASCE)} 64(4) (1994) 52--55.
+\bibitem{tw-enr2002} One dead, nine hurt in upstate New York pedestrian bridge collapse, \emph{Engineering News-Record}, 11 October 2002.
+\bibitem{tw-brady2019} S.~Brady, The Quebec Bridge collapse: a preventable failure, Part~2, \emph{Engineers Journal} (Engineers Ireland), 29 May 2019.
 \bibitem{tw-pearson2006} C.~Pearson and N.~Delatte, Collapse of the Quebec Bridge, 1907, \emph{Journal of Performance of Constructed Facilities} 20 (2006) 84--91.
 \end{chapterbib}
