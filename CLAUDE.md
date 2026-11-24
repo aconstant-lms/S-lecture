@@ -112,6 +112,21 @@ the Ch. 3 one should start from the Ch. 1 code; (3) Ch. 6, built on the author's
 Green–Lagrange notation and variations and mirror Ch. 4's "From 3D" section, not restate them
 (CO7's ê, κ̂, hats → Ch. 3 notation; W → 𝒲; λ → η).
 
+### Proposals from the external plan (hub, 24 Nov 2026) — to be decided by the author
+1. Design codes in the engineering core: Eurocode 3 next to the US references already used (Hibbeler/AISC):
+   EN 1993-1-1 §6.3 (column curves a0–d, χ; lateral-torsional buckling) in Ch. 5, EN 1993-1-5 (effective width) in
+   Ch. 6, EN 1993-1-6 (shells) with NASA SP-8007 in Ch. 7.
+2. Missing engineering topics: lateral-torsional buckling of I-beams (Ch. 5); plates in shear and combined loads,
+   k(α) chart (Ch. 6); the dense spectrum of the cylinder and a σ_max vs imperfection-amplitude curve as the flagship
+   computation (Ch. 7); dynamic buckling, Budiansky–Roth, and pressure hulls (sphere vs cylinder) (Ch. 8).
+3. Pedagogy: an "adopted structure" per pair from Session 3 (not 5), one deliverable per session, presented in
+   Session 9 with a peer-review rubric; one table-top demonstration per session (ruler, tape measure, soda can,
+   popper, paper plate); a timing table per session in the instructor manual.
+4. Vision: a one-diagram map of the field (rod → plate → shell; linear → nonlinear; bifurcation → post-buckling →
+   imperfection; static → dynamic; buckliphobia → buckliphilia) as a TikZ figure in the overview, repeated in Ch. 9.
+   Plates "buckling is not failure" vs shells "buckling is collapse" as the turning point of the course.
+5. Not taken: Abaqus/COMSOL; the biology sessions (DNA, capsids, seed pods, lily) beyond one box per chapter.
+
 ## Figures and sketches
 - Figures should be **nice, structured and inspirational**: a reader should grasp the mechanism from the picture
   before reading the formulas (Strang: the picture first). Every section with a new structure, load case or idea

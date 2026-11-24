@@ -179,6 +179,32 @@ SSRC chapter for the theory).
 - Shells (Ch. 7-8): Ciarlet, Mathematical Elasticity III (2000): membrane vs flexural shells, Koiter's equations;
   Ciarlet & Lods (1996).
 
+## 7. External course plan "Stability, Buckling of Rods, Plates and Shells — 9 sessions" (10 p., received 24 Nov 2026)
+Generated plan (pandoc/WeasyPrint), not a published source; it states itself that its references were written from
+memory. **Use for ideas only; never copy a reference from it without checking.** Its line is physics/biology-heavy
+(about a third of each session), the opposite of ours; Abaqus/COMSOL in place of FEniCS/Cast3M.
+- Ideas worth taking (proposals in CLAUDE.md, "Proposals from the external plan"): Eurocode design (EN 1993-1-1 §6.3
+  column curves and lateral-torsional buckling, EN 1993-1-5 plates, EN 1993-1-6 shells); lateral-torsional buckling of
+  I-beams; plates in shear and the k(α) chart; dynamic buckling (Budiansky–Roth); the "adopted structure" followed
+  through the course; one table-top demonstration per session; a one-diagram map of the field; per-session timing.
+- Errors spotted: Southwell and Shanley are R. V. Southwell and F. R. Shanley (not "A."); Seffen & Pellegrino (1999)
+  is pp. 1003–1048, not 1511; Reis (2015) is "from buckliphobia to buckliphilia" (order reversed); "Bushnell (text 5)"
+  points to Love; Lidmar et al. (2003) is about icosahedral virus shells, not the HIV capsid; Liang & Mahadevan (2009)
+  starts p. 22049. Doubtful, not found as cited: "Thomson & Batchelor, Stability of a rigid body, in Acheson";
+  "Neukirch & van der Heijden, tendril perversions, PRL 110 (2013)" (the classic is McMillen & Goriely, J. Nonlinear
+  Sci. 12 (2002) 241–281; Gerbode et al., Science 337 (2012) 1087 is real); "Charvin et al., Twisting DNA, J. Phys.
+  Condens. Matter (2004)"; "Pellegrino (ed.), Deployable Space Structures (2015)" (known: Pellegrino (ed.), Deployable
+  Structures, CISM/Springer 2001); van der Heijden & Thompson (2000) journal uncertain.
+- Candidate references, believed correct, to verify before a chapterbib: Southwell, Proc. R. Soc. A 135 (1932) 601;
+  Shanley, J. Aeronaut. Sci. 13 (1946) 678 and 14 (1947) 261; Budiansky & Hutchinson, AIAA J. 4 (1966) 1505;
+  Budiansky & Roth, NASA TN D-1510 (1962); Budiansky, Adv. Appl. Mech. 14 (1974); Hutchinson, Proc. R. Soc. A 472
+  (2016) 20160577; Thompson, Int. J. Bifurcation Chaos 25 (2015) 1530001; Thompson & Hunt, Elastic Instability
+  Phenomena (Wiley 1984); Domokos & Holmes, J. Nonlinear Sci. 3 (1993) 109; Hutchinson & Suo, Adv. Appl. Mech. 29
+  (1992) 63; Audoly & Boudaoud, JMPS 56 (2008) 2401; Bowden et al., Nature 393 (1998) 146; Forterre et al., Nature 433
+  (2005) 421; Armon et al., Science 333 (2011) 1726; Florijn, Coulais & van Hecke, PRL 113 (2014) 175503; Landau &
+  Lifshitz, Theory of Elasticity; Love, Treatise; Antman, Nonlinear Problems of Elasticity (2005); Calladine (1983);
+  Royal Commission, Quebec Bridge Inquiry (1908); EN 1993-1-1, -1-5, -1-6.
+
 ## 5. Map: sources by chapter
 | Ch | Main sources |
 |---|---|
