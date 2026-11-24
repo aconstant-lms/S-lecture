@@ -54,6 +54,9 @@ plus the two failure boxes.
   fibre model and Cast3M). Listed in `preamble/manual_chapters.tex`.
 
 ## Decisions and open questions
+- (author, 24 Nov 2026) Eurocode 3 is taken: EN 1993-1-1 §6.3 column curves (already compared in `fibre_column.py`) and lateral-torsional buckling §6.3.2 (to add: M_cr, χ_LT); keep AISC as comparison.
+- (author, 24 Nov 2026) Add the buckling of a thin shell under residual internal stresses (eigenstrain, no external load: welding/forming stresses, rolled or quenched thin tube). Ch. 8 keeps prestress used on purpose. Ask the author for the papers.
+- Table-top: ruler cantilever loaded on its edge (LTB), paper cruciform, curled strip (residual stress).
 1. (to confirm by the author) Title "Rods II: thin-walled members and real materials"; folder and prefix unchanged.
 2. Notation (24 Nov): code symbols λ̄, χ, α kept (as Ch. 4 kept k and K); the Ayrton–Perry imperfection is **ζ**, not
    the usual η, because η is the load parameter of the book.
@@ -71,3 +74,9 @@ plus the two failure boxes.
 Hutchinson (1974), Hibbeler 9th ed. Ch. 13 (PDF = book + 25), Chajes & Winter (1965), AISC 360-22 §E4, Freddi, Morassi &
 Paroni (2007), Huber & Beedle (1954), Gerard & Becker (1957) via Hutchinson, Duberg & Wilder (1952), Onat & Drucker (1953),
 Martin & Delatte (2001), Loomis et al. (1980), Pearson & Delatte (2006), Bushnell §7. Details: `SOURCES.md`.
+
+## Papers needed
+(ask the author to upload them; tick when received)
+- [ ] EN 1993-1-1 (2005, or the 2022 revision) §6.3: column curves and lateral-torsional buckling
+- [ ] Royal Commission, Quebec Bridge Inquiry Report (1908)
+- [ ] papers on buckling of thin shells under residual / welding stresses (author's choice)

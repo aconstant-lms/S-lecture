@@ -37,6 +37,7 @@ pseudo-arclength from scratch, normal forms in Mathematica).
   (c) normal forms in Mathematica; `slides/c01_bifurcation.tex` deck (skeleton)
 
 ## Decisions and open questions
+- Table-top (24 Nov 2026): plastic ruler pushed on a kitchen scale, then pre-bent (pitchfork vs imperfection).
 - Energy, buckling and imperfections of one-degree-of-freedom systems are covered here;
   Chapter 2 starts from several degrees of freedom and Koiter's analysis.
 - (21 Nov 2026) Hopf bifurcation, Lyapunov's two methods and the Jacobian are introduced here
@@ -60,3 +61,6 @@ pseudo-arclength from scratch, normal forms in Mathematica).
 Strang, Strogatz, Guckenheimer & Holmes, Kuznetsov, Seydel, Thompson & Hunt; Lyapunov (1892/1992),
 Hopf (1942), Keller (1977), Allgower & Georg (2003), Den Hartog (1932), Parkinson & Smith (1964).
 Details and page numbers: `SOURCES.md`. Ask the author to upload a file when it is needed.
+
+## Papers needed
+(ask the author to upload them; tick when received)

@@ -11,6 +11,7 @@ Status: skeleton (planned content only).
 - Exercises: continuation of the snap-through of a deployable structure.
 
 ## Decisions and open questions
+- Table-top (24 Nov 2026): tape measure snapping, hot-rinsed plastic bottle cooling (external pressure), slap bracelet. Residual stress as a cause of buckling is in Ch. 5; here prestress used on purpose.
 - Balance check (hub, 23 Nov 2026): the plan is physics-heavy; keep tanks, external pressure, nozzle divergent and space deployables (tape springs) as the core, bistable shells / kirigami / metamaterials as boxes (some may go to Ch. 9). Receives the physical snap-through box (popper, flytrap) announced in Ch. 2.
 - Balance (hub, 23 Nov 2026): engineering core (Bushnell, NASA) first; physical examples (snapping shells, tape springs, kirigami) as boxed examples. See "Balance" in CLAUDE.md.
 (Kept up to date by the chapter thread; anything that affects other chapters also goes into
@@ -19,3 +20,6 @@ the course plan of `CLAUDE.md`.)
 ## Sources
 Bushnell (pressure, tanks), NASA SP-8007 2020, Hutchinson (spheres), Reis, Bertoldi.
 Details and page numbers: `SOURCES.md`. Ask the author to upload a file when it is needed.
+
+## Papers needed
+(ask the author to upload them; tick when received)

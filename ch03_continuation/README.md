@@ -58,6 +58,7 @@ Engesser and Haringx); 4 computer exercises (arc-length from scratch, the bearin
   with Algorithm 3.1 (arc-length by bordering, CMAME style); (c) Cast3M. Listed in `preamble/manual_chapters.tex`.
 
 ## Decisions and open questions
+- (author, 24 Nov 2026) Move closer to examples: each method shown first on a structure with numbers. Table-top: ruler on a kitchen scale, Southwell plot from measured (P, δ), frequency vs load with a phone (phyphox). The project (1 h per session) starts with this lecture.
 - Overlap (hub, 23 Nov 2026): the exercise "Computer: arc-length from scratch" could start from the Ch. 1 code `arclength.py` instead of a second from-scratch code. See "Who owns what" in CLAUDE.md.
 - (author, 21 Nov 2026) The title is "From continuum to discrete: numerical methods". Folder and prefix are unchanged.
   The hub should update the plan table in `CLAUDE.md`, `README.md` and the roadmap in `ch00_intro/notes/overview.tex`.
@@ -96,3 +97,6 @@ Engesser and Haringx); 4 computer exercises (arc-length from scratch, the bearin
   flambage, pasapas entries.
 - Checked references: Kelly (2003), Kelly & Takhirov (2007), Bažant (2003), Wriggers & Simo (1990).
   Riks (1979), Crisfield (1981), Hernandez, Roman & Vidal (2005) are as in the hub list or standard.
+
+## Papers needed
+(ask the author to upload them; tick when received)

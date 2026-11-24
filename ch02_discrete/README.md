@@ -38,6 +38,7 @@ imperfection curves + truss by continuation, Ziegler).
   steep truss, (c) imperfection curves and Ziegler in Python. Listed in `preamble/manual_chapters.tex`.
 
 ## Decisions and open questions
+- (author, 24 Nov 2026) Move closer to examples: anchor each model on a real structure (shallow arch/dome, stiffened panel, pipe conveying fluid) and a number. Table-top: von Mises truss of two sticks and a rubber band; jumping popper.
 - Balance (hub, 23 Nov 2026): the chapter is all engineering models, no real structure is named. Candidate one-line pointers: von Mises truss → shallow arches and domes; Augusti → optimised stiffened panels (Bushnell §7); Ziegler → pipes conveying fluid. Physical snap-through box (popper, flytrap) goes to Ch. 8 with a forward reference. See "Balance check" in CLAUDE.md.
 - Notation (author, 21 Nov 2026, accepted): `\mat{u}`, `\mat{K}`, `\mat{M}`, T, `\mat{Q}`, ⁰u(η), ¹u, ξ, ²u,
   η = η_c + η₁ξ + ½η₂ξ² (Triantafyllidis's Taylor convention), κ', 𝒲₃, 𝒲₄, imperfection ξ̄, maximum
@@ -65,3 +66,6 @@ imperfection curves + truss by continuation, Ziegler).
   optimum design §10.4, book pp. 243–249 (PDF 260–266).
 - MEC553 sample exam (2018), Problem 1: rotating mechanism (Exercise `exo:ld-rotating`).
 - Ziegler (1968) for the column and the paradox; Koiter (1945); Hutchinson & Koiter (1970).
+
+## Papers needed
+(ask the author to upload them; tick when received)

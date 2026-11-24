@@ -11,6 +11,7 @@ Status: skeleton (planned content only).
 - Exercises: linear against nonlinear runs with seeded imperfections in Cast3M or FEniCS.
 
 ## Decisions and open questions
+- (author, 24 Nov 2026) EN 1993-1-6 next to NASA SP-8007. Table-top: soda can pressed and poked; paper cylinder under books; full vs open can.
 - Overlap (hub, 23 Nov 2026): vibration and buckling are in Ch. 1-2; the vibration correlation technique only cites them.
 - Balance (hub, 23 Nov 2026): physical box = poking a soda can (Virot et al. 2017), the energy barrier, tied to the knockdown factors.
 - From 3D (hub, 23 Nov 2026): one short section with the shell scalings (Audoly & Pomeau) and Ciarlet Vol. III / Ciarlet & Lods (membrane vs flexural shells, Koiter's equations justified). See "Balance" in CLAUDE.md.
@@ -20,3 +21,8 @@ the course plan of `CLAUDE.md`.)
 ## Sources
 Brush & Almroth, Koiter, NASA SP-8007 (1968, 2020), Bushnell §3–8, H7.
 Details and page numbers: `SOURCES.md`. Ask the author to upload a file when it is needed.
+
+## Papers needed
+(ask the author to upload them; tick when received)
+- [ ] EN 1993-1-6 (strength and stability of shell structures)
+- [ ] Virot, Kreilos, Schneider & Rubinstein, PRL 119 (2017) 224101

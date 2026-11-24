@@ -112,20 +112,37 @@ the Ch. 3 one should start from the Ch. 1 code; (3) Ch. 6, built on the author's
 Green–Lagrange notation and variations and mirror Ch. 4's "From 3D" section, not restate them
 (CO7's ê, κ̂, hats → Ch. 3 notation; W → 𝒲; λ → η).
 
-### Proposals from the external plan (hub, 24 Nov 2026) — to be decided by the author
-1. Design codes in the engineering core: Eurocode 3 next to the US references already used (Hibbeler/AISC):
-   EN 1993-1-1 §6.3 (column curves a0–d, χ; lateral-torsional buckling) in Ch. 5, EN 1993-1-5 (effective width) in
-   Ch. 6, EN 1993-1-6 (shells) with NASA SP-8007 in Ch. 7.
-2. Missing engineering topics: lateral-torsional buckling of I-beams (Ch. 5); plates in shear and combined loads,
-   k(α) chart (Ch. 6); the dense spectrum of the cylinder and a σ_max vs imperfection-amplitude curve as the flagship
-   computation (Ch. 7); dynamic buckling, Budiansky–Roth, and pressure hulls (sphere vs cylinder) (Ch. 8).
-3. Pedagogy: an "adopted structure" per pair from Session 3 (not 5), one deliverable per session, presented in
-   Session 9 with a peer-review rubric; one table-top demonstration per session (ruler, tape measure, soda can,
-   popper, paper plate); a timing table per session in the instructor manual.
-4. Vision: a one-diagram map of the field (rod → plate → shell; linear → nonlinear; bifurcation → post-buckling →
-   imperfection; static → dynamic; buckliphobia → buckliphilia) as a TikZ figure in the overview, repeated in Ch. 9.
-   Plates "buckling is not failure" vs shells "buckling is collapse" as the turning point of the course.
-5. Not taken: Abaqus/COMSOL; the biology sessions (DNA, capsids, seed pods, lily) beyond one box per chapter.
+### Decisions on the external plan (author, 24 Nov 2026)
+- **Our plan is kept.** The external plan is a source of inspiration only, mainly for physical/biological examples,
+  which are added when they fit a chapter (one box at most, balance rule above).
+- **Eurocodes are taken**: EN 1993-1-1 §6.3 (column curves, χ, and lateral-torsional buckling §6.3.2) in Ch. 5,
+  EN 1993-1-5 (plated elements, effective width) in Ch. 6, EN 1993-1-6 (shells) next to NASA SP-8007 in Ch. 7.
+  The US references already used (Hibbeler, AISC 360-22) stay as a comparison.
+- **The Quebec Bridge (1907)** stays (Ch. 5 box) and opens the course overview; the Royal Commission report (1908)
+  is to be uploaded by the author before it is cited.
+- **Chapters 2 and 3 move closer to examples**: each abstract statement is anchored on a real structure or a worked
+  numerical example (see the Ch. 2 pointers in "Balance check"); the Ch. 2 and Ch. 3 threads do it.
+- **Ch. 5 gets the buckling of a shell under residual internal stresses** (eigenstrain, no external load:
+  welding or forming stresses in a thin shell, a quenched or rolled thin-walled tube). Boundary with Ch. 8:
+  Ch. 5 = residual stress as a *cause of failure* in real materials; Ch. 8 = prestress *used on purpose* (bistable shells).
+- **Project**: about 1 hour per session from Lecture 3 on (the "adopted structure" of each pair), presented in
+  Session 9. Supersedes "project from session 5" in the course plan.
+- **One table-top experiment per lecture** (list below), shown live in the lecture and reused in the exercises.
+- **Papers**: chapter threads keep asking the author for the papers they need (list them under "Papers needed"
+  in the chapter README), and never cite a paper they have not seen or checked.
+
+### Table-top experiments (one per lecture; cheap, quick, safe; to be confirmed in each chapter thread)
+| Ch | Experiment | What it shows | Material |
+|---|---|---|---|
+| 1 | Plastic ruler pushed end to end on a kitchen scale; then a ruler slightly pre-bent | pitchfork, imperfection turns it into a smooth path | ruler, kitchen scale |
+| 2 | Two lollipop sticks pinned at the apex with a rubber band as spring; press the apex (von Mises truss); a jumping popper | snap-through, hysteresis | sticks, rubber band, popper |
+| 3 | Ruler on the scale: read (P, δ) pairs and draw the Southwell plot; tap the loaded ruler and read its frequency with a phone (phyphox) | measuring a critical load without reaching it; ω² → 0 | ruler, scale, phone |
+| 4 | Spaghetti of three lengths pressed on the scale (P ∝ 1/L²); a steel ruler bent into elastica shapes; the longest ruler that stands up under its own weight | Euler's law, the elastica, self-weight buckling | spaghetti, steel ruler |
+| 5 | Plastic ruler as a cantilever loaded on its edge at the tip (lateral-torsional buckling); a paper cruciform column (torsional buckling); a curled metal strip from a coil (residual stress) | LTB, cruciform, residual stress | ruler, weights, paper |
+| 6 | A sheet of card held in a slot on its long edges and compressed: it buckles and keeps carrying load; stretch a plastic film: wrinkles | post-buckling reserve, effective width; wrinkling wavelength | card, cling film |
+| 7 | An empty soda can on the scale: press gently, then poke its side (Virot et al.); a paper cylinder under books (diamond pattern); closed full can vs open can | imperfection sensitivity, energy barrier, pressure stabilisation | cans, paper, books |
+| 8 | Tape measure (tape spring) folding and snapping; plastic bottle cooled after rinsing with hot water (external pressure); slap bracelet | snap-through of shells, external pressure, bistability | tape measure, bottle |
+| 9 | Compress a rubber eraser or a silicone block between fingers (surface creases); bend a finger and look at the skin | surface instability of a 3D body | eraser, silicone |
 
 ## Figures and sketches
 - Figures should be **nice, structured and inspirational**: a reader should grasp the mechanism from the picture
@@ -192,13 +209,14 @@ checked against the closed form. A running example: the cylinder (1 dof model, r
 | 2 | `ch02_discrete` | `ld` | Discrete systems: energy and Lagrangian mechanics | Hessian, Koiter with 1-2 dof, von Mises truss, Augusti, Ziegler (flutter) |
 | 3 | `ch03_continuation` | `nc` | From continuum to discrete: numerical methods | weak forms, bifurcation of a 3D elastic body, linear buckling (eigenproblem, Rayleigh quotient), Riks arc-length, detection, branch switching, FEniCS/Cast3M |
 | 4 | `ch04_rods` | `rd` | Rods: the elastica and beyond | Kirchhoff rods, elastica, elastic foundation, twist and natural curvature |
-| 5 | `ch05_thinwalled` | `tw` | Thin-walled members and real materials | torsional buckling, cruciform column, Shanley, residual stresses, column curves |
+| 5 | `ch05_thinwalled` | `tw` | Thin-walled members and real materials | torsional and lateral-torsional buckling, cruciform column, Shanley, residual stresses, column curves (Eurocode 3), shell buckling under residual stresses |
 | 6 | `ch06_plates` | `pl` | Plates | Föppl-von Kármán, plate buckling, effective width, wrinkling, d-cones |
 | 7 | `ch07_cylinders` | `cy` | Cylindrical shells and imperfection sensitivity | classical load, Koiter, knockdown factors, rocket fuselage |
 | 8 | `ch08_shells` | `sh` | Shells in service: nozzles, prestress and deployable structures | external pressure, nozzle divergent, bistable shells, tape springs, kirigami |
 | 9 | `ch09_solids` | `so` | Three-dimensional bodies | Hill, loss of ellipticity, Biot wrinkling, pattern transformation; projects |
 
-Assessment (proposal, to be confirmed): exam + project in pairs from session 5 on, one real structure.
+Assessment (proposal, to be confirmed): exam + project in pairs on one real structure ("adopted structure"),
+about 1 hour per session from Lecture 3 on, presented in Session 9 (author, 24 Nov 2026).
 Status of each chapter: its `README.md`. Skeleton chapters carry the planned content as `\draftnote`s.
 
 ## Reference list (to grow; each chapter copies what it cites into its own chapterbib)
@@ -239,6 +257,7 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
   cross-references, notation (`preamble/notation.tex` + `ch00_intro/notes/notation_list.tex`),
   `main.tex` and `preamble/manual_chapters.tex`.
 - At the start of a chapter thread: read this file, `SOURCES.md`, `chNN_<name>/README.md`, and the chapters before it.
+- Ask the author for every paper or book the chapter needs (list under "Papers needed" in the README).
 - At the end of each round: update `chNN_<name>/README.md` (status, decisions, open questions). A decision
   that affects other chapters (notation, plan, a result used later) is also written under
   "Cross-chapter decisions" below, in one dated line, so the hub and the other threads see it.
@@ -296,6 +315,10 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
   Reusable: `ch05_thinwalled/code/python/ft_section.py` (thin-walled section constants, shear centre, Γ, the 3×3
   buckling eigenproblem), `shanley.py`, `fibre_column.py` (column curves). Ch. 6 may cite the cruciform as its first
   plate example (k = 0.425 + (b/a)², `sec:tw-cruciform`).
+
+- 2026-11-24 (hub, author): external plan used for inspiration only; Eurocodes in Ch. 5-7; Quebec Bridge kept;
+  Ch. 2-3 closer to examples; shell buckling under residual stresses in Ch. 5; project 1 h/session from Lecture 3;
+  one table-top experiment per lecture (table above).
 
 ## Workflow
 - One conversation per chapter; touch other files only when needed (cross-references, notation).
