@@ -274,6 +274,13 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
 - 2026-11-23 (Ch. 4 thread, author): Timoshenko & Gere is not available. Alfutov, *Stability of Elastic Structures*
   (Springer, 2000) and Brush & Almroth (1975) were uploaded and used; hub: add Alfutov to `SOURCES.md` (B&A §4.6 ring on a
   foundation for Ch. 7, §2.5–2.6 beam columns and failure of bars for Ch. 5).
+- 2026-11-24 (Ch. 5 thread): Chapter 5 drafted. Notation (notation list updated): v, w, φ for the shear-centre
+  displacements and twist, J, Γ, ω, y₀, z₀, r₀, P_v, P_w, P_φ, M_cr; inelastic E_t, E_s, E_r, P_t, P_r, Ḡ; Shanley's
+  k, k_t, d, c; design λ̄, χ, α and **ζ for the Ayrton–Perry imperfection (η stays the load parameter)**, σ₀, f_y.
+  SOURCES.md: Hutchinson (1974) and new §4g (Chajes & Winter, AISC 360-22, Hutchinson 2016 on spheres → Ch. 7–8).
+  Reusable: `ch05_thinwalled/code/python/ft_section.py` (thin-walled section constants, shear centre, Γ, the 3×3
+  buckling eigenproblem), `shanley.py`, `fibre_column.py` (column curves). Ch. 6 may cite the cruciform as its first
+  plate example (k = 0.425 + (b/a)², `sec:tw-cruciform`).
 
 ## Workflow
 - One conversation per chapter; touch other files only when needed (cross-references, notation).

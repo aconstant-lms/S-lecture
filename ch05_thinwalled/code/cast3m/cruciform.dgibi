@@ -1,0 +1,41 @@
+* cruciform.dgibi -- Chapter 5: torsional buckling of a cruciform column with shell elements.
+* Printed in the book from line 4 on. Run: castem25 cruciform.dgibi.  NOT RUN: syntax to check.
+* Legs 120 x 8 mm, steel. Expect sigma = G (t/b)^2 = 360 MPa at every length (Section 5.3), then the
+* plastic case: Cast3M uses a flow theory, which keeps the elastic G (the plastic buckling paradox).
+opti dime 3 elem qua4 echo 0;
+E = 210000.;  nu = 0.3;  b = 120.;  t = 8.;  G = E / (2. * (1. + nu));
+A = 4. * b * t;
+repeter bl 3;
+  L = 1000. * &bl;
+  nz = 4 * &bl * 10;
+  o0 = 0. 0. 0.;  oL = 0. 0. L;
+  l1 = (o0 droi 8 (b 0. 0.)) tran nz (0. 0. L);
+  l2 = (o0 droi 8 ((-1.*b) 0. 0.)) tran nz (0. 0. L);
+  l3 = (o0 droi 8 (0. b 0.)) tran nz (0. 0. L);
+  l4 = (o0 droi 8 (0. (-1.*b) 0.)) tran nz (0. 0. L);
+  cr = l1 et l2 et l3 et l4;
+  elim cr 1.e-6;
+  mod = mode cr mecanique elastique coq4;
+  mat = (mate mod 'YOUN' E 'NU' nu) et (cara mod 'EPAI' t);
+  bas = cr poin plan o0 (1. 0. 0.) (0. 1. 0.) 1.e-3;
+  hau = cr poin plan oL (1. 0. L) (0. 1. L) 1.e-3;
+  * ends: the section may twist but not rotate about the axis at the base; uniform shortening at the top
+  cl = (bloq 'UZ' bas) et (bloq 'UX' 'UY' 'RZ' (bas poin proc o0)) et (bloq 'UX' 'UY' (hau poin proc oL));
+  rel = rela ense 'UZ' hau;
+  kt  = (rigi mod mat) et cl et rel;
+  f   = forc 'FZ' (-1. / (nbno hau)) hau;
+  u0  = reso kt f;
+  s0  = sigm mod mat u0;
+  et_ = table;
+  et_ . 'OBJM' = mod;  et_ . 'CLIM' = cl et rel;  et_ . 'MATE' = mat;  et_ . 'CARA' = mat;
+  et_ . 'SIG1' = s0;   et_ . 'LAM1' = 1.;  et_ . 'LAM2' = 1.e8;  et_ . 'NMOD' = 2;
+  st = flambage et_;
+  P1 = st . 1 . 'LAMB';
+  mess 'L = ' L '  sigma_cr = ' (P1 / A) ' MPa;  G(t/b)^2 = ' (G * ((t / b) ** 2));
+fin bl;
+*
+* Plastic case (to write once the elastic case is checked): same mesh with L = 2000, material
+* 'PLASTIQUE' 'PARFAIT' with 'SIGY' 300., a twist imperfection proportional to the first mode
+* (amplitude b/1000), pasapas with 'GRANDS_DEPLACEMENTS'. Without the imperfection the flow theory
+* bifurcates near the elastic 360 MPa; with it, the maximum load drops towards the deformation theory.
+fin;

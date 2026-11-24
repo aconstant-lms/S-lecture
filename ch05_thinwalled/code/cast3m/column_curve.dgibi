@@ -1,0 +1,70 @@
+* column_curve.dgibi -- Chapter 5: maximum load of a pinned HEB 300 column with residual stresses.
+* Printed in the book from line 4 on. Run: castem25 column_curve.dgibi.  NOT RUN: syntax to check.
+* Multifibre beam (Timoshenko kinematics, elastic-perfectly plastic fibres), bow L/1000 about the weak
+* axis, Lehigh residual stresses (0.3 fy at the flange tips) as initial fibre stresses, large displacements.
+* Compare with fibre_column.py: chi = 0.80, 0.58, 0.35 at lambda_bar = 0.6, 1.0, 1.5 (weak axis).
+opti dime 3 elem seg2 echo 0;
+E = 210000.;  fy = 235.;  h = 300.;  b = 300.;  tf = 19.;  tw = 11.;    (MPa, mm)
+lbar = 1.0;
+*
+* --- 1. the section: a mesh of fibres in the (y, z) plane --------------------------------------
+opti dime 2 elem qua4;
+hw = h - (2. * tf);
+f1 = (-0.5*b) (0.5*hw);  f2 = (0.5*b) (0.5*hw);   f3 = (0.5*b) (0.5*h);  f4 = (-0.5*b) (0.5*h);
+fl1 = dall (droi 30 f1 f2) (droi 2 f2 f3) (droi 30 f3 f4) (droi 2 f4 f1);
+fl1 = surf fl1 plan;
+fl2 = fl1 syme droi (0. 0.) (1. 0.);
+we  = dall (droi 2 ((-0.5*tw) (-0.5*hw)) ((0.5*tw) (-0.5*hw))) (droi 20 ((0.5*tw) (-0.5*hw)) ((0.5*tw) (0.5*hw)))
+           (droi 2 ((0.5*tw) (0.5*hw)) ((-0.5*tw) (0.5*hw))) (droi 20 ((-0.5*tw) (0.5*hw)) ((-0.5*tw) (-0.5*hw)));
+we  = surf we plan;
+sec = fl1 et fl2 et we;
+modsec = mode sec mecanique elastique plastique parfait quas;
+matsec = mate modsec 'YOUN' E 'NU' 0.3 'SIGY' fy 'ALPY' 1. 'ALPZ' 1.;
+* geometric properties for the slenderness (weak axis: bending in the plane of the flanges)
+A  = somt (intg modsec (manu chpo sec 1 'SCAL' 1.));
+yy = coor 1 sec;
+Iz = somt (intg modsec (yy * yy));
+r  = (Iz / A) ** 0.5;
+L  = lbar * pi * ((E / fy) ** 0.5) * r;
+mess 'A = ' A '  i_z = ' r '  L = ' L;
+*
+* --- 2. the column, bowed by L/1000 in y ------------------------------------------------------
+opti dime 3 elem seg2;
+n = 40;
+col = (0. 0. 0.) droi n (0. 0. L);
+xb = coor 3 col;
+dy = (L / 1000.) * (sin ((180. / L) * xb));
+col = col plus (dy nomc 'UX' et (0. * dy nomc 'UY') et (0. * dy nomc 'UZ'));
+mod = mode col mecanique elastique section plastique section timo;
+mat = mate mod 'MODS' modsec 'MATS' matsec 'VECT' (0. 1. 0.);
+pA = col poin initial;   pB = col poin final;
+bl = (bloq 'UX' 'UY' 'UZ' 'RZ' pA) et (bloq 'UX' 'UY' pB);
+*
+* --- 3. residual stresses as the initial stress of the fibres --------------------------------
+*     flanges: linear from -0.3 fy (tips, compression) to +t_ (centre); web: uniform +t_
+c  = 0.3 * fy;
+t_ = c * b * tf / ((b * tf) + (hw * tw));
+ys = coor 1 sec;  zs = coor 2 sec;
+fla = abs zs > (0.5 * hw);                         (to check: masque on the flanges)
+s0 = (fla * ((-1. * c) + ((c + t_) * (1. - (2. * (abs ys) / b))))) + ((1. - fla) * t_);
+sig0 = manu chml mod 'SMXX' s0;                    (to check: fibre stresses of a multifibre model)
+*
+* --- 4. the path: axial load up to the squash load, stopped by the maximum ----------------
+Pref = A * fy;
+ev  = evol manu 't' (prog 0. 1.) 'f' (prog 0. 1.);
+tab = table;
+tab . 'MODELE' = mod;
+tab . 'CARACTERISTIQUES' = mat;
+tab . 'BLOCAGES_MECANIQUES' = bl;
+tab . 'CHARGEMENT' = char 'MECA' (forc 'FZ' (-1. * Pref) pB) ev;
+tab . 'CONTRAINTES' = table;  tab . 'CONTRAINTES' . 0 = sig0;
+tab . 'GRANDS_DEPLACEMENTS' = vrai;
+tab . 'TEMPS_CALCULES' = prog 0. pas 0.02 0.40 pas 0.005 1.;
+tab . 'CONVERGENCE_FORCEE' = faux;
+pasapas tab;
+*
+* --- 5. the last converged load is the maximum load -----------------------------------------
+nt = (dime tab . 'TEMPS') - 1;
+chi = tab . 'TEMPS' . nt;
+mess 'lambda_bar = ' lbar '   chi = P_max/(A fy) = ' chi '   (fibre_column.py: 0.58 at 1.0)';
+fin;

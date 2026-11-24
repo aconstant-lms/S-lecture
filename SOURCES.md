@@ -148,6 +148,18 @@ SSRC chapter for the theory).
 - §V.A pp. 132–134: column with Ramberg–Osgood n = 10, imperfections (Figs. 16–17); Perry formula (Calladine 1973).
 - References pp. 141–144: used to check the Ch. 5 chapterbib.
 
+## 4g. Added 24 Nov 2026 (Ch. 5 thread)
+- **Fang & Winter, Torsional-flexural buckling of thin-walled open sections** (Cornell report, 1965, 82 p., free on Scholars'
+  Mine): restates the Chajes–Winter interaction equation (their Eq. 1a) and extends it to the inelastic range with E_t and
+  G_t (Eq. 3), with tests on cold-formed angles and channels. Rarely cited; used only to check signs. The cited sources for
+  Ch. 5 §5.2 are **Chajes & Winter, J. Struct. Div. ASCE 91 (1965) 103–124** (the interaction equation) and
+  **ANSI/AISC 360-22, Section E4** (free; the same equations in design form).
+- **J. W. Hutchinson, Buckling of spherical shells revisited, Proc. R. Soc. A 472 (2016) 20160577**, 25 p. Post-buckling
+  and imperfection sensitivity of complete spherical shells under pressure, with dimple imperfections. **For Ch. 7–8**
+  (external pressure, imperfection sensitivity), not Ch. 5.
+- Freely available, cited or to fetch: Huber & Beedle, Welding Journal 33(12) (1954) 589s (Lehigh residual stresses, cited);
+  Gerard & Becker, NACA TN 3781 (1957) (cruciform tests, cited through Hutchinson 1974); Stowell, NACA Rep. 898.
+
 ## 6. From 3D to reduced models: physical assumptions and rigorous derivations (added 23 Nov 2026)
 **Role: layer 1 of Chapters 4-8** (see "Balance" in `CLAUDE.md`).
 - **A. Constantinescu, CO7 — Von Kármán plate model and stability equations (note, 2026), 7 p.** Kirchhoff–Love
@@ -175,7 +187,7 @@ SSRC chapter for the theory).
 | 2 | Thompson & Hunt (§1.2, §10.4), Koiter, Triantafyllidis notes A (T model pp. 24–31, two-bar truss pp. 41–45, LSK pp. 57–71), sample exam Problem 1; Ziegler (1968) |
 | 3 | Triantafyllidis L6 (FEM, slides 3–9), Riks, Crisfield, Keller; Constantinescu & Korsunsky Ch. 7 (§7.2, §7.4, §7.5); author's L03 slides; Bushnell §4; Kelly (2003), Bažant (2003) |
 | 4 | Triantafyllidis BA-1 (elastica), H3, H4; Timoshenko & Gere; Audoly & Pomeau Ch. 3–5 (rods, hair, ribbons); Hibbeler (effective length, secant formula; candidate) |
-| 5 | Hutchinson 1974 (plastic buckling, Shanley model, cruciform), Hibbeler Ch. 13 §13.5–13.7; Bažant & Cedolin, Trahair, SSRC (not available: free substitutes in the Ch. 5 README); Bushnell §7 |
+| 5 | Hutchinson 1974 (plastic buckling, Shanley model, cruciform), Hibbeler Ch. 13 §13.5–13.7, Chajes & Winter 1965 + AISC 360-22 §E4 (flexural–torsional), Freddi–Morassi–Paroni 2007 (Vlasov as a Γ-limit), Huber & Beedle 1954 (residual stresses), Martin & Delatte 2001, Loomis et al. 1980, Pearson & Delatte 2006 (failures); Trahair, SSRC, Bažant & Cedolin not available; Bushnell §7 |
 | 6 | author's note CO7 (von Kármán plate), Ciarlet 1980, Friesecke–James–Müller 2006; Triantafyllidis BB-1 and L5 (von Kármán plate, double mode), H5; Brush & Almroth; Constantinescu & Korsunsky Ch. 7 |
 | 7 | Ciarlet Vol. III, Ciarlet & Lods (from 3D); Brush & Almroth, Koiter, NASA SP-8007 (1968, 2020), Bushnell §3–8, H7 |
 | 8 | Bushnell (pressure, tanks), NASA SP-8007 2020, Hutchinson (spheres), Reis, Bertoldi |

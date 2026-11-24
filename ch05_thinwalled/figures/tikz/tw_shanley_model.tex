@@ -1,0 +1,19 @@
+% tw_shanley_model.tex -- Chapter 5: Shanley's column, two rigid bars on a cell of two flanges.
+\begin{tikzpicture}[>=Stealth,scale=1.35]
+  \def\th{8}
+  % lower bar (straight up), cell at the origin, upper bar rotated
+  \draw[line width=2.4pt,gray!70] (0,-2.4) -- (0,-0.35);
+  \draw[thick] (-0.9,-0.35) -- (0.9,-0.35);
+  \draw[spring] (-0.7,-0.35) -- (-0.7,0.25);
+  \draw[spring] (0.7,-0.35) -- (0.7,0.35);
+  \draw[thick] (-0.9,0.22) -- (0.9,0.38);
+  \draw[line width=2.4pt,gray!70] (0,0.3) -- ({0+2.1*sin(\th)},{0.3+2.1*cos(\th)});
+  \draw[->,thick] ({2.1*sin(\th)},3.1) -- ({2.1*sin(\th)},2.55) node[pos=0,above] {\small $P$};
+  \draw[->,thick] (0,-3.0) -- (0,-2.5);
+  \node[font=\small,left] at (-0.75,-0.05) {$k_t$, loads};
+  \node[font=\small,right] at (0.75,0.0) {$k$, unloads};
+  \draw[<->] (-0.7,-0.7) -- (0.7,-0.7) node[midway,below] {\small $2d$};
+  \draw[gray,dashed] (0,0.3) -- (0,2.4);
+  \draw[->] (0,1.8) arc (90:{90-\th}:1.5) node[midway,above] {\small $\theta$};
+  \node[font=\small,align=left,right] at (1.3,-1.4) {rigid bars, length $L$\\ in all;\\ $P_t = 2k_td^2/L$};
+\end{tikzpicture}

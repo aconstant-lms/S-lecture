@@ -1,0 +1,19 @@
+% tw_residual.tex -- Chapter 5: residual stresses in a rolled H-section (Lehigh pattern).
+\begin{tikzpicture}[>=Stealth,scale=1.35]
+  % section
+  \fill[gray!15] (-1.5,1.4) rectangle (1.5,1.6);
+  \fill[gray!15] (-1.5,-1.6) rectangle (1.5,-1.4);
+  \fill[gray!15] (-0.06,-1.4) rectangle (0.06,1.4);
+  % top flange stress: compression (orange) at tips, tension (blue) at centre
+  \foreach \s in {1,-1} {
+    \fill[orange!35] (-1.5,{\s*1.6}) -- (-1.5,{\s*(1.6+0.55)}) -- (-0.95,{\s*1.6}) -- cycle;
+    \fill[orange!35] (1.5,{\s*1.6}) -- (1.5,{\s*(1.6+0.55)}) -- (0.95,{\s*1.6}) -- cycle;
+    \fill[cu!30] (-0.95,{\s*1.6}) -- (0,{\s*(1.6-0.28)}) -- (0.95,{\s*1.6}) -- cycle;
+    \draw[thick] (-1.5,{\s*(1.6+0.55)}) -- (0,{\s*(1.6-0.28)}) -- (1.5,{\s*(1.6+0.55)});
+  }
+  \fill[cu!30] (0.06,-1.4) rectangle (0.32,1.4);
+  \draw[thick] (0.32,-1.4) -- (0.32,1.4);
+  \node[font=\small,orange!80!black,align=right,left] at (-1.55,2.05) {$0.3f_y$\\ compression};
+  \node[font=\small,cu] at (0.95,0.0) {tension};
+  \node[font=\small,align=left,right] at (2.0,0.6) {tips cool first:\\ they end in compression,\\ and yield first};
+\end{tikzpicture}

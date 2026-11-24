@@ -1,0 +1,110 @@
+%======================================================================
+%  Exercise session, Chapter 5 (2 h). Printed by exercise_sheets.tex
+%  (questions only) and instructor_manual.tex (answers, instructor notes).
+%  Codes in ../code/{python,cast3m}.
+%======================================================================
+\clearpage
+\renewcommand{\sessionchapter}{Chapter 5 -- Thin-walled members and real materials}
+\setcounter{spart}{0}
+\setcounter{algorithm}{0}\renewcommand{\thealgorithm}{5.\arabic{algorithm}}
+\ifanswers
+\sessiontitle{Chapter 5 -- Twisting columns and column curves: session sheet with answers}
+  {Notes: Chapter~\ref{B-ch:tw}. Codes: Python (NumPy, SciPy), Cast3M.}
+\else
+\sessiontitle{Chapter 5 -- Twisting columns and column curves: session sheet}
+  {Notes: Chapter~\ref{B-ch:tw}. Codes: Python (NumPy, SciPy), Cast3M.}
+\fi
+
+\noindent
+Two ways in which a real steel column carries less than Euler promises. In part~a you find, by hand, when
+a cruciform and an angle twist instead of bending. In part~b you write two short codes: Shanley's column and
+the Ayrton--Perry curve. In part~c you compute a column curve with residual stresses, first with a fibre
+model in Python, then with Cast3M, and compare with the European curves. Bring the notes:
+Sections~\ref{B-sec:tw-ft}, \ref{B-sec:tw-cruciform} and~\ref{B-sec:tw-curves}. Steel: $E = 210$~GPa,
+$G = 81$~GPa, $f_y = 235$~MPa.
+
+\begin{instructor}
+Timing: part~a 35~min, part~b 35~min, part~c 50~min. Part~c is the heart of the session: every pair
+should leave with a column curve they computed themselves.
+\untested{The Cast3M inputs \texttt{column\_curve.dgibi} and \texttt{cruciform.dgibi} have not been run (no
+installation in the build environment): run them once before the session; the multifibre syntax and the
+initial stresses in \texttt{pasapas} are the points to check. The Python codes were run and give the numbers
+quoted here.}
+\end{instructor}
+
+%======================================================================
+\spart{Twisting columns by hand}
+
+\q A cruciform has four legs $b\times t$. Compute $A$, $J$ and $r_0^2$, and show that it twists at
+$\sigma_T = G(t/b)^2$ whatever its length. Below which length does it twist rather than bend?
+\begin{answer}
+$A = 4bt$, $J = 4bt^3/3$, $r_0^2 = b^2/3$, so $P_\varphi/A = GJ/(r_0^2A) = Gt^2/b^2$. Bending: $\pi^2Eb^2/(6L^2)$. Equal at
+$L = \pi(b^2/t)\sqrt{E/(6G)} = 2.07\,b^2/t$.
+\end{answer}
+
+\q Evaluate for legs $120\times8$~mm. Is the elastic result usable for an S235 steel? For S355?
+\begin{answer}
+$\sigma_T = 360$~MPa below $L = 3.7$~m. Above the yield of S235: the cruciform is plastic when it twists and
+the paradox of Section~\ref{B-sec:tw-shanley} applies. At the yield of S355: elastic theory stops exactly there.
+\end{answer}
+
+\q An equal angle $100\times100\times6$~mm is a pinned strut. Its twist load alone is $361$~kN. Why does it not
+depend on $L$? At $L = 1$~m its minor-axis Euler load is $946$~kN; it buckles at $348$~kN. Which mode is that,
+and why is it lower than both $361$ and $946$?
+\begin{answer}
+All walls meet at the corner, $\Gamma \approx 0$, so $P_\varphi = GJ/r_0^2$. The shear centre (the corner) is off the
+centroid, so twist couples with bending perpendicular to the axis of symmetry; the coupled load of the
+interaction equation is below both of its parents. The minor-axis mode, along the axis of symmetry, is not
+coupled and is not the lowest here.
+\end{answer}
+
+\begin{instructor}
+Ask why Hartford's chords were not saved by bracing: the answer, the length-free torsional load, is the one
+thing to remember from part~a.
+\end{instructor}
+
+%======================================================================
+\spart{Shanley and Ayrton--Perry in Python}
+
+\qc Shanley's column with $E_t/E = 1/3$: write the incremental equations of the two flanges, with elastic
+unloading, and follow the rotation from the straight column held at $P_b = P_t$. Compare with
+$P = P_t + (P_r - P_t)\,x/(c + x)$.
+\begin{answer}
+$P_r = 1.5\,P_t$, $c = 0.5$; the step-by-step solution matches the closed form to $10^{-15}$. With an initial
+rotation $\bar\theta = 0.01$ the column bends gradually and the load at $x = 0.05$ is $0.95\,P_t$. Code:
+\texttt{shanley.py}, listed in Exercise~\ref{B-exo:tw-shanley}.
+\end{answer}
+
+\qc Program the Ayrton--Perry curve $\chi(\bar\lambda)$ with $\zeta = \alpha(\bar\lambda - 0.2)$ and plot the curves $a$ to $d$. Read
+$\chi$ at $\bar\lambda = 1$.
+\begin{answer}
+$0.666$, $0.597$, $0.540$, $0.467$ for $a$, $b$, $c$, $d$. The function is \texttt{ec3} in \texttt{fibre\_column.py}.
+\end{answer}
+
+%======================================================================
+\spart{A column curve with residual stresses}
+
+\qc Fibre column: the mid-section of a pinned HEB~300 (S235), bow $L/1000$ about the weak axis, residual stresses
+$0.3f_y$ at the flange tips, elastic--perfectly plastic fibres. Increase the deflection, record the maximum load, and
+plot $\chi$ against $\bar\lambda$, with and without residual stresses.
+\begin{answer}
+At $\bar\lambda = 0.6$, $1.0$, $1.5$: $0.80$, $0.58$, $0.35$ with residual stresses, $0.90$, $0.67$, $0.38$ without; the
+European curve $c$ gives $0.79$, $0.54$, $0.32$. Code: \texttt{fibre\_column.py}, listed in
+Exercise~\ref{B-exo:tw-computer-fibre}.
+\end{answer}
+
+\qc Cast3M: run \texttt{column\_curve.dgibi} for $\bar\lambda = 1$. Compare the maximum load with the fibre column.
+\begin{answer}
+Expect $\chi$ within a few per cent of $0.58$, a little lower if the deflected shape departs from a sine. A value
+near $0.67$ means that the initial stresses were not taken into account.
+\end{answer}
+
+\qc Cast3M: run \texttt{cruciform.dgibi}. Does the buckling stress depend on the length?
+\begin{answer}
+Close to $360$~MPa at $1$, $2$ and $3$~m, slightly higher for the shortest one (the warping of the legs).
+\end{answer}
+
+\begin{instructor}
+The message of part~c: a column curve is not a formula but the maximum load of an imperfect, residually
+stressed, inelastic column, and it can be computed. The codes then calibrate it on tests.
+\end{instructor}
