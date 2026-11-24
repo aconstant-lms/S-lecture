@@ -120,3 +120,28 @@ ax.set_xlabel(r"slenderness $\bar\lambda = \sqrt{A f_y/P_c}$"); ax.set_ylabel(r"
 ax.legend(frameon=False, fontsize=6.5, loc="lower left")
 fig.tight_layout(); fig.savefig(os.path.join(OUT, "tw_curves.pdf")); plt.close(fig)
 print("wrote tw_curves.pdf")
+
+# A welded plate buckling under its own residual stresses ------------------------------------
+from plate_residual import k_residual
+fig, axs = plt.subplots(1, 2, figsize=(6.3, 2.4))
+ax = axs[0]; clean(ax)
+c = 0.1
+y = [0, 0, c, c, 1 - c, 1 - c, 1, 1]
+s = [0, -4, -4, 1, 1, -4, -4, 0]
+ax.fill_betweenx(y, 0, s, color=CU, alpha=0.15, lw=0)
+ax.plot(s, y, color=CU)
+ax.axvline(0, color=GRAY, lw=0.8)
+ax.text(0.5, 0.5, "compression\n" + r"$\sigma_c$", ha="left", va="center", fontsize=8)
+ax.text(-2.0, 0.05, r"tension $4\sigma_c$" + "\n(weld)", ha="center", va="bottom", fontsize=7.5)
+ax.set_xlim(-4.6, 2.2); ax.set_ylim(-0.02, 1.02)
+ax.set_xlabel(r"residual stress $/\sigma_c$ (compression $>0$)"); ax.set_ylabel(r"$y/b$")
+ax.set_title(r"welded edges, $c/b = 0.1$", fontsize=8.5)
+ax = axs[1]; clean(ax)
+cs = np.linspace(0.0, 0.3, 13)
+ks = [k_residual(cc) for cc in cs]
+ax.plot(cs, ks, color=CU)
+ax.plot([0], [4], "o", color=ORANGE, ms=4)
+ax.set_xlabel(r"width of each tension band $c/b$"); ax.set_ylabel(r"$k = \sigma_c b^2t/(\pi^2D)$")
+ax.set_title("no load: buckling under residual stress", fontsize=8.5)
+fig.tight_layout(); fig.savefig(os.path.join(OUT, "tw_selfstress.pdf")); plt.close(fig)
+print("wrote tw_selfstress.pdf")

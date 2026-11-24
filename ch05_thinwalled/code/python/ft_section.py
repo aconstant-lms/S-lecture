@@ -176,3 +176,15 @@ if __name__ == "__main__":
         EIz, GJ = EE * d_ * t_**3 / 12, GG * d_ * t_**3 / 3
         print(f"{nm} ruler {d_:.0f} x {t_:.0f} mm, {L_:.0f} mm: P_cr = {4.013*np.sqrt(EIz*GJ)/L_**2:.2f} N;"
               f" halve L: x {4:.0f}")
+
+    # 6. Eurocode 3 (EN 1993-1-1, 6.3.2.2, general case): lateral-torsional buckling resistance -------
+    #    lambda_LT = sqrt(W_pl f_y / M_cr), chi_LT from the column formula with alpha_LT;
+    #    rolled I-sections with h/b <= 2: curve a (alpha_LT = 0.21). HEB 300: W_pl,y = 1869 cm^3 (tables).
+    from fibre_column import ec3
+    Wpl, fy = 1869e3, 235.0
+    for L in (4000.0, 8000.0):
+        M = np.pi / L * np.sqrt(E * I.Imin * G * I.J) * np.sqrt(1 + np.pi**2 * E * I.Gamma / (G * I.J * L**2))
+        lt = np.sqrt(Wpl * fy / M)
+        chi = float(ec3(lt, 0.21))
+        print(f"EC3 LTB, HEB 300 S235, L = {L/1e3:.0f} m: M_pl = {Wpl*fy/1e6:.0f} kN m, lambda_LT = {lt:.3f},"
+              f" chi_LT = {chi:.3f}, M_b = {chi*Wpl*fy/1e6:.0f} kN m")

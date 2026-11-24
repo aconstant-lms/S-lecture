@@ -36,7 +36,9 @@ every steel column.
   \item derive a design column curve from an imperfect, residually stressed, inelastic
         column, and use the curves of the codes;
   \item compute a column curve with finite elements, residual stresses included, and check it
-        against the closed forms.
+        against the closed forms;
+  \item explain how residual stresses alone, with no load, can buckle a thin plate or shell, and
+        compute when.
 \end{itemize}
 
 \paragraph{Plan of the chapter.}
@@ -46,7 +48,8 @@ flexural--torsional loads of columns and the lateral--torsional load of beams.
 Section~\ref{sec:tw-cruciform} studies the cruciform and the Hartford collapse.
 Section~\ref{sec:tw-shanley} leaves elasticity: tangent and reduced modulus, Shanley's model, and
 the plastic buckling paradox of the cruciform. Section~\ref{sec:tw-curves} adds residual stresses
-and imperfections and arrives at the column curves of the codes. A summary, exercises with
+and imperfections and arrives at the column curves of the codes. Section~\ref{sec:tw-selfstress} shows that
+residual stresses can buckle a thin wall with no load at all. A summary, exercises with
 solutions (page~\pageref{sec:tw-exo}) and the references close the chapter.
 The thin-walled theory follows Vlasov's assumptions as presented by Trahair~\cite{tw-trahair1993}
 and the design codes~\cite{tw-aisc2022}; the inelastic columns follow Hutchinson~\cite{tw-hutchinson1974};
@@ -199,7 +202,18 @@ I-beam under a uniform moment the critical moment is
   M_{cr} = \frac\pi L\sqrt{EI_zGJ}\,\sqrt{1 + \frac{\pi^2E\Gamma}{GJL^2}}
 \end{equation}
 \cite{tw-trahair1993,tw-ziemian2010}. For an HEB~300 it is $1940$~kN\,m over $4$~m and $698$~kN\,m over
-$8$~m. Bridges have failed this way. The Dee Bridge at Chester fell under a train in 1847; its cast-iron
+$8$~m. \paragraph{Design of beams.}
+\index{lateral--torsional buckling!Eurocode}%
+Eurocode~3 treats a beam like a column~\cite[Section~6.3.2]{tw-en1993}. The slenderness is
+$\bar\lambda_{LT} = \sqrt{W_{pl}f_y/M_{cr}}$, with the plastic modulus $W_{pl}$, and the reduction factor
+$\chi_{LT}$ is~\eqref{eq:tw-chi} with $\alpha_{LT}$ in place of $\alpha$; rolled I-sections with $h/b \le 2$ are on curve
+$a$. For the HEB~300 in S235 ($W_{pl} = 1869$~cm$^3$, $M_{pl} = 439$~kN\,m), $\bar\lambda_{LT} = 0.48$ and
+$\chi_{LT} = 0.93$ over $4$~m, $0.79$ and $0.80$ over $8$~m: the beam keeps $351$~kN\,m of its $439$. The AISC
+specification uses the same $M_{cr}$ with its own transition curve~\cite[Chapter~F]{tw-aisc2022}.
+\draftnote{Clause numbers, the general case of $\chi_{LT}$ and the curve assignment are quoted from memory:
+check against EN 1993-1-1 when uploaded (Papers needed).}
+
+Bridges have failed this way. The Dee Bridge at Chester fell under a train in 1847; its cast-iron
 girders were compressed by eccentric tie rods, and their top flanges buckled out of
 plane~\cite{tw-petroski1994}. Steel girders are most exposed during construction, before the deck that
 braces them has hardened: in 2002 the steel tub girders of the Marcy pedestrian bridge (New York) rolled to
@@ -564,12 +578,12 @@ $\zeta = e_0c/r^2$. Then $(1 - \chi)(1 - \chi\bar\lambda^2) = \zeta\chi$, a quad
   \qquad
   \Phi = \tfrac12\bigl(1 + \zeta + \bar\lambda^2\bigr) .
 \end{equation}
-The European curves take $\zeta = \alpha(\bar\lambda - 0.2)$: no reduction for stocky columns, and an equivalent
+The European curves of Eurocode~3~\cite[Section~6.3.1]{tw-en1993} take $\zeta = \alpha(\bar\lambda - 0.2)$: no reduction for stocky columns, and an equivalent
 imperfection that grows with the length. The factor $\alpha$ collects the bow, the residual stresses and the
 plasticity into one number, calibrated on more than a thousand tests of the European Convention for
 Constructional Steelwork: $\alpha = 0.13$, $0.21$, $0.34$, $0.49$ and $0.76$ for the curves $a_0$, $a$, $b$, $c$, $d$.
 A rolled H-section with $h/b \le 1.2$ is on curve $b$ for the strong axis and on curve $c$ for the weak
-axis. At $\bar\lambda = 1$ the curves give $\chi = 0.60$ and $0.54$: the column carries little more than half of
+axis.\draftnote{Curve assignment (EN 1993-1-1, Table 6.2) to check when the standard is uploaded.} At $\bar\lambda = 1$ the curves give $\chi = 0.60$ and $0.54$: the column carries little more than half of
 both the squash load and Euler's load.
 
 \begin{figure}[ht]
@@ -621,6 +635,90 @@ column was close to its limit.
 \end{gbox}
 
 %======================================================================
+\section{Buckling with no load: residual stresses alone}\label{sec:tw-selfstress}
+\index{residual stress!buckling without load}\index{eigenstrain}%
+
+\paragraph{A structure that buckles by itself.}
+So far the residual stresses helped an external load. They can also act alone. A thin plate welded
+along its edges, a thin tube formed by rolling, a quenched sheet: each carries a field $\sigma_0$ that no
+load produced. It comes from an \emph{eigenstrain}, a strain the material wants (thermal contraction of
+the weld, plastic stretching during forming) and that the neighbouring material refuses. The field is
+self-equilibrated, so it has tension somewhere and, necessarily, compression somewhere else. If the
+compression sits in a thin wall, the wall can buckle with no load applied at all: a thin welded plate can come out of
+the workshop already dished.
+
+\paragraph{The same eigenproblem, a different stress.}
+Chapter~\ref{ch:nc} wrote linear buckling as $(\mat{K}_0 + \eta\,\mat{K}_\sigma)\mat{u} = \mat{0}$, with the
+geometric stiffness $\mat{K}_\sigma$ built from the prebuckling stress. Nothing in that construction asks the
+stress to come from a load. Put the residual field $\eta\,\sigma_0$ in $\mat{K}_\sigma$: the smallest $\eta$ is the
+factor by which the residual stresses must grow before the structure buckles on its own. If $\eta < 1$ it
+has already buckled.
+
+\begin{gbox}{A self-equilibrated stress field can buckle a thin wall without any load}\label{sec:tw-selfbox}
+\index{residual stress!buckling without load}%
+Residual stresses carry no resultant, but they always contain compression. Their geometric stiffness
+enters the buckling eigenproblem exactly like that of a load; when the compressed zone is a thin wall,
+it buckles as soon as the residual compression reaches the buckling stress of that zone.
+\end{gbox}
+
+\paragraph{Why it works.}
+The picture is a plate whose edges have been shortened by the welds. The edges, in tension, pull the
+middle into compression, and the middle can relieve it by bowing out of plane. Buckling releases
+compression energy in the middle, stretches nothing much at the edges, and costs bending energy: the
+balance is the Rayleigh quotient of Chapter~\ref{ch:nc}, with $\sigma_0$ in the denominator. The tension zones
+enter with the opposite sign and stiffen the plate, so the buckling stress of the compressed band is
+somewhat higher than if the whole plate were compressed.
+
+\begin{example}[A welded plate]\label{ex:tw-welded}
+\index{residual stress!welded plate}%
+A long steel plate of width $b$ and thickness $t$, simply supported on its edges, is welded along both
+long edges. Idealise the residual stress as tension in two bands of width $c$ at the welds and a uniform
+compression $\sigma_c$ in between, with $\sigma_c(b - 2c) = 2c\,\sigma_t$ (Figure~\ref{fig:tw-selfstress}, left).
+A Ritz computation with thirty sine terms across the width (Exercise~\ref{exo:tw-computer-selfstress}) gives
+the buckling coefficient of the compressed band, $\sigma_c = k\pi^2D/(b^2t)$: $k = 4$ for $c = 0$ (uniform
+compression, the plate of Chapter~\ref{ch:pl}), $4.27$ for $c = 0.1\,b$, $5.18$ for $c = 0.2\,b$ (right). With
+$c = 0.1\,b$ the welds carry four times the compression of the middle. For $b/t = 100$ the middle buckles on
+its own at $\sigma_c = 81$~MPa, when the welds are in tension at $324$~MPa, close to yield: a plate this thin can
+buckle in the workshop. For $b/t = 60$ the threshold is $225$~MPa, out of reach of the welds.
+\end{example}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics{ch05_thinwalled/figures/tw_selfstress.pdf}
+  \caption{A plate welded along its long edges. Left: the idealised residual stress, tension at the welds
+    and compression in the middle, with no resultant. Right: buckling coefficient of the compressed band
+    against the width of the tension bands; orange: uniform compression, $k = 4$. From \texttt{plate\_residual.py}.}
+  \label{fig:tw-selfstress}
+\end{figure}
+
+\paragraph{Thin tubes and shells.}
+A tube formed from a rolled and welded sheet, or quenched after a heat treatment, carries axial and hoop
+residual stresses that vary around the circumference and through the thickness. The axial buckling of a
+thin cylinder is local: its classical stress, $E t/(R\sqrt{3(1-\nu^2)}) = 0.605\,Et/R$, belongs to dimples
+of half-wavelength $1.73\sqrt{Rt}$, short for a thin wall (Chapter~\ref{ch:cy}). A band of residual
+compression a few $\sqrt{Rt}$ wide can therefore buckle the tube locally, with no load, once it reaches
+that stress: $254$~MPa for $R/t = 500$, $127$~MPa for $R/t = 1000$. Thin silos and tanks lie in that range.
+More often the residual stresses do not buckle the shell by themselves but leave it with dimples near the
+welds, which are the imperfections of Chapter~\ref{ch:cy}. Prestress used on purpose, to make a shell bistable,
+belongs to Chapter~\ref{ch:sh}.
+\draftnote{Papers needed (author): buckling of thin shells under welding or forming residual stresses, and
+measured weld-induced dimples in cylinders, to replace the estimate above by a checked result.}
+
+\begin{gbox}{Box: a ring cut from a can}\label{sec:tw-ring}
+\index{residual stress!split ring}%
+Cut a ring a few millimetres wide from an empty drinks can or a thin metal tube, then slit it across. It
+springs open (or closes): the forming left a hoop stress that varies through the thickness, and the slit
+releases its moment. If the stress is $\pm\sigma_b$ at the two faces, linear in between, the released moment per
+unit width is $\sigma_bt^2/6$; the curvature changes by $\Delta\kappa = 2\sigma_b(1 - \nu^2)/(Et)$, and the gap of a ring of
+radius $R$ opens by $\delta = 2\pi R^2\Delta\kappa$. Measure $\delta$ with a ruler:
+\[
+  \sigma_b = \frac{Et\,\delta}{4\pi R^2(1 - \nu^2)} .
+\]
+The gap grows like $R^2$: a wide thin ring shows a stress that a strain gauge would barely see. A strip cut
+from a coil of sheet curls for the same reason.
+\end{gbox}
+
+%======================================================================
 \framepart{Summary}
 \begin{gbox*}
 \begin{itemize}
@@ -635,7 +733,9 @@ column was close to its limit.
         theories disagree on the plastic cruciform.
   \item \textbf{Column curves.} Residual stresses make a steel section behave inelastically and hurt the weak
         axis most. The Ayrton--Perry formula with $\zeta = \alpha(\bar\lambda - 0.2)$ gives the European curves; at $\bar\lambda = 1$
-        a column carries about half its squash load.
+        a column carries about half its squash load. Beams follow the same rule with $\bar\lambda_{LT}$ and $\chi_{LT}$.
+  \item \textbf{No load needed.} Residual stresses have no resultant but always contain compression; their geometric
+        stiffness can buckle a thin welded plate ($k = 4.3$ for weld bands of $0.1\,b$) or a thin tube on its own.
 \end{itemize}
 \end{gbox*}
 
@@ -711,6 +811,15 @@ A bar (truss) element has no twist: the torsional mode of the cruciform chords i
 torsional load of a cruciform does not depend on the length, so shorter unbraced lengths do not raise it.
 \end{solution}
 
+\exercise{A ring that springs open}\label{exo:tw-ring}
+\index{residual stress!split ring}%
+A ring $10$~mm wide is cut from a steel tube of radius $R = 50$~mm and wall $t = 1$~mm and slit across; the gap
+opens by $5$~mm. Estimate the residual bending stress in the wall.
+\begin{solution}
+$\sigma_b = Et\delta/(4\pi R^2(1 - \nu^2)) = 210\,000\times1\times5/(4\pi\times2500\times0.91) = 37$~MPa (Section~\ref{sec:tw-ring}).
+A modest stress, made visible by the factor $R^2/t$.
+\end{solution}
+
 \framesub{Problems}
 
 \exercise{Three loads and their coupling}\label{exo:tw-three}
@@ -780,6 +889,20 @@ factor lies between $2$, when Saint-Venant torsion dominates (long spans), and $
 (c)~Same mechanism, $\sqrt{EI_zGJ}$ in place of $EI$; the ruler is the beam with $\Gamma \approx 0$.
 \end{solution}
 
+\exercise{A welded plate with one term}\label{exo:tw-welded}
+\index{residual stress!welded plate}%
+For the plate of Example~\ref{ex:tw-welded}, take the single mode $w = \sin(\pi x/a)\sin(\pi y/b)$. (a)~Show that the
+Rayleigh quotient gives $k = 4/g$, with $g = \displaystyle\frac2b\int_0^b\frac{\sigma_0}{\sigma_c}\sin^2\frac{\pi y}b\dd y$, for half-waves
+$a = b$. (b)~Evaluate for $c = 0.1\,b$. (c)~Why is $k > 4$, although the compressed band is narrower than the plate?
+\begin{solution}
+(a)~Bending: $\tfrac12D\,(\pi^2/a^2 + \pi^2/b^2)^2\,ab/4$; residual stress: $\tfrac12t\,(\pi/a)^2(a/2)\displaystyle\int_0^b\sigma_0\sin^2(\pi y/b)\dd y$.
+Their ratio at $a = b$ gives $\sigma_c = 4\pi^2D/(b^2tg)$. (b)~$\displaystyle\int_c^{b-c}\sin^2 = 0.4936\,b$ and each tension band
+$0.0032\,b$ times $\sigma_t = 4\sigma_c$: $g = 2(0.4936 - 0.0258) = 0.936$, $k = 4.28$; thirty terms give $4.27$.
+(c)~The bands are in tension, and tension stiffens: the plate is held flat near its edges, where the mode is
+small anyway. The weld does not help much, but it does not hurt either; the danger is the compression it
+creates.
+\end{solution}
+
 \framesub{Computer exercises}
 
 \exercise{Computer: thin-walled sections}\label{exo:tw-computer-section}
@@ -807,6 +930,18 @@ without residual stress $0.90$, $0.67$, $0.38$ (Figure~\ref{fig:tw-curves}). The
 near $\bar\lambda = 1$ and for the weak axis. The sinusoidal shape (Je\v{z}ek's approximation) is the weak point; the
 finite element version follows.
 \lstinputlisting[firstline=4]{ch05_thinwalled/code/python/fibre_column.py}
+\end{solution}
+
+\exercise{Computer: buckling under residual stresses}\label{exo:tw-computer-selfstress}
+\index{residual stress!buckling without load}%
+Solve the eigenproblem of Section~\ref{sec:tw-selfstress} for the welded plate by Ritz with $N$ sine terms
+across the width, for each half-wave length, and plot $k$ against $c/b$. Check $k = 4$ for $c = 0$ and the
+convergence in $N$.
+\begin{solution}
+The geometric matrix is indefinite (the tension bands), so solve $\mat{G}\mat{a} = \mu\mat{K}\mat{a}$ with $\mat{K}$ positive
+definite and take $\eta = 1/\mu_{\max}$. $k = 4.0000$ for $c = 0$; for $c = 0.1\,b$, $4.276$, $4.269$, $4.267$ with $1$, $3$
+and $30$ terms (Figure~\ref{fig:tw-selfstress}).
+\lstinputlisting[firstline=4]{ch05_thinwalled/code/python/plate_residual.py}
 \end{solution}
 
 \exercise{Computer: Cast3M beams with residual stresses}\label{exo:tw-computer-castem}
@@ -839,6 +974,7 @@ stresses in \texttt{pasapas} are to be checked on the author's version.}
 \bibitem{tw-ziemian2010} R.~D.~Ziemian (ed.), \emph{Guide to Stability Design Criteria for Metal Structures}, 6th ed., Wiley, Hoboken, 2010.
 \bibitem{tw-bazant1991} Z.~P.~Ba\v{z}ant and L.~Cedolin, \emph{Stability of Structures}, Oxford University Press, 1991.
 \bibitem{tw-bushnell1981} D.~Bushnell, Buckling of shells---pitfall for designers, \emph{AIAA Journal} 19 (1981) 1183--1226.
+\bibitem{tw-en1993} CEN, \emph{Eurocode 3: Design of steel structures, Part 1-1: General rules and rules for buildings}, EN 1993-1-1, Brussels, 2005.
 \bibitem{tw-chajes1965} A.~Chajes and G.~Winter, Torsional-flexural buckling of thin-walled members, \emph{Journal of the Structural Division (ASCE)} 91 (1965) 103--124.
 \bibitem{tw-aisc2022} American Institute of Steel Construction, \emph{Specification for Structural Steel Buildings}, ANSI/AISC 360-22, Chicago, 2022.
 \bibitem{tw-huber1954} A.~W.~Huber and L.~S.~Beedle, Residual stress and the compressive strength of steel, \emph{Welding Journal} 33(12) (1954) 589s.

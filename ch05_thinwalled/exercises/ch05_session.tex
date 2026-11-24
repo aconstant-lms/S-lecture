@@ -24,8 +24,20 @@ Sections~\ref{B-sec:tw-ft}, \ref{B-sec:tw-cruciform} and~\ref{B-sec:tw-curves}. 
 $G = 81$~GPa, $f_y = 235$~MPa.
 
 \begin{instructor}
-Timing: part~a 35~min, part~b 35~min, part~c 50~min. Part~c is the heart of the session: every pair
-should leave with a column curve they computed themselves.
+Timing with the project hour (from Lecture~3 on, the session gives about one hour to the project): part~a
+20~min, part~c fibre column 40~min; part~b and the Cast3M questions are homework. Without the project
+hour: part~a 35~min, part~b 35~min, part~c 50~min. Part~c is the heart of the session: every pair should
+leave with a column curve they computed themselves.
+
+Table-top experiments shown in the lecture and reused here: a plastic ruler held as a cantilever on its
+edge, loaded at the tip with coins (lateral--torsional buckling, $P \propto 1/L^2$: halve the length, four
+times the coins); a cruciform of paper or card pressed between books (it twists, at the same load when
+cut shorter); a ring cut from a drinks can and slit across (it springs open: residual stress,
+$\sigma_b = Et\delta/(4\pi R^2(1-\nu^2))$).
+
+Project step (adopted structure): each pair lists the compressed members of its structure, finds the
+section shape, and checks whether flexural--torsional or lateral--torsional buckling can govern, then reads
+$\chi$ on the relevant European curve.
 \untested{The Cast3M inputs \texttt{column\_curve.dgibi} and \texttt{cruciform.dgibi} have not been run (no
 installation in the build environment): run them once before the session; the multifibre syntax and the
 initial stresses in \texttt{pasapas} are the points to check. The Python codes were run and give the numbers

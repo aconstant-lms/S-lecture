@@ -317,6 +317,10 @@ Status of each chapter: its `README.md`. Skeleton chapters carry the planned con
   plate example (k = 0.425 + (b/a)², `sec:tw-cruciform`).
 - 2026-11-24 (Ch. 5 thread, author): Chapter 5 is titled "Rods II: thin-walled members and real materials" (folder and
   prefix unchanged; plan tables, README, overview and notation list updated); ζ for the Ayrton–Perry imperfection confirmed.
+- 2026-11-24 (Ch. 5 thread): hub decisions applied to Ch. 5: Eurocode LTB (λ̄_LT, χ_LT) and EN 1993-1-1 cited (with draft
+  notes until uploaded); new §5.6 `sec:tw-selfstress` (buckling under residual stresses alone; welded plate k = 4.27 for
+  weld bands 0.1b, thin-tube estimate forwarded to Ch. 7); table-top demos and project step in the session. Ch. 6 may
+  reuse `ch05_thinwalled/code/python/plate_residual.py` (Ritz plate with any σ_x(y), indefinite geometric matrix).
 
 - 2026-11-24 (hub, author): external plan used for inspiration only; Eurocodes in Ch. 5-7; Quebec Bridge kept;
   Ch. 2-3 closer to examples; shell buckling under residual stresses in Ch. 5; project 1 h/session from Lecture 3;

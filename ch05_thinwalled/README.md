@@ -1,9 +1,27 @@
 # Chapter 5: Rods II: thin-walled members and real materials
 
 Label prefix `tw` (`sec:tw-*`, `eq:tw-*`, `fig:tw-*`, `exo:tw-*`, bibitem keys `tw-*`).
-Status: **complete draft (24 Nov 2026)**. Lecture text (5 sections), summary, exercises with solutions (8 short
-questions, 5 problems, 3 computer exercises), the 2 h session with answers and instructor notes, 3 TikZ sketches,
-3 plots, 3 Python codes (run, numbers below), 2 Cast3M inputs (**not run**). Slides: not started.
+Status: **complete draft (24 Nov 2026, second round)**. Lecture text (6 sections), summary, exercises with solutions
+(9 short questions, 6 problems, 4 computer exercises), the 2 h session with answers, instructor notes, table-top
+experiments and the project step, 3 TikZ sketches, 4 plots, 4 Python codes (run), 2 Cast3M inputs (**not run**).
+Slides: not started.
+
+## Round of 24 Nov 2026 (author's decisions on the external plan)
+- Eurocode 3: §5.2 paragraph "Design of beams" (λ̄_LT = √(W_pl f_y/M_cr), χ_LT, curve a for rolled I with h/b ≤ 2):
+  HEB 300 S235, 4 m: λ̄_LT = 0.476, χ_LT = 0.932, M_b = 409 kN m; 8 m: 0.793, 0.799, 351 kN m (`ft_section.py` §6).
+  §5.5 cites EN 1993-1-1 §6.3.1 for the column curves. Clauses and curve assignments are from memory: draft notes until
+  the standard is uploaded.
+- New §5.6 `sec:tw-selfstress` "Buckling with no load: residual stresses alone": eigenstrain, the Ch. 3 eigenproblem
+  with σ₀ in K_σ, gbox `sec:tw-selfbox`; Example `ex:tw-welded` (plate welded on both long edges, tension bands c):
+  k = 4 (c = 0), 4.267 (c = 0.1b), 5.181 (c = 0.2b), converged to 4 digits with 10–40 sine terms; b/t = 100 buckles at
+  σ_c = 81 MPa with 324 MPa in the welds; b/t = 60 at 225 MPa. Thin tubes: local estimate with the classical
+  0.605Et/R (254 MPa at R/t = 500, 127 at 1000), forward to Ch. 7; prestress on purpose stays in Ch. 8. Box
+  `sec:tw-ring` (table-top: slit ring from a can, σ_b = Etδ/(4πR²(1−ν²)), derived here). Figure `fig:tw-selfstress`,
+  code `plate_residual.py`. Exercises `exo:tw-ring`, `exo:tw-welded` (one-term Ritz 4.276), `exo:tw-computer-selfstress`.
+- Session: timing with the project hour, the three table-top experiments (ruler on edge, paper cruciform, slit ring),
+  project step for the adopted structure.
+- Not done, waiting for sources: the Royal Commission report (1908) is not cited (Quebec box cites Pearson & Delatte and
+  Brady); the shell papers on welding/forming residual stresses.
 
 ## Thread
 Chapter 4 promised columns that twist and columns that yield. The running structure is the Hartford Civic Center
